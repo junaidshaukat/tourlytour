@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Tourly Tour</string>
-    <string name="facebook_app_id">1174627560634254</string>
-    <string name="fb_login_protocol_scheme">fb1174627560634254</string>
-    <string name="facebook_client_token">86b63b3d0a64b7a96c446aab3f709e49</string>
+    <string name="facebook_app_id">483944697537265</string>
+    <string name="fb_login_protocol_scheme">fb483944697537265</string>
+    <string name="facebook_client_token">9ce8c8c8dabe5fa49f6f01271fbaeaf6</string>
 </resources>
