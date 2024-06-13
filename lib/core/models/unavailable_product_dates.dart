@@ -1,22 +1,22 @@
 class UnavailableProductDates {
-  num? id;
-  num? productId;
-  DateTime? date;
-  String? description;
+  num id;
+  num productId;
+  DateTime date;
+  String description;
 
   UnavailableProductDates({
-    this.id,
-    this.productId,
-    this.date,
-    this.description,
+    required this.id,
+    required this.productId,
+    required this.date,
+    required this.description,
   });
 
   factory UnavailableProductDates.fromJson(Map<String, dynamic> json) {
     return UnavailableProductDates(
-      id: json['Id'] as num?,
-      productId: json['ProductId'] as num?,
-      date: json['Date'] != null ? DateTime.parse(json['Date']) : null,
-      description: json['Description'] as String?,
+      id: json['Id'],
+      productId: json['ProductId'],
+      date: DateTime.parse(json['Date']),
+      description: json['Description'],
     );
   }
 
@@ -32,7 +32,7 @@ class UnavailableProductDates {
     }
 
     if (!skip.contains('date')) {
-      data.addAll({'Date': date?.toIso8601String()});
+      data.addAll({'Date': date.toIso8601String()});
     }
 
     if (!skip.contains('description')) {

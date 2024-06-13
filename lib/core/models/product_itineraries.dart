@@ -8,6 +8,10 @@ class ProductItineraries {
   String? iconUrl;
   String? imageUrl;
   num? status;
+  String? city;
+  String? country;
+  String? tags;
+  String? code;
 
   ProductItineraries({
     this.id,
@@ -19,6 +23,10 @@ class ProductItineraries {
     this.iconUrl,
     this.imageUrl,
     this.status,
+    this.city,
+    this.code,
+    this.country,
+    this.tags,
   });
 
   factory ProductItineraries.fromJson(Map<String, dynamic> json) {
@@ -32,6 +40,10 @@ class ProductItineraries {
       iconUrl: json['IconUrl'] as String?,
       imageUrl: json['ImageUrl'] as String?,
       status: json['Status'] as num?,
+      city: json['City'] as String?,
+      code: json['Code'] as String?,
+      country: json['Country'] as String?,
+      tags: json['Tags'] as String?,
     );
   }
 
@@ -72,6 +84,22 @@ class ProductItineraries {
 
     if (!skip.contains('status')) {
       data['status'] = status;
+    }
+
+    if (!skip.contains('city')) {
+      data['City'] = city;
+    }
+
+    if (!skip.contains('country')) {
+      data['Country'] = country;
+    }
+
+    if (!skip.contains('tags')) {
+      data['Tags'] = tags;
+    }
+
+    if (!skip.contains('code')) {
+      data['Code'] = code;
     }
 
     return data;

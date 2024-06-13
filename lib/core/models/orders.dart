@@ -19,6 +19,9 @@ class Orders {
   String? stripeReferenceNumber;
   num? status;
   bool? isPaid;
+  num? totalAmount;
+  DateTime? createdAtDateTime;
+  DateTime? updatedAtDateTime;
 
   Orders({
     this.id,
@@ -39,6 +42,9 @@ class Orders {
     this.stripeReferenceNumber = '',
     this.status = 0,
     this.isPaid = false,
+    this.totalAmount = 0,
+    this.createdAtDateTime,
+    this.updatedAtDateTime,
   });
 
   factory Orders.fromJson(Map<String, dynamic> json) {
@@ -61,6 +67,13 @@ class Orders {
       stripeReferenceNumber: json['StripeReferenceNumber'] as String?,
       status: json['Status'] as num?,
       isPaid: json['IsPaid'] as bool?,
+      totalAmount: json['TotalAmount'] as num?,
+      createdAtDateTime: json['CreatedAtDateTime'] != null
+          ? DateTime.parse(json['CreatedAtDateTime'])
+          : null,
+      updatedAtDateTime: json['UpdatedAtDateTime'] != null
+          ? DateTime.parse(json['UpdatedAtDateTime'])
+          : null,
     );
   }
 
@@ -137,6 +150,18 @@ class Orders {
 
     if (!skip.contains('isPaid')) {
       data['IsPaid'] = isPaid;
+    }
+
+    if (!skip.contains('totalAmount')) {
+      data['TotalAmount'] = totalAmount;
+    }
+
+    if (!skip.contains('createdAtDateTime')) {
+      data['CreatedAtDateTime'] = createdAtDateTime?.toIso8601String();
+    }
+
+    if (!skip.contains('updatedAtDateTime')) {
+      data['UpdatedAtDateTime'] = updatedAtDateTime?.toIso8601String();
     }
 
     return data;

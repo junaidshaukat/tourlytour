@@ -5,8 +5,6 @@ export 'favourites.dart';
 export 'guests.dart';
 export 'metadata.dart';
 export 'orders.dart';
-export 'product_inspiration_items.dart';
-export 'product_inspirations.dart';
 export 'product_itineraries.dart';
 export 'product_photos.dart';
 export 'product_review_photos.dart';

@@ -13,6 +13,10 @@ class Products {
   num? price;
   num? type;
   String? code;
+  String? city;
+  String? country;
+  String? region;
+  String? stripePriceIdentifier;
 
   Products({
     this.id,
@@ -29,6 +33,10 @@ class Products {
     this.standardPrice,
     this.type,
     this.code,
+    this.city,
+    this.country,
+    this.region,
+    this.stripePriceIdentifier,
   });
 
   factory Products.fromJson(Map<String, dynamic> json) {
@@ -47,6 +55,10 @@ class Products {
       standardPrice: json['StandardPrice'] as num?,
       type: json['Type'] as num?,
       code: json['Code'] as String?,
+      city: json['City'] as String?,
+      country: json['Country'] as String?,
+      region: json['Region'] as String?,
+      stripePriceIdentifier: json['StripePriceIdentifier'] as String?,
     );
   }
 
@@ -116,6 +128,21 @@ class Products {
       data['code'] = code;
     }
 
+    if (!skip.contains('city')) {
+      data['City'] = city;
+    }
+
+    if (!skip.contains('country')) {
+      data['Country'] = country;
+    }
+
+    if (!skip.contains('region')) {
+      data['Region'] = region;
+    }
+
+    if (!skip.contains('stripePriceIdentifier')) {
+      data['StripePriceIdentifier'] = stripePriceIdentifier;
+    }
     return data;
   }
 }

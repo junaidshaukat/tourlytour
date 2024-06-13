@@ -9,26 +9,10 @@ void main() async {
   await Hive.initFlutter();
 
   // trouly tour
-  // await Supabase.initialize(
-  //   url: 'https://vtdjscrvogtprhlhvdwr.supabase.co',
-  //   anonKey:
-  //       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ0ZGpzY3J2b2d0cHJobGh2ZHdyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDc5NTEzNjUsImV4cCI6MjAyMzUyNzM2NX0.tOsJtFUD20JbYGk00O39jU3sYSrM2fOr8QiWGOSpvh0',
-  //   authOptions: const FlutterAuthClientOptions(
-  //     authFlowType: AuthFlowType.pkce,
-  //   ),
-  //   realtimeClientOptions: const RealtimeClientOptions(
-  //     logLevel: RealtimeLogLevel.info,
-  //   ),
-  //   storageOptions: const StorageClientOptions(
-  //     retryAttempts: 10,
-  //   ),
-  // );
-
-  /// tourism
   await Supabase.initialize(
-    url: "https://oouldooctewrajhirsxn.supabase.co",
+    url: 'https://vtdjscrvogtprhlhvdwr.supabase.co',
     anonKey:
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9vdWxkb29jdGV3cmFqaGlyc3huIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTMxMDQ5NzQsImV4cCI6MjAyODY4MDk3NH0.KOnEIUeyfvCCAEJ1G81whrrDJHsYOkAhnea6VDcuc2Y",
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ0ZGpzY3J2b2d0cHJobGh2ZHdyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDc5NTEzNjUsImV4cCI6MjAyMzUyNzM2NX0.tOsJtFUD20JbYGk00O39jU3sYSrM2fOr8QiWGOSpvh0',
     authOptions: const FlutterAuthClientOptions(
       authFlowType: AuthFlowType.pkce,
     ),
@@ -39,6 +23,22 @@ void main() async {
       retryAttempts: 10,
     ),
   );
+
+  /// tourism
+  // await Supabase.initialize(
+  //   url: "https://oouldooctewrajhirsxn.supabase.co",
+  //   anonKey:
+  //       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9vdWxkb29jdGV3cmFqaGlyc3huIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTMxMDQ5NzQsImV4cCI6MjAyODY4MDk3NH0.KOnEIUeyfvCCAEJ1G81whrrDJHsYOkAhnea6VDcuc2Y",
+  //   authOptions: const FlutterAuthClientOptions(
+  //     authFlowType: AuthFlowType.pkce,
+  //   ),
+  //   realtimeClientOptions: const RealtimeClientOptions(
+  //     logLevel: RealtimeLogLevel.info,
+  //   ),
+  //   storageOptions: const StorageClientOptions(
+  //     retryAttempts: 10,
+  //   ),
+  // );
 
   await Future.wait([
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]),
