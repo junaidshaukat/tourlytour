@@ -29,23 +29,23 @@ class Credentials {
     final Map<String, dynamic> data = {};
 
     if (!skip.contains('provider')) {
-      data['provider'] = provider;
+      data['Provider'] = provider;
     }
 
     if (!skip.contains('email')) {
-      data['email'] = email;
+      data['Email'] = email;
     }
 
     if (!skip.contains('phone')) {
-      data['phone'] = phone;
+      data['Phone'] = phone;
     }
 
     if (!skip.contains('password')) {
-      data['password'] = password;
+      data['Password'] = password;
     }
 
     if (!skip.contains('rememberMe')) {
-      data['rememberMe'] = rememberMe;
+      data['RememberMe'] = rememberMe;
     }
 
     return data;
@@ -67,13 +67,6 @@ class AppMetadata {
               .toList()
           : const [],
     );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'provider': provider,
-      'providers': providers?.map((e) => e),
-    };
   }
 
   bool get isGoogle => provider == 'google' ? true : false;
@@ -143,23 +136,6 @@ class UserMetadata {
       providerId: json['provider_id'],
       sub: json['sub'],
     );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'avatar_url': avatarUrl,
-      'email': email,
-      'email_verified': emailVerified,
-      'full_name': fullName,
-      'iss': iss,
-      'name': name,
-      'phone': phone,
-      'phone_verified': phoneVerified,
-      'picture': picture,
-      'provider': provider,
-      'provider_id': providerId,
-      'sub': sub,
-    };
   }
 
   Map<String, dynamic> forSupabase(uuid) {

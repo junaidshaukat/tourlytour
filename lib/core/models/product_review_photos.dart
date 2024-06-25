@@ -21,15 +21,15 @@ class ProductReviewPhotos {
     final Map<String, dynamic> data = {};
 
     if (!skip.contains('id')) {
-      data['id'] = id;
+      data['Id'] = id;
     }
 
     if (!skip.contains('productReviewId')) {
-      data['productReviewId'] = productReviewId;
+      data['ProductReviewId'] = productReviewId;
     }
 
     if (!skip.contains('url')) {
-      data['url'] = url;
+      data['Url'] = url;
     }
 
     return data;

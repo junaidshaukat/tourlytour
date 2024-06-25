@@ -3,9 +3,9 @@ import '/core/app_export.dart';
 class Favourites {
   num? id;
   num? productId;
-  Products? products;
   num? userId;
   String? status;
+  Products? products;
 
   Favourites({
     this.id,

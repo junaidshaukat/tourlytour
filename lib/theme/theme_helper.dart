@@ -31,8 +31,8 @@ class ThemeHelper {
     return ThemeData(
       useMaterial3: true,
       colorScheme: colorScheme,
-      visualDensity: VisualDensity.standard,
       textTheme: TextThemes.textTheme(colorScheme),
+      visualDensity: VisualDensity.adaptivePlatformDensity,
       scaffoldBackgroundColor: colorScheme.onPrimaryContainer,
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(

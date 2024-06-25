@@ -55,16 +55,20 @@ class BookingProvider with ChangeNotifier {
         notifyListeners();
       }
     } on NoInternetException catch (error) {
+      console.log(
+          error, 'BookingProvider::getBlackoutDates::NoInternetException');
       propsBlackoutDates.setError(currentError: error.toString());
       notifyListeners();
     } on CustomException catch (error) {
+      console.log(error, 'BookingProvider::getBlackoutDates::CustomException');
       propsBlackoutDates.setError(currentError: error.toString());
       notifyListeners();
     } on AuthException catch (error) {
+      console.log(error, 'BookingProvider::getBlackoutDates::AuthException');
       propsBlackoutDates.setError(currentError: error.message.toString());
       notifyListeners();
     } catch (error) {
-      console.log(error, 'Error::BookingProvider::getBlackoutDates');
+      console.log(error, 'BookingProvider::getBlackoutDates');
       propsBlackoutDates.setError(currentError: "something_went_wrong".tr);
       notifyListeners();
     }
@@ -80,7 +84,6 @@ class BookingProvider with ChangeNotifier {
       }
 
       Map<String, dynamic> params = request.toJson(skip: ['id']);
-      console.log(params);
 
       var response = await supabase.rpc('booking', params: {'data': params});
 
@@ -96,18 +99,22 @@ class BookingProvider with ChangeNotifier {
         throw CustomException();
       }
     } on NoInternetException catch (error) {
+      console.log(error, 'BookingProvider::booking::NoInternetException');
       props.setError(currentError: error.toString());
       notifyListeners();
       rethrow;
     } on CustomException catch (error) {
+      console.log(error, 'BookingProvider::booking::CustomException');
       props.setError(currentError: error.toString());
       notifyListeners();
       rethrow;
     } on AuthException catch (error) {
+      console.log(error, 'BookingProvider::booking::AuthException');
       props.setError(currentError: error.message.toString());
       notifyListeners();
       rethrow;
     } catch (error) {
+      console.log(error, 'BookingProvider::booking');
       props.setError(currentError: "something_went_wrong".tr);
       notifyListeners();
       rethrow;

@@ -71,7 +71,6 @@ class SplashScreenState extends State<SplashScreen> {
         AppRoutes.signin,
       );
     } catch (error) {
-      console.log(error, 'Error::SplashScreen::onReady');
       rethrow;
     }
   }

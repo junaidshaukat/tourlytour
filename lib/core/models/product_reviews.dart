@@ -115,7 +115,7 @@ class ProductReviews {
     }
 
     if (!skip.contains('photos')) {
-      data['photos'] = photos.map((e) => e.toJson()).toList();
+      data['Photos'] = photos.map((e) => e.toJson()).toList();
     }
 
     return data;

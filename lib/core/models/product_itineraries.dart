@@ -24,9 +24,9 @@ class ProductItineraries {
     this.imageUrl,
     this.status,
     this.city,
-    this.code,
     this.country,
     this.tags,
+    this.code,
   });
 
   factory ProductItineraries.fromJson(Map<String, dynamic> json) {
@@ -41,64 +41,64 @@ class ProductItineraries {
       imageUrl: json['ImageUrl'] as String?,
       status: json['Status'] as num?,
       city: json['City'] as String?,
-      code: json['Code'] as String?,
       country: json['Country'] as String?,
       tags: json['Tags'] as String?,
+      code: json['Code'] as String?,
     );
   }
 
   Map<String, dynamic> toJson({List skip = const []}) {
     final Map<String, dynamic> data = {};
 
-    if (!skip.contains('id')) {
-      data['id'] = id;
+    if (!skip.contains('Id')) {
+      data['Id'] = id;
     }
 
-    if (!skip.contains('productId')) {
-      data['productId'] = productId;
+    if (!skip.contains('ProductId')) {
+      data['ProductId'] = productId;
     }
 
-    if (!skip.contains('title')) {
+    if (!skip.contains('Title')) {
       data['Title'] = title;
     }
 
-    if (!skip.contains('description')) {
+    if (!skip.contains('Description')) {
       data['Description'] = description;
     }
 
-    if (!skip.contains('time')) {
+    if (!skip.contains('Time')) {
       data['Time'] = time;
     }
 
-    if (!skip.contains('travelHours')) {
+    if (!skip.contains('TravelHours')) {
       data['TravelHours'] = travelHours;
     }
 
-    if (!skip.contains('iconUrl')) {
+    if (!skip.contains('IconUrl')) {
       data['IconUrl'] = iconUrl;
     }
 
-    if (!skip.contains('imageUrl')) {
+    if (!skip.contains('ImageUrl')) {
       data['ImageUrl'] = imageUrl;
     }
 
-    if (!skip.contains('status')) {
-      data['status'] = status;
+    if (!skip.contains('Status')) {
+      data['Status'] = status;
     }
 
-    if (!skip.contains('city')) {
+    if (!skip.contains('City')) {
       data['City'] = city;
     }
 
-    if (!skip.contains('country')) {
+    if (!skip.contains('Country')) {
       data['Country'] = country;
     }
 
-    if (!skip.contains('tags')) {
+    if (!skip.contains('Tags')) {
       data['Tags'] = tags;
     }
 
-    if (!skip.contains('code')) {
+    if (!skip.contains('Code')) {
       data['Code'] = code;
     }
 

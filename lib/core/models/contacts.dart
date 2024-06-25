@@ -33,31 +33,31 @@ class Contacts {
     final Map<String, dynamic> data = {};
 
     if (!skip.contains('whatsapp')) {
-      data['whatsapp'] = whatsapp;
+      data['Whatsapp'] = whatsapp;
     }
 
     if (!skip.contains('instagram')) {
-      data['instagram'] = instagram;
+      data['Instagram'] = instagram;
     }
 
     if (!skip.contains('twitter')) {
-      data['twitter'] = twitter;
+      data['Twitter'] = twitter;
     }
 
     if (!skip.contains('wechat')) {
-      data['wechat'] = wechat;
+      data['Wechat'] = wechat;
     }
 
     if (!skip.contains('viber')) {
-      data['viber'] = viber;
+      data['Viber'] = viber;
     }
 
     if (!skip.contains('threads')) {
-      data['threads'] = threads;
+      data['Threads'] = threads;
     }
 
     if (!skip.contains('line')) {
-      data['line'] = line;
+      data['Line'] = line;
     }
 
     return data;

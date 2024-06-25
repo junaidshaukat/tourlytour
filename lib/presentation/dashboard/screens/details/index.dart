@@ -19,6 +19,7 @@ class ProductDetailsScreenState extends State<ProductDetailsScreen>
   late ProductVideosProvider videos;
   late ProductPhotosProvider photos;
   late ProductReviewsProvider reviews;
+  late StripeProvider stripe;
   late ProductItinerariesProvider itineraries;
   late Products product;
 
@@ -30,7 +31,7 @@ class ProductDetailsScreenState extends State<ProductDetailsScreen>
       photos = context.read<ProductPhotosProvider>();
       reviews = context.read<ProductReviewsProvider>();
       itineraries = context.read<ProductItinerariesProvider>();
-
+      stripe = context.read<StripeProvider>();
       await videos.onReady(product.id);
       await photos.onReady(product.id);
       await reviews.onReady(product.id);
@@ -47,6 +48,19 @@ class ProductDetailsScreenState extends State<ProductDetailsScreen>
     super.didChangeDependencies();
     tabviewController = TabController(length: 4, vsync: this);
     product = ModalRoute.of(context)!.settings.arguments as Products;
+  }
+
+  Future<void> onPressed() async {
+    try {
+      await stripe.makePayment();
+    } catch (e) {
+      console.log(e);
+    }
+    // NavigatorService.push(
+    //   context,
+    //   const PackageSelectionScreen(),
+    //   arguments: product,
+    // );
   }
 
   @override
@@ -290,13 +304,7 @@ class ProductDetailsScreenState extends State<ProductDetailsScreen>
                   left: 8.h,
                   top: 2.v,
                 ),
-                onPressed: () {
-                  NavigatorService.push(
-                    context,
-                    const PackageSelectionScreen(),
-                    arguments: product,
-                  );
-                },
+                onPressed: onPressed,
                 alignment: Alignment.topLeft,
               ),
             ),

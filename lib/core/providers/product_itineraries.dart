@@ -40,16 +40,21 @@ class ProductItinerariesProvider with ChangeNotifier {
         notifyListeners();
       }
     } on NoInternetException catch (error) {
+      console.log(
+          error, 'ProductItinerariesProvider::onReady::NoInternetException');
       props.setError(currentError: error.toString());
       notifyListeners();
     } on CustomException catch (error) {
+      console.log(
+          error, 'ProductItinerariesProvider::onReady::CustomException');
       props.setError(currentError: error.toString());
       notifyListeners();
     } on AuthException catch (error) {
+      console.log(error, 'ProductItinerariesProvider::onReady::AuthException');
       props.setError(currentError: error.message.toString());
       notifyListeners();
     } catch (error) {
-      console.log(error, 'Error::ProductItinerariesProvider::onReady');
+      console.log(error, 'ProductItinerariesProvider::onReady');
       props.setError(currentError: "something_went_wrong".tr);
       notifyListeners();
     }
@@ -97,16 +102,21 @@ class ProductItinerariesProvider with ChangeNotifier {
         notifyListeners();
       }
     } on NoInternetException catch (error) {
+      console.log(
+          error, 'ProductItinerariesProvider::findById::NoInternetException');
       propsConfirmation.setError(currentError: error.toString());
       notifyListeners();
     } on CustomException catch (error) {
+      console.log(
+          error, 'ProductItinerariesProvider::findById::CustomException');
       propsConfirmation.setError(currentError: error.toString());
       notifyListeners();
     } on AuthException catch (error) {
+      console.log(error, 'ProductItinerariesProvider::findById::AuthException');
       propsConfirmation.setError(currentError: error.message.toString());
       notifyListeners();
     } catch (error) {
-      console.log(error, 'Error::ProductItinerariesProvider::findById');
+      console.log(error, 'ProductItinerariesProvider::findById');
       propsConfirmation.setError(currentError: "something_went_wrong".tr);
       notifyListeners();
     }

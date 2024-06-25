@@ -39,9 +39,9 @@ class OrdersProvider with ChangeNotifier {
       });
 
       if (response.isNotEmpty) {
-        List<Guests> list = [];
+        List<OrderGuests> list = [];
         for (var data in response) {
-          list.add(Guests.fromJson(data));
+          list.add(OrderGuests.fromJson(data));
         }
         props.clear([]);
         props.setSuccess(currentData: list);
@@ -52,16 +52,19 @@ class OrdersProvider with ChangeNotifier {
         notifyListeners();
       }
     } on NoInternetException catch (error) {
+      console.log(error, 'OrdersProvider::findById::NoInternetException');
       props.setError(currentError: error.toString());
       notifyListeners();
     } on CustomException catch (error) {
+      console.log(error, 'OrdersProvider::findById::CustomException');
       props.setError(currentError: error.toString());
       notifyListeners();
     } on AuthException catch (error) {
+      console.log(error, 'OrdersProvider::findById::AuthException');
       props.setError(currentError: error.message.toString());
       notifyListeners();
     } catch (error) {
-      console.log(error, 'Error::FavouritesProvider::onFavourite');
+      console.log(error, 'OrdersProvider::findById');
       props.setError(currentError: "something_went_wrong".tr);
       notifyListeners();
     }
@@ -79,8 +82,6 @@ class OrdersProvider with ChangeNotifier {
         'order_number': orderNumber,
       });
 
-      console.log(response, 'order_details');
-
       if (response != null) {
         OrdersDetails orders = OrdersDetails.fromJson(response);
         propsOrder.clear(null);
@@ -92,16 +93,20 @@ class OrdersProvider with ChangeNotifier {
         notifyListeners();
       }
     } on NoInternetException catch (error) {
+      console.log(
+          error, 'OrdersProvider::findByOrderNumber::NoInternetException');
       propsOrder.setError(currentError: error.toString());
       notifyListeners();
     } on CustomException catch (error) {
+      console.log(error, 'OrdersProvider::findByOrderNumber::CustomException');
       propsOrder.setError(currentError: error.toString());
       notifyListeners();
     } on AuthException catch (error) {
+      console.log(error, 'OrdersProvider::findByOrderNumber::AuthException');
       propsOrder.setError(currentError: error.message.toString());
       notifyListeners();
     } catch (error) {
-      console.log(error, 'Error::FavouritesProvider::onFavourite');
+      console.log(error, 'OrdersProvider::findByOrderNumber');
       propsOrder.setError(currentError: "something_went_wrong".tr);
       notifyListeners();
     }

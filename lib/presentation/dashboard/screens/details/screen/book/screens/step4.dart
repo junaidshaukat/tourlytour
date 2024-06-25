@@ -34,6 +34,8 @@ class ConfirmationScreenState extends State<ConfirmationScreen> {
     request = ModalRoute.of(context)!.settings.arguments as BookingRequest;
   }
 
+  Future<void> onTap() async {}
+
   @override
   Widget build(BuildContext context) {
     return Preloader(
@@ -113,8 +115,7 @@ class ConfirmationScreenState extends State<ConfirmationScreen> {
                           color: appTheme.gray500,
                           width: 1.0,
                         ),
-                        borderRadius:
-                            BorderRadius.circular(10.0), // Border radius
+                        borderRadius: BorderRadius.circular(10.0),
                       ),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
@@ -274,7 +275,7 @@ class ConfirmationScreenState extends State<ConfirmationScreen> {
                                   ),
                                 ),
                                 child: InkWell(
-                                  onTap: () {},
+                                  onTap: onTap,
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     crossAxisAlignment:
@@ -460,7 +461,7 @@ class ConfirmationScreenState extends State<ConfirmationScreen> {
                             children: List.generate(
                               request.guests?.length ?? 0,
                               (index) {
-                                Guests guests = request.guests![index];
+                                OrderGuests guests = request.guests![index];
                                 return Row(
                                   children: [
                                     SizedBox(

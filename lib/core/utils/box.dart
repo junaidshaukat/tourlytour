@@ -8,7 +8,6 @@ class HiveBox {
       users = await Hive.openBox('Users');
       return true;
     } catch (error) {
-      console.log(error, "Error::HiveBox::onReady");
       return false;
     }
   }
@@ -18,7 +17,6 @@ class HiveBox {
       await onReady();
       return true;
     } catch (error) {
-      console.log(error, "Error::HiveBox::onReload");
       return false;
     }
   }

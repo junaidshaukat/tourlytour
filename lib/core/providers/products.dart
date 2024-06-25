@@ -35,16 +35,19 @@ class ProductsProvider with ChangeNotifier {
         notifyListeners();
       }
     } on NoInternetException catch (error) {
+      console.log(error, 'ProductsProvider::onReady::NoInternetException');
       props.setError(currentError: error.toString());
       notifyListeners();
     } on CustomException catch (error) {
+      console.log(error, 'ProductsProvider::onReady::CustomException');
       props.setError(currentError: error.toString());
       notifyListeners();
     } on AuthException catch (error) {
+      console.log(error, 'ProductsProvider::onReady::AuthException');
       props.setError(currentError: error.message.toString());
       notifyListeners();
     } catch (error) {
-      console.log(error, 'Error::FavouritesProvider::onReady');
+      console.log(error, 'ProductsProvider::onReady');
       props.setError(currentError: "something_went_wrong".tr);
       notifyListeners();
     }
@@ -77,16 +80,19 @@ class ProductsProvider with ChangeNotifier {
         notifyListeners();
       }
     } on NoInternetException catch (error) {
+      console.log(error, 'ProductsProvider::findById::NoInternetException');
       propsSingle.setError(currentError: error.toString());
       notifyListeners();
     } on CustomException catch (error) {
+      console.log(error, 'ProductsProvider::findById::CustomException');
       propsSingle.setError(currentError: error.toString());
       notifyListeners();
     } on AuthException catch (error) {
+      console.log(error, 'ProductsProvider::findById::AuthException');
       propsSingle.setError(currentError: error.message.toString());
       notifyListeners();
     } catch (error) {
-      console.log(error, 'Error::FavouritesProvider::findById');
+      console.log(error, 'ProductsProvider::findById');
       propsSingle.setError(currentError: "something_went_wrong".tr);
       notifyListeners();
     }

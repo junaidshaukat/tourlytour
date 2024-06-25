@@ -1,42 +1,42 @@
 class ProductVideos {
   num? id;
   num? productId;
-  num? status;
   String? url;
+  num? status;
 
   ProductVideos({
     this.id,
     this.productId,
-    this.status,
     this.url,
+    this.status,
   });
 
   factory ProductVideos.fromJson(Map<String, dynamic> json) {
     return ProductVideos(
       id: json['Id'] as num?,
       productId: json['ProductId'] as num?,
-      status: json['Status'] as num?,
       url: json['Url'] as String?,
+      status: json['Status'] as num?,
     );
   }
 
-  Map<String, dynamic> toJson({List skip = const []}) {
-    Map<String, dynamic> data = {};
+  Map<String, dynamic> toJson({List<String> skip = const []}) {
+    final Map<String, dynamic> data = {};
 
     if (!skip.contains('id')) {
-      data['id'] = id;
+      data['Id'] = id;
     }
 
     if (!skip.contains('productId')) {
-      data['productId'] = productId;
-    }
-
-    if (!skip.contains('status')) {
-      data['status'] = status;
+      data['ProductId'] = productId;
     }
 
     if (!skip.contains('url')) {
-      data['url'] = url;
+      data['Url'] = url;
+    }
+
+    if (!skip.contains('status')) {
+      data['Status'] = status;
     }
 
     return data;

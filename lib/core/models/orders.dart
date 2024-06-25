@@ -8,7 +8,7 @@ class Orders {
   DateTime? date;
   num? totalNumberOfGuest;
   String? language;
-  String? preferedDriverGender;
+  String? preferredDriverGender;
   String? hotelName;
   String? hotelAddress;
   String? hotelRoomNumber;
@@ -17,10 +17,10 @@ class Orders {
   String? contactPersonMobile;
   String? stripeToken;
   String? stripeReferenceNumber;
-  num? status;
+  String? status;
   bool? isPaid;
-  num? totalAmount;
   DateTime? createdAtDateTime;
+  num? totalAmount;
   DateTime? updatedAtDateTime;
 
   Orders({
@@ -30,20 +30,20 @@ class Orders {
     this.orderNumber,
     this.date,
     this.totalNumberOfGuest,
-    this.language = '',
-    this.preferedDriverGender = '',
+    this.language,
+    this.preferredDriverGender,
     this.hotelName,
     this.hotelAddress,
     this.hotelRoomNumber,
     this.contactPersonName,
     this.contactPersonEmail,
     this.contactPersonMobile,
-    this.stripeToken = '',
-    this.stripeReferenceNumber = '',
-    this.status = 0,
-    this.isPaid = false,
-    this.totalAmount = 0,
+    this.stripeToken,
+    this.stripeReferenceNumber,
+    this.status,
+    this.isPaid,
     this.createdAtDateTime,
+    this.totalAmount,
     this.updatedAtDateTime,
   });
 
@@ -56,7 +56,7 @@ class Orders {
       date: json['Date'] != null ? DateTime.parse(json['Date']) : null,
       totalNumberOfGuest: json['TotalNumberOfGuest'] as num?,
       language: json['Language'] as String?,
-      preferedDriverGender: json['PreferedDriverGender'] as String?,
+      preferredDriverGender: json['PreferredDriverGender'] as String?,
       hotelName: json['HotelName'] as String?,
       hotelAddress: json['HotelAddress'] as String?,
       hotelRoomNumber: json['HotelRoomNumber'] as String?,
@@ -65,12 +65,12 @@ class Orders {
       contactPersonMobile: json['ContactPersonMobile'] as String?,
       stripeToken: json['StripeToken'] as String?,
       stripeReferenceNumber: json['StripeReferenceNumber'] as String?,
-      status: json['Status'] as num?,
+      status: json['Status'] as String?,
       isPaid: json['IsPaid'] as bool?,
-      totalAmount: json['TotalAmount'] as num?,
       createdAtDateTime: json['CreatedAtDateTime'] != null
           ? DateTime.parse(json['CreatedAtDateTime'])
           : null,
+      totalAmount: json['TotalAmount'] as num?,
       updatedAtDateTime: json['UpdatedAtDateTime'] != null
           ? DateTime.parse(json['UpdatedAtDateTime'])
           : null,
@@ -78,7 +78,7 @@ class Orders {
   }
 
   Map<String, dynamic> toJson({List<String> skip = const []}) {
-    Map<String, dynamic> data = {};
+    final Map<String, dynamic> data = {};
 
     if (!skip.contains('id')) {
       data['Id'] = id;
@@ -108,8 +108,8 @@ class Orders {
       data['Language'] = language;
     }
 
-    if (!skip.contains('preferedDriverGender')) {
-      data['PreferedDriverGender'] = preferedDriverGender;
+    if (!skip.contains('preferredDriverGender')) {
+      data['PreferredDriverGender'] = preferredDriverGender;
     }
 
     if (!skip.contains('hotelName')) {
@@ -152,12 +152,12 @@ class Orders {
       data['IsPaid'] = isPaid;
     }
 
-    if (!skip.contains('totalAmount')) {
-      data['TotalAmount'] = totalAmount;
-    }
-
     if (!skip.contains('createdAtDateTime')) {
       data['CreatedAtDateTime'] = createdAtDateTime?.toIso8601String();
+    }
+
+    if (!skip.contains('totalAmount')) {
+      data['TotalAmount'] = totalAmount;
     }
 
     if (!skip.contains('updatedAtDateTime')) {
@@ -172,7 +172,7 @@ class OrdersDetails {
   Orders? orders;
   Products? product;
   Contacts? contacts;
-  List<Guests>? guests;
+  List<OrderGuests>? guests;
   List<ProductItineraries>? itineraries;
 
   OrdersDetails({
@@ -191,7 +191,8 @@ class OrdersDetails {
       product:
           json["product"] != null ? Products.fromJson(json["product"]) : null,
       guests: json["guests"] != null
-          ? List<Guests>.from(json["guests"].map((x) => Guests.fromJson(x)))
+          ? List<OrderGuests>.from(
+              json["guests"].map((x) => OrderGuests.fromJson(x)))
           : null,
       itineraries: json["itineraries"] != null
           ? List<ProductItineraries>.from(

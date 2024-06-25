@@ -2,7 +2,7 @@ export 'auth_form.dart';
 export 'booking.dart';
 export 'contacts.dart';
 export 'favourites.dart';
-export 'guests.dart';
+export 'order_guests.dart';
 export 'metadata.dart';
 export 'orders.dart';
 export 'product_itineraries.dart';

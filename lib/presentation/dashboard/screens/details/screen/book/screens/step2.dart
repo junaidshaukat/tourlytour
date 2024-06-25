@@ -56,9 +56,9 @@ class OtherInformationScreenState extends State<OtherInformationScreen> {
 
   Future<void> onContinue() async {
     if (formKey.currentState!.validate()) {
-      List<Guests> guests = [];
+      List<OrderGuests> guests = [];
       values.forEach((int key, Map<String, dynamic> value) {
-        guests.add(Guests.toGuest(value));
+        guests.add(OrderGuests.toGuest(value));
       });
 
       request.setStep02(
@@ -81,9 +81,7 @@ class OtherInformationScreenState extends State<OtherInformationScreen> {
             arguments: request,
           );
         },
-        onError: (error) {
-          console.log(error, 'booking');
-        },
+        onError: (error) {},
       );
     }
   }
@@ -467,8 +465,8 @@ class OtherInformationScreenState extends State<OtherInformationScreen> {
                       ),
                       SizedBox(height: 12.v),
                       Wrap(
-                        children:
-                            List.generate(request.totalNumberOfGuest, (i) {
+                        children: List.generate(
+                            request.totalNumberOfGuest.toInt(), (i) {
                           final name = controllers[i]?['name'];
                           final passport = controllers[i]?['passport'];
                           final dateOfBirth = controllers[i]?['date_of_birth'];

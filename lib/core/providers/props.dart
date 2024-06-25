@@ -1,5 +1,3 @@
-import '/core/app_export.dart';
-
 class Props {
   int state;
   String? error;
@@ -47,7 +45,6 @@ class Props {
     String? currentError,
     Object? currentData,
   }) {
-    console.log(currentError, 'setError');
     state = currentState;
     error = currentError ?? "something_went_wrong";
     data = currentData ?? initialData;

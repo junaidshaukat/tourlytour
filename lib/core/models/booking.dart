@@ -6,22 +6,24 @@ class BookingRequest {
   late num _userId;
   late String _orderNumber;
   late DateTime _date;
-  late int _totalNumberOfGuest;
-  late String _phoneCode;
-  late String _contactPersonName;
-  late String _contactPersonEmail;
-  late String _contactPersonMobile;
+  late num _totalNumberOfGuest;
   late String _language;
   late String _preferedDriverGender;
   late String _hotelName;
   late String _hotelAddress;
   late String _hotelRoomNumber;
+  late String _contactPersonName;
+  late String _contactPersonEmail;
+  late String _contactPersonMobile;
   late String _stripeToken;
-  late String _stripeReferenceNumber;
-  late int _status;
+  late String _stripeReferrenceNumber;
+  late String _status;
   late bool _isPaid;
-  late List<Guests> _guests;
+  late num _totalAmount;
+
+  late List<OrderGuests> _guests;
   late Products _product;
+  late String _phoneCode;
 
   void setProducts(Products product, CurrentUserProvider currentUser) {
     _product = product;
@@ -30,30 +32,31 @@ class BookingRequest {
   }
 
   Products get product => _product;
-  num get status => _status;
+  String get status => _status;
   String get language => _language;
   bool get isPaid => _isPaid;
   String get stripeToken => _stripeToken;
   String get preferedDriverGender => _preferedDriverGender;
-  String get stripeReferenceNumber => _stripeReferenceNumber;
+  String get stripeReferrenceNumber => _stripeReferrenceNumber;
   num get userId => _userId;
   num get productId => _productId;
   String get orderNumber => _orderNumber;
   void setStep00(Products product, CurrentUserProvider currentUser) {
-    _status = 0;
+    _totalAmount = 0;
+    _status = '';
     _language = '';
     _isPaid = false;
     _stripeToken = '';
     _product = product;
     _preferedDriverGender = '';
-    _stripeReferenceNumber = '';
+    _stripeReferrenceNumber = '';
     _userId = currentUser.id ?? -1;
     _productId = product.id ?? -1;
     _orderNumber = fn.orderNumber();
   }
 
   DateTime get date => _date;
-  int get totalNumberOfGuest => _totalNumberOfGuest;
+  num get totalNumberOfGuest => _totalNumberOfGuest;
   void setStep01({required DateTime date, required int totalNumberOfGuest}) {
     _date = date;
     _totalNumberOfGuest = totalNumberOfGuest;
@@ -67,8 +70,8 @@ class BookingRequest {
   String get hotelName => _hotelName;
   String get hotelAddress => _hotelAddress;
   String get hotelRoomNumber => _hotelRoomNumber;
-  List<Guests> get guests => _guests;
-
+  List<OrderGuests> get guests => _guests;
+  num get totalAmount => _totalAmount;
   void setStep02({
     required String phoneCode,
     required String fullName,
@@ -77,7 +80,7 @@ class BookingRequest {
     required String hotelName,
     required String hotelAddress,
     required String hotelRoomNumber,
-    required List<Guests> guests,
+    required List<OrderGuests> guests,
   }) {
     _phoneCode = phoneCode;
     _contactPersonName = fullName;
@@ -87,6 +90,7 @@ class BookingRequest {
     _hotelAddress = hotelAddress;
     _hotelRoomNumber = hotelRoomNumber;
     _guests = guests;
+    _totalAmount = guests.length * product.price!;
   }
 
   num get id => _id;
@@ -163,8 +167,8 @@ class BookingRequest {
       data['StripeToken'] = stripeToken;
     }
 
-    if (!skip.contains('stripeReferenceNumber')) {
-      data['StripeReferenceNumber'] = stripeReferenceNumber;
+    if (!skip.contains('stripeReferrenceNumber')) {
+      data['StripeReferrenceNumber'] = stripeReferrenceNumber;
     }
 
     if (!skip.contains('guests')) {
@@ -180,6 +184,10 @@ class BookingRequest {
 
     if (!skip.contains('isPaid')) {
       data['IsPaid'] = isPaid;
+    }
+
+    if (!skip.contains('TotalAmount')) {
+      data['TotalAmount'] = totalAmount;
     }
 
     return data;

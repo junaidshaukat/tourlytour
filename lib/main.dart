@@ -6,8 +6,11 @@ import 'core/app_export.dart';
 void main() async {
   Provider.debugCheckInvalidValueType = null;
   WidgetsFlutterBinding.ensureInitialized();
-  await Hive.initFlutter();
+  Stripe.publishableKey =
+      "pk_test_51JXpyCFGJlqg5MKbnfM9Pk4US23dbdTMnd3sabQOMIUxyU1JyU0kpKRH4k2FIbnM0KNk5kEoskGdy4PCf1hQppKB00AcKnhCH3";
+  Stripe.merchantIdentifier = "merchant.identifier";
 
+  await Hive.initFlutter();
   await Supabase.initialize(
     url: 'https://vtdjscrvogtprhlhvdwr.supabase.co',
     anonKey:
@@ -36,12 +39,13 @@ void main() async {
           ChangeNotifierProvider(create: (c) => CurrentUserProvider(c)),
           ChangeNotifierProvider(create: (c) => AuthenticationProvider(c)),
           //
+          ChangeNotifierProvider(create: (c) => StripeProvider(c)),
           ChangeNotifierProvider(create: (c) => SearchProvider(c)),
-          ChangeNotifierProvider(create: (c) => GuestsProvider(c)),
           ChangeNotifierProvider(create: (c) => OrdersProvider(c)),
           ChangeNotifierProvider(create: (c) => BookingProvider(c)),
           ChangeNotifierProvider(create: (c) => ProductsProvider(c)),
           ChangeNotifierProvider(create: (c) => FavouritesProvider(c)),
+          ChangeNotifierProvider(create: (c) => OrderGuestsProvider(c)),
           ChangeNotifierProvider(create: (c) => DependenciesProvider(c)),
           ChangeNotifierProvider(create: (c) => ProductVideosProvider(c)),
           ChangeNotifierProvider(create: (c) => ProductPhotosProvider(c)),
@@ -68,7 +72,10 @@ class MyApp extends StatelessWidget {
               return MaterialApp(
                 theme: theme,
                 title: 'app_title',
+                routes: AppRoutes.routes,
                 debugShowCheckedModeBanner: false,
+                initialRoute: AppRoutes.initialRoute,
+                supportedLocales: const [Locale('en', '')],
                 navigatorKey: NavigatorService.navigatorKey,
                 localizationsDelegates: const [
                   AppLocalizationDelegate(),
@@ -76,9 +83,6 @@ class MyApp extends StatelessWidget {
                   GlobalWidgetsLocalizations.delegate,
                   GlobalCupertinoLocalizations.delegate
                 ],
-                supportedLocales: const [Locale('en', '')],
-                initialRoute: AppRoutes.initialRoute,
-                routes: AppRoutes.routes,
               );
             },
           ),

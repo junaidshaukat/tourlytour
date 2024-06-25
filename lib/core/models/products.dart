@@ -8,9 +8,9 @@ class Products {
   num? locations;
   String? tags;
   String? status;
+  num? price;
   String? thumbnailUrl;
   num? standardPrice;
-  num? price;
   num? type;
   String? code;
   String? city;
@@ -28,8 +28,8 @@ class Products {
     this.locations,
     this.tags,
     this.status,
-    this.thumbnailUrl,
     this.price,
+    this.thumbnailUrl,
     this.standardPrice,
     this.type,
     this.code,
@@ -45,7 +45,7 @@ class Products {
       name: json['Name'] as String?,
       shortDescription: json['ShortDescription'] as String?,
       longDescription: json['LongDescription'] as String?,
-      rating: json['Rating'],
+      rating: json['Rating'] as num?,
       hours: json['Hours'] as num?,
       locations: json['Locations'] as num?,
       tags: json['Tags'] as String?,
@@ -62,70 +62,65 @@ class Products {
     );
   }
 
-  num get saving {
-    if (standardPrice != null && price != null) {
-      return standardPrice! - price!;
-    }
-    return 0;
-  }
+  num get saving => (standardPrice ?? 0) - (price ?? 0);
 
-  Map<String, dynamic> toJson({List skip = const []}) {
-    Map<String, dynamic> data = {};
+  Map<String, dynamic> toJson({List<String> skip = const []}) {
+    final Map<String, dynamic> data = {};
 
     if (!skip.contains('id')) {
-      data['id'] = id;
+      data['Id'] = id;
     }
 
     if (!skip.contains('name')) {
-      data['name'] = name;
+      data['Name'] = name;
     }
 
     if (!skip.contains('shortDescription')) {
-      data['shortDescription'] = shortDescription;
+      data['ShortDescription'] = shortDescription;
     }
 
     if (!skip.contains('longDescription')) {
-      data['longDescription'] = longDescription;
+      data['LongDescription'] = longDescription;
     }
 
     if (!skip.contains('rating')) {
-      data['rating'] = rating;
+      data['Rating'] = rating;
     }
 
     if (!skip.contains('hours')) {
-      data['hours'] = hours;
+      data['Hours'] = hours;
     }
 
     if (!skip.contains('locations')) {
-      data['locations'] = locations;
+      data['Locations'] = locations;
     }
 
     if (!skip.contains('tags')) {
-      data['tags'] = tags;
+      data['Tags'] = tags;
     }
 
     if (!skip.contains('status')) {
-      data['status'] = status;
+      data['Status'] = status;
     }
 
     if (!skip.contains('price')) {
-      data['price'] = price;
+      data['Price'] = price;
     }
 
     if (!skip.contains('thumbnailUrl')) {
-      data['thumbnailUrl'] = thumbnailUrl;
+      data['ThumbnailUrl'] = thumbnailUrl;
     }
 
     if (!skip.contains('standardPrice')) {
-      data['standardPrice'] = standardPrice;
+      data['StandardPrice'] = standardPrice;
     }
 
     if (!skip.contains('type')) {
-      data['type'] = type;
+      data['Type'] = type;
     }
 
     if (!skip.contains('code')) {
-      data['code'] = code;
+      data['Code'] = code;
     }
 
     if (!skip.contains('city')) {
@@ -143,6 +138,7 @@ class Products {
     if (!skip.contains('stripePriceIdentifier')) {
       data['StripePriceIdentifier'] = stripePriceIdentifier;
     }
+
     return data;
   }
 }

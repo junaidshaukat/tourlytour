@@ -42,16 +42,19 @@ class FavouritesProvider with ChangeNotifier {
         notifyListeners();
       }
     } on NoInternetException catch (error) {
+      console.log(error, 'FavouritesProvider::onReady::NoInternetException');
       props.setError(currentError: error.toString());
       notifyListeners();
     } on CustomException catch (error) {
+      console.log(error, 'FavouritesProvider::onReady::CustomException');
       props.setError(currentError: error.toString());
       notifyListeners();
     } on AuthException catch (error) {
+      console.log(error, 'FavouritesProvider::onReady::AuthException');
       props.setError(currentError: error.message.toString());
       notifyListeners();
     } catch (error) {
-      console.log(error, 'Error::FavouritesProvider::onReady');
+      console.log(error, 'FavouritesProvider::onReady');
       props.setError(currentError: "something_went_wrong".tr);
       notifyListeners();
     }
@@ -96,16 +99,20 @@ class FavouritesProvider with ChangeNotifier {
         }
       }
     } on NoInternetException catch (error) {
+      console.log(
+          error, 'FavouritesProvider::onFavourite::NoInternetException');
       props.setError(currentError: error.toString());
       notifyListeners();
     } on CustomException catch (error) {
+      console.log(error, 'FavouritesProvider::onFavourite::CustomException');
       props.setError(currentError: error.toString());
       notifyListeners();
     } on AuthException catch (error) {
+      console.log(error, 'FavouritesProvider::onFavourite::AuthException');
       props.setError(currentError: error.message.toString());
       notifyListeners();
     } catch (error) {
-      console.log(error, 'Error::FavouritesProvider::onFavourite');
+      console.log(error, 'FavouritesProvider::onFavourite');
       props.setError(currentError: "something_went_wrong".tr);
       notifyListeners();
     }
@@ -132,16 +139,19 @@ class FavouritesProvider with ChangeNotifier {
         return true;
       }
     } on NoInternetException catch (error) {
+      console.log(error, 'FavouritesProvider::onRemove::NoInternetException');
       props.setError(currentError: error.toString());
       notifyListeners();
     } on CustomException catch (error) {
+      console.log(error, 'FavouritesProvider::onRemove::CustomException');
       props.setError(currentError: error.toString());
       notifyListeners();
     } on AuthException catch (error) {
+      console.log(error, 'FavouritesProvider::onRemove::AuthException');
       props.setError(currentError: error.message.toString());
       notifyListeners();
     } catch (error) {
-      console.log(error, 'Error::FavouritesProvider::onRemove');
+      console.log(error, 'FavouritesProvider::onRemove');
       props.setError(currentError: "something_went_wrong".tr);
       notifyListeners();
     }

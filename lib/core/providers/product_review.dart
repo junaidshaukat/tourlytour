@@ -38,16 +38,20 @@ class ProductReviewsProvider with ChangeNotifier {
         notifyListeners();
       }
     } on NoInternetException catch (error) {
+      console.log(
+          error, 'ProductReviewsProvider::onReady::NoInternetException');
       props.setError(currentError: error.toString());
       notifyListeners();
     } on CustomException catch (error) {
+      console.log(error, 'ProductReviewsProvider::onReady::CustomException');
       props.setError(currentError: error.toString());
       notifyListeners();
     } on AuthException catch (error) {
+      console.log(error, 'ProductReviewsProvider::onReady::AuthException');
       props.setError(currentError: error.message.toString());
       notifyListeners();
     } catch (error) {
-      console.log(error, 'Error::FavouritesProvider::onReady');
+      console.log(error, 'ProductReviewsProvider::onReady');
       props.setError(currentError: "something_went_wrong".tr);
       notifyListeners();
     }

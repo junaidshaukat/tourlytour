@@ -28,13 +28,17 @@ class DependenciesProvider with ChangeNotifier {
       await products.onReady();
       await favourites.onReady();
       return true;
-    } on NoInternetException {
+    } on NoInternetException catch (error) {
+      console.log(error, 'DependenciesProvider::inject::NoInternetException');
       rethrow;
-    } on CustomException {
+    } on CustomException catch (error) {
+      console.log(error, 'DependenciesProvider::inject::CustomException');
       rethrow;
-    } on AuthException {
+    } on AuthException catch (error) {
+      console.log(error, 'DependenciesProvider::inject::AuthException');
       rethrow;
     } catch (error) {
+      console.log(error, 'DependenciesProvider::inject');
       rethrow;
     }
   }

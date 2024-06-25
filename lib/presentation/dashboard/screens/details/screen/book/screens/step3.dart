@@ -26,10 +26,6 @@ class PaymentScreenState extends State<PaymentScreen> {
 
   @override
   Widget build(BuildContext context) {
-    for (var guest in request.guests) {
-      console.log(guest.toJson());
-    }
-
     return SafeArea(
       child: Scaffold(
         appBar: CustomAppBar(

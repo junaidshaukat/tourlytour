@@ -45,7 +45,8 @@ class ConnectivityProvider with ChangeNotifier {
       } else {
         throw NoInternetException();
       }
-    } catch (e) {
+    } catch (error) {
+      console.log(error, 'ConnectivityProvider::isConnected');
       throw NoInternetException();
     }
   }

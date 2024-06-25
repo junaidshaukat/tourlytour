@@ -1,17 +1,17 @@
 import '/core/models/metadata.dart';
 
 class Users {
-  num id;
-  String name;
-  String uuid;
-  String email;
-  String providerKey;
-  String providerDisplayName;
-  String loginProvider;
-  String mobileNumber;
-  String password;
-  bool isVerified;
-  String profilePhotoUrl;
+  num? id;
+  String? name;
+  String? email;
+  String? providerKey;
+  String? providerDisplayName;
+  String? loginProvider;
+  String? mobileNumber;
+  String? password;
+  bool? isVerified;
+  String? profilePhotoUrl;
+  String? uuid;
 
   Users({
     this.id = -1,
@@ -86,50 +86,50 @@ class Users {
   }
 
   Map<String, dynamic> toJson({List skip = const []}) {
-    Map<String, dynamic> data = {};
+    final Map<String, dynamic> data = {};
 
     if (!skip.contains('id')) {
-      data.addAll({'Id': id});
-    }
-
-    if (!skip.contains('uuid')) {
-      data.addAll({'Uuid': uuid});
+      data['Id'] = id;
     }
 
     if (!skip.contains('name')) {
-      data.addAll({'Name': name});
+      data['Name'] = name;
     }
 
     if (!skip.contains('email')) {
-      data.addAll({'Email': email});
+      data['Email'] = email;
     }
 
     if (!skip.contains('providerKey')) {
-      data.addAll({'ProviderKey': providerKey});
+      data['ProviderKey'] = providerKey;
     }
 
     if (!skip.contains('providerDisplayName')) {
-      data.addAll({'ProviderDisplayName': providerDisplayName});
+      data['ProviderDisplayName'] = providerDisplayName;
     }
 
     if (!skip.contains('loginProvider')) {
-      data.addAll({'LoginProvider': loginProvider});
+      data['LoginProvider'] = loginProvider;
     }
 
     if (!skip.contains('mobileNumber')) {
-      data.addAll({'MobileNumber': mobileNumber});
+      data['MobileNumber'] = mobileNumber;
     }
 
     if (!skip.contains('password')) {
-      data.addAll({'Password': password});
+      data['Password'] = password;
     }
 
     if (!skip.contains('isVerified')) {
-      data.addAll({'IsVerified': isVerified});
+      data['IsVerified'] = isVerified;
     }
 
     if (!skip.contains('profilePhotoUrl')) {
-      data.addAll({'ProfilePhotoUrl': profilePhotoUrl});
+      data['ProfilePhotoUrl'] = profilePhotoUrl;
+    }
+
+    if (!skip.contains('uuid')) {
+      data['Uuid'] = uuid;
     }
 
     return data;
