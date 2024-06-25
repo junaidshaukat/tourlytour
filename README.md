@@ -28,3 +28,6 @@ Authorized Client IDs (for Android, One Tap, and Chrome extensions)
 keytool -genkey -v -keystore keystore.jks -storetype JKS -keyalg RSA -keysize 2048 -validity 10000 -alias upload
 
 android/app/src/main/res/values/strings.xml
+
+git config --global user.email 'junaidshaukat123@gmail.com'
+git config --global user.name 'junaidshaukat'
