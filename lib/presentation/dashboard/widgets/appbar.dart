@@ -73,8 +73,8 @@ class Appbar extends StatelessWidget implements PreferredSizeWidget {
                   height: 34,
                   onTap: onTap,
                   fit: BoxFit.cover,
-                  placeHolder: 'profile',
                   imagePath: provider.avatar,
+                  placeHolder: 'profile'.image.png,
                   radius: BorderRadius.circular(100),
                 ),
               );

@@ -80,8 +80,8 @@ class ProfileScreenState extends State<ProfileScreen> {
                 ),
                 child: IconButton(
                   icon: CustomImageView(
-                    color: appTheme.black900,
                     imagePath: "arrow-left".icon.svg,
+                    color: appTheme.black900,
                   ),
                   onPressed: () {
                     NavigatorService.goBack();
@@ -116,8 +116,8 @@ class ProfileScreenState extends State<ProfileScreen> {
                             fit: BoxFit.cover,
                             width: 150.adaptSize,
                             height: 150.adaptSize,
-                            placeHolder: 'profile',
                             imagePath: provider.avatar,
+                            placeHolder: 'profile'.image.png,
                             radius: BorderRadius.circular(100.h),
                           ),
                         ),

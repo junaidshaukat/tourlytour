@@ -14,3 +14,4 @@ export 'products.dart';
 export 'props.dart';
 export 'search.dart';
 export 'stripe.dart';
+export 'tours.dart';

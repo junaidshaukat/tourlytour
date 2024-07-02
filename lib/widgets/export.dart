@@ -14,6 +14,7 @@ export 'custom_preloader.dart';
 export 'custom_progress.dart';
 export 'custom_radio_button.dart';
 export 'custom_rating_bar.dart';
+export 'custom_reviews.dart';
 export 'custom_see_more.dart';
 export 'custom_sliding_up_panel.dart';
 export 'custom_text_form_field.dart';

@@ -18,7 +18,7 @@ class CurrentUserProvider with ChangeNotifier {
   bool get onboarding => box.get('onboarding', defaultValue: true);
   bool get rememberMe => box.get('rememberMe', defaultValue: false);
 
-  num? get id => box.get('Id', defaultValue: '');
+  num get id => box.get('Id', defaultValue: 0);
   String get uuid => box.get('Uuid', defaultValue: '');
   String get name => box.get('Name', defaultValue: '');
   String get email => box.get('Email', defaultValue: '');
@@ -28,8 +28,7 @@ class CurrentUserProvider with ChangeNotifier {
   String get loginProvider => box.get('LoginProvider', defaultValue: '');
   String get mobileNumber => box.get('MobileNumber', defaultValue: '');
   String get password => box.get('Password', defaultValue: '');
-  String get avatar =>
-      box.get('Avatar', defaultValue: 'assets/images/profile.png');
+  String get avatar => box.get('Avatar', defaultValue: 'profile'.image.png);
 
   dynamic get credentials => box.get('credentials', defaultValue: {});
   dynamic get appMetaData => box.get('app_meta_data', defaultValue: {});

@@ -3,3 +3,4 @@ export 'favourite/index.dart';
 export 'featured/index.dart';
 export 'profile/index.dart';
 export 'search/index.dart';
+export 'tour/index.dart';

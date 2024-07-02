@@ -10,10 +10,8 @@ export 'package:video_player/video_player.dart';
 export 'package:hive_flutter/hive_flutter.dart';
 export 'package:image_picker/image_picker.dart';
 export 'package:intl/date_symbol_data_local.dart';
-export 'package:google_sign_in/google_sign_in.dart';
 export 'package:country_picker/country_picker.dart';
 export 'package:flutter_stripe/flutter_stripe.dart';
-export 'package:another_stepper/another_stepper.dart';
 export 'package:pin_code_fields/pin_code_fields.dart';
 export 'package:supabase_flutter/supabase_flutter.dart';
 export 'package:connectivity_plus/connectivity_plus.dart';
@@ -26,9 +24,10 @@ export 'package:flutter_localizations/flutter_localizations.dart';
 export 'package:smooth_page_indicator/smooth_page_indicator.dart';
 export 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
-export 'utils/export.dart';
-export 'providers/export.dart';
 export 'models/export.dart';
+export 'providers/export.dart';
+export 'services/export.dart';
+export 'utils/export.dart';
 
 export '/localization/export.dart';
 export '/presentation/export.dart';

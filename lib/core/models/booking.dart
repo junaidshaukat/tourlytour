@@ -28,7 +28,7 @@ class BookingRequest {
   void setProducts(Products product, CurrentUserProvider currentUser) {
     _product = product;
     _productId = product.id ?? -1;
-    _userId = currentUser.id ?? -1;
+    _userId = currentUser.id;
   }
 
   Products get product => _product;
@@ -50,7 +50,7 @@ class BookingRequest {
     _product = product;
     _preferedDriverGender = '';
     _stripeReferrenceNumber = '';
-    _userId = currentUser.id ?? -1;
+    _userId = currentUser.id;
     _productId = product.id ?? -1;
     _orderNumber = fn.orderNumber();
   }

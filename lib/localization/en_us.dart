@@ -140,6 +140,8 @@ final Map<String, String> enUs = {
   "confirm": "Confirm",
   "print": "Print",
   "share": "Share",
+  "tour": "Tour",
+  "tours": "Tours",
   "booking_confirmation": "Booking Confirmation",
   "your_booking_reference_number_is": "Your booking reference number is",
   "booking_date": "Booking Date",

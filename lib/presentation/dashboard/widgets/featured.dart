@@ -7,40 +7,29 @@ class FeaturedPackage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(
-        left: 10.h,
-        right: 13.h,
-      ),
+    return Container(
+      width: double.maxFinite,
+      padding: EdgeInsets.symmetric(horizontal: 10.h),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             "featured_packges".tr,
             style: CustomTextStyles.titleSmallOnErrorContainer,
           ),
+          const Spacer(),
           GestureDetector(
             onTap: onPressed,
-            child: Padding(
-              padding: EdgeInsets.only(bottom: 5.v),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "see_more".tr,
-                    style: CustomTextStyles.labelMediumLightblue500,
-                  ),
-                  CustomImageView(
-                    imagePath: "arrow-forword".icon.svg,
-                    margin: EdgeInsets.only(
-                      left: 2.h,
-                      top: 7.v,
-                      bottom: 6.v,
-                    ),
-                  )
-                ],
-              ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  "see_more".tr,
+                  style: CustomTextStyles.labelMediumLightblue500,
+                ),
+                SizedBox(width: 2.h),
+                SvgPicture.asset("arrow-forword".icon.svg)
+              ],
             ),
           )
         ],

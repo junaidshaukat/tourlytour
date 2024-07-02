@@ -279,6 +279,7 @@ class VerticalProductCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      width: double.infinity,
       padding: EdgeInsets.symmetric(vertical: 8.v, horizontal: 8.h),
       decoration: AppDecoration.outlineBlack900.copyWith(
         borderRadius: BorderRadiusStyle.roundedBorder10,
@@ -331,14 +332,7 @@ class VerticalProductCard extends StatelessWidget {
                       "read_more".tr,
                       style: CustomTextStyles.bodySmallLightblue500Regular,
                     ),
-                    CustomImageView(
-                      imagePath: "arrow-forword".icon.svg,
-                      margin: EdgeInsets.only(
-                        left: 3.h,
-                        top: 8.v,
-                        bottom: 5.v,
-                      ),
-                    )
+                    SvgPicture.asset("arrow-forword".icon.svg)
                   ],
                 ),
               )

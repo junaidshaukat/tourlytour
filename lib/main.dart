@@ -38,7 +38,9 @@ void main() async {
           ChangeNotifierProvider(create: (c) => ConnectivityProvider(c)),
           ChangeNotifierProvider(create: (c) => CurrentUserProvider(c)),
           ChangeNotifierProvider(create: (c) => AuthenticationProvider(c)),
-          //
+
+          ///
+          ChangeNotifierProvider(create: (c) => ToursProvider(c)),
           ChangeNotifierProvider(create: (c) => StripeProvider(c)),
           ChangeNotifierProvider(create: (c) => SearchProvider(c)),
           ChangeNotifierProvider(create: (c) => OrdersProvider(c)),
@@ -51,6 +53,9 @@ void main() async {
           ChangeNotifierProvider(create: (c) => ProductPhotosProvider(c)),
           ChangeNotifierProvider(create: (c) => ProductReviewsProvider(c)),
           ChangeNotifierProvider(create: (c) => ProductItinerariesProvider(c)),
+
+          ///
+          ChangeNotifierProvider(create: (c) => ReviewService(c)),
         ],
         child: const MyApp(),
       ),

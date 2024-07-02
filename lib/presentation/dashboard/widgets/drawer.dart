@@ -87,8 +87,8 @@ class CustomDrawer extends StatelessWidget {
                             height: 34,
                             onTap: onTap,
                             fit: BoxFit.cover,
-                            placeHolder: 'profile',
                             imagePath: provider.avatar,
+                            placeHolder: 'profile'.image.png,
                             radius: BorderRadius.circular(100),
                           ),
                         );
@@ -180,6 +180,17 @@ class CustomDrawer extends StatelessWidget {
           title: 'discover'.tr,
           icon: 'discover'.icon.svg,
           onPressed: () {},
+        ),
+        tab(
+          title: 'tours'.tr,
+          icon: 'tour'.icon.svg,
+          onPressed: () {
+            NavigatorService.goBack();
+            NavigatorService.push(
+              context,
+              const FavouriteScreen(),
+            );
+          },
         ),
         tab(
           title: 'eng_us'.tr,

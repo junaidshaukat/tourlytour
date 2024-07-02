@@ -31,11 +31,11 @@ class CustomImageView extends StatelessWidget {
     this.radius,
     this.margin,
     this.border,
-    this.placeHolder = 'image_not_found',
+    this.placeHolder = 'assets/images/image_not_found.png',
   });
 
-  ///[imagePath] is required parameter for showing image
   final String? imagePath;
+  final String placeHolder;
 
   final double? height;
 
@@ -44,8 +44,6 @@ class CustomImageView extends StatelessWidget {
   final Color? color;
 
   final BoxFit? fit;
-
-  final String placeHolder;
 
   final Alignment? alignment;
 
@@ -102,16 +100,17 @@ class CustomImageView extends StatelessWidget {
   }
 
   Widget _buildImageView() {
-    if (imagePath != null) {
+    console.log(imagePath!);
+    if (imagePath != null && imagePath != "") {
       switch (imagePath!.imageType) {
         case ImageType.svg:
           return SizedBox(
-            height: height,
             width: width,
+            height: height,
             child: SvgPicture.asset(
               imagePath!,
-              height: height,
               width: width,
+              height: height,
               fit: fit ?? BoxFit.contain,
               colorFilter: color != null
                   ? ColorFilter.mode(
@@ -128,30 +127,67 @@ class CustomImageView extends StatelessWidget {
             width: width,
             fit: fit ?? BoxFit.cover,
             color: color,
+            frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
+              return SizedBox(
+                height: 30,
+                width: 30,
+                child: LinearProgressIndicator(
+                  color: Colors.grey.shade200,
+                  backgroundColor: Colors.grey.shade100,
+                ),
+              );
+            },
+            errorBuilder: (context, url, error) {
+              return Image.asset(
+                placeHolder,
+                height: height,
+                width: width,
+                fit: fit ?? BoxFit.cover,
+              );
+            },
           );
         case ImageType.network:
           return CachedNetworkImage(
-            height: height,
-            width: width,
             fit: fit,
-            imageUrl: imagePath!,
+            width: width,
             color: color,
-            placeholder: (context, url) => SizedBox(
-              height: 30,
-              width: 30,
-              child: LinearProgressIndicator(
-                color: Colors.grey.shade200,
-                backgroundColor: Colors.grey.shade100,
-              ),
-            ),
-            errorWidget: (context, url, error) => Image.asset(
-              placeHolder.image.png,
-              height: height,
-              width: width,
-              fit: fit ?? BoxFit.cover,
-            ),
+            height: height,
+            imageUrl: imagePath!,
+            placeholder: (context, url) {
+              return SizedBox(
+                width: width,
+                height: height,
+                child: LinearProgressIndicator(
+                  color: Colors.grey.shade200,
+                  backgroundColor: Colors.grey.shade100,
+                ),
+              );
+            },
+            errorWidget: (context, url, error) {
+              return Image.asset(
+                placeHolder,
+                width: width,
+                height: height,
+                fit: fit ?? BoxFit.cover,
+              );
+            },
           );
         case ImageType.png:
+          return Image.asset(
+            imagePath!,
+            height: height,
+            width: width,
+            fit: fit ?? BoxFit.cover,
+            color: color,
+            errorBuilder: (context, url, error) {
+              return Image.asset(
+                placeHolder,
+                height: height,
+                width: width,
+                fit: fit ?? BoxFit.cover,
+              );
+            },
+          );
         default:
           return Image.asset(
             imagePath!,
@@ -159,6 +195,14 @@ class CustomImageView extends StatelessWidget {
             width: width,
             fit: fit ?? BoxFit.cover,
             color: color,
+            errorBuilder: (context, url, error) {
+              return Image.asset(
+                placeHolder,
+                height: height,
+                width: width,
+                fit: fit ?? BoxFit.cover,
+              );
+            },
           );
       }
     }

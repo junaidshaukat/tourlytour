@@ -279,6 +279,10 @@ class CustomTextStyles {
       theme.textTheme.titleLarge!.copyWith(
         color: appTheme.gray90001.withOpacity(0.53),
       );
+  static TextStyle get titleLargeWhite900 =>
+      theme.textTheme.titleLarge!.copyWith(
+        color: appTheme.whiteA700,
+      );
   static TextStyle get titleLargePoppinsGray90002 =>
       theme.textTheme.titleLarge!.poppins.copyWith(
         color: appTheme.gray90002,
