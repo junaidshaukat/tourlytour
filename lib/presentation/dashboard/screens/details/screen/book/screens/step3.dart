@@ -1,21 +1,31 @@
 import 'package:flutter/material.dart';
 import '/core/app_export.dart';
 
-class PaymentScreen extends StatefulWidget {
-  const PaymentScreen({super.key});
+class ConfirmationScreen extends StatefulWidget {
+  const ConfirmationScreen({super.key});
 
   @override
-  PaymentScreenState createState() => PaymentScreenState();
+  ConfirmationScreenState createState() => ConfirmationScreenState();
 }
 
-class PaymentScreenState extends State<PaymentScreen> {
+class ConfirmationScreenState extends State<ConfirmationScreen> {
+  bool preloader = true;
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
+  late OrdersProvider orders;
   late BookingRequest request;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      orders = context.read<OrdersProvider>();
+      await orders.findByOrderNumber(request.orderNumber);
+
+      setState(() {
+        preloader = false;
+      });
+    });
   }
 
   @override
@@ -24,20 +34,23 @@ class PaymentScreenState extends State<PaymentScreen> {
     request = ModalRoute.of(context)!.settings.arguments as BookingRequest;
   }
 
+  Future<void> onTap() async {}
+
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
+    return Preloader(
+      preloader: preloader,
       child: Scaffold(
         appBar: CustomAppBar(
-          backgroundColor: appTheme.primary,
+          backgroundColor: appTheme.whiteA700,
           centerTitle: false,
           title: Padding(
             padding: EdgeInsets.symmetric(
               horizontal: 16.h,
             ),
             child: AppbarTitle(
-              color: appTheme.whiteA700,
-              text: "booking".tr,
+              color: appTheme.black900,
+              text: "booking_confirmation".tr,
             ),
           ),
           actions: [
@@ -51,7 +64,7 @@ class PaymentScreenState extends State<PaymentScreen> {
                 ),
                 child: IconButton(
                   icon: CustomImageView(
-                    imagePath: "arrow-back".icon.svg,
+                    imagePath: "arrow_back".icon.svg,
                   ),
                   onPressed: () {
                     NavigatorService.goBack();
@@ -61,470 +74,762 @@ class PaymentScreenState extends State<PaymentScreen> {
             ),
           ],
         ),
-        body: SizedBox(
-          width: SizeUtils.width,
-          height: SizeUtils.height,
-          child: Stack(
-            alignment: Alignment.bottomCenter,
-            children: [
-              Positioned(
-                top: 0,
-                child: Container(
-                  width: SizeUtils.width,
-                  height: SizeUtils.height * 0.5,
-                  decoration: BoxDecoration(
-                    color: appTheme.primary,
+        body: Consumer<OrdersProvider>(
+          builder: (context, provider, child) {
+            Props props = provider.propsOrder;
+            if (props.isNone || props.isLoading || props.isProcessing) {
+              return SizedBox(
+                height: 135.v,
+                child: const Center(
+                  child: Loading(),
+                ),
+              );
+            } else if (props.isError) {
+              return SizedBox(
+                height: 135.v,
+                child: Center(
+                  child: TryAgain(
+                    imagePath: "refresh".icon.svg,
+                    onRefresh: () async {
+                      await provider.onRefresh(
+                        orderNumber: '',
+                        fun: 'findByOrderNumber',
+                      );
+                    },
                   ),
                 ),
-              ),
-              Positioned(
-                bottom: 0,
-                child: Container(
-                  width: SizeUtils.width,
-                  height: SizeUtils.height * 0.5,
-                  decoration: BoxDecoration(
-                    color: appTheme.whiteA700,
-                  ),
-                ),
-              ),
-              Positioned(
-                child: SizedBox(
-                  width: SizeUtils.width,
-                  child: Column(
-                    children: [
-                      SizedBox(height: 12.v),
-                      SizedBox(
-                        width: SizeUtils.width,
-                        child: BookingSteps(
-                          step: 3,
-                          activeBorderColor: appTheme.whiteA700,
-                          activeLineColor: appTheme.whiteA700,
-                          activeTextColor: appTheme.whiteA700,
+              );
+            } else {
+              OrdersDetails? request = props.data as OrdersDetails?;
+
+              return SingleChildScrollView(
+                padding: EdgeInsets.symmetric(horizontal: 8.h, vertical: 8.v),
+                child: Column(
+                  children: [
+                    Container(
+                      width: double.maxFinite,
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 8.h, vertical: 8.v),
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: appTheme.gray500,
+                          width: 1.0,
                         ),
+                        borderRadius: BorderRadius.circular(10.0),
                       ),
-                      SizedBox(height: 24.v),
-                      SizedBox(
-                        width: SizeUtils.width,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            CustomImageView(
-                              height: 37.v,
-                              color: appTheme.whiteA700,
-                              imagePath: "logo".icon.svg,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "your_booking_reference_number_is".tr,
+                            style: CustomTextStyles.bodyLargeJaldiGray90001
+                                .copyWith(
+                              fontSize: 12.fSize,
                             ),
-                            Text(
-                              "tourly_tours".tr,
-                              style: TextStyle(
-                                fontSize: 24.fSize,
-                                fontFamily: 'Poppins',
-                                color: appTheme.whiteA700,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(height: 24.v),
-                      SizedBox(
-                        width: SizeUtils.width,
-                        child: Container(
-                          width: SizeUtils.width,
-                          margin: EdgeInsets.symmetric(horizontal: 16.h),
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 16.h,
-                            vertical: 16.v,
                           ),
-                          decoration: BoxDecoration(
-                            color: appTheme.whiteA700,
-                            border: Border.all(
-                              color: appTheme.whiteA700,
-                            ),
-                            borderRadius: BorderRadius.circular(16.adaptSize),
-                            boxShadow: [
-                              BoxShadow(
-                                color: appTheme.blueA200.withOpacity(0.25),
-                                spreadRadius: 1.h,
-                                blurRadius: 1.h,
-                              )
-                            ],
+                          Text(
+                            "${request!.orders!.orderNumber}",
+                            style: CustomTextStyles.bodyLargeJaldiGray90001,
                           ),
-                          child: Column(
+                          const Divider(),
+                          Row(
                             children: [
-                              SizedBox(height: 15.v),
-                              Text(
-                                "pay_tourly_tours".tr,
-                                style: CustomTextStyles.labelLargeSemiBold,
-                              ),
-                              SizedBox(height: 30.v),
                               SizedBox(
-                                width: SizeUtils.width,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    SizedBox(
-                                      width: 70.h,
-                                      child: Text(
-                                        "email".tr,
-                                        style: theme.textTheme.labelMedium,
-                                      ),
-                                    ),
-                                    Expanded(
-                                      child: CustomTextFormField(
-                                        hintText: "name".tr,
-                                        hintStyle: CustomTextStyles
-                                            .labelMediumBluegray500,
-                                        suffix: Container(
-                                          margin: EdgeInsets.fromLTRB(
-                                              30.h, 9.v, 9.h, 9.v),
-                                          child: CustomImageView(
-                                            imagePath: "question_mark".icon.svg,
-                                            height: 10.adaptSize,
-                                            width: 10.adaptSize,
-                                          ),
-                                        ),
-                                        suffixConstraints: BoxConstraints(
-                                          maxHeight: 28.v,
-                                        ),
-                                        validator: (value) {
-                                          return null;
-                                        },
-                                        contentPadding: EdgeInsets.only(
-                                          left: 9.h,
-                                          top: 8.v,
-                                          bottom: 8.v,
-                                        ),
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ),
-                              SizedBox(height: 15.v),
-                              SizedBox(
-                                width: SizeUtils.width,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    SizedBox(
-                                      width: 70.h,
-                                      child: Text(
-                                        "card_information".tr,
-                                        maxLines: 2,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: theme.textTheme.labelMedium,
-                                      ),
-                                    ),
-                                    Expanded(
-                                      child: Container(
-                                        decoration:
-                                            AppDecoration.outlineBlueA.copyWith(
-                                          borderRadius:
-                                              BorderRadiusStyle.roundedBorder10,
-                                        ),
-                                        child: Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            SizedBox(height: 5.v),
-                                            Padding(
-                                              padding:
-                                                  EdgeInsets.all(2.adaptSize),
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: [
-                                                  Expanded(
-                                                    child: CustomTextFormField(
-                                                      borderDecoration:
-                                                          InputBorder.none,
-                                                      hintText:
-                                                          "1234-1234-1234".tr,
-                                                      hintStyle: CustomTextStyles
-                                                          .labelMediumBluegray500,
-                                                      validator: (value) {
-                                                        return null;
-                                                      },
-                                                    ),
-                                                  ),
-                                                  const Spacer(),
-                                                  CustomImageView(
-                                                    imagePath: "visa".icon.svg,
-                                                  ),
-                                                  SizedBox(width: 6.h),
-                                                  CustomImageView(
-                                                    imagePath:
-                                                        "master".icon.svg,
-                                                  ),
-                                                  SizedBox(width: 6.h),
-                                                  CustomImageView(
-                                                    imagePath: "amex".icon.svg,
-                                                  ),
-                                                  SizedBox(width: 6.h),
-                                                ],
-                                              ),
-                                            ),
-                                            SizedBox(height: 5.v),
-                                            Divider(color: appTheme.blueA2007f),
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                              children: [
-                                                Expanded(
-                                                  child: Padding(
-                                                    padding: EdgeInsets.all(
-                                                        4.adaptSize),
-                                                    child: CustomTextFormField(
-                                                      borderDecoration:
-                                                          InputBorder.none,
-                                                      hintStyle: CustomTextStyles
-                                                          .labelMediumBluegray500,
-                                                      hintText:
-                                                          "cardholder_name".tr,
-                                                      validator: (value) {
-                                                        return null;
-                                                      },
-                                                    ),
-                                                  ),
-                                                ),
-                                                SizedBox(
-                                                  height: 50.v,
-                                                  child: VerticalDivider(
-                                                    width: 1.h,
-                                                    thickness: 1.v,
-                                                    color: appTheme.blueA200,
-                                                  ),
-                                                ),
-                                                Expanded(
-                                                  child: Padding(
-                                                    padding: EdgeInsets.all(
-                                                        4.adaptSize),
-                                                    child: CustomTextFormField(
-                                                      borderDecoration:
-                                                          InputBorder.none,
-                                                      hintStyle: CustomTextStyles
-                                                          .labelMediumBluegray500,
-                                                      hintText: "name".tr,
-                                                      validator: (value) {
-                                                        return null;
-                                                      },
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ),
-                              SizedBox(height: 15.v),
-                              SizedBox(
-                                width: SizeUtils.width,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    SizedBox(
-                                      width: 70.h,
-                                      child: Text(
-                                        "cardholder_name".tr,
-                                        style: theme.textTheme.labelMedium,
-                                      ),
-                                    ),
-                                    Expanded(
-                                      child: CustomTextFormField(
-                                        hintText: "name".tr,
-                                        hintStyle: CustomTextStyles
-                                            .labelMediumBluegray500,
-                                        suffix: Container(
-                                          margin: EdgeInsets.fromLTRB(
-                                              30.h, 9.v, 9.h, 9.v),
-                                          child: CustomImageView(
-                                            imagePath: "question_mark".icon.svg,
-                                            height: 10.adaptSize,
-                                            width: 10.adaptSize,
-                                          ),
-                                        ),
-                                        suffixConstraints: BoxConstraints(
-                                          maxHeight: 28.v,
-                                        ),
-                                        validator: (value) {
-                                          return null;
-                                        },
-                                        contentPadding: EdgeInsets.only(
-                                          left: 9.h,
-                                          top: 8.v,
-                                          bottom: 8.v,
-                                        ),
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ),
-                              SizedBox(height: 15.v),
-                              SizedBox(
-                                width: SizeUtils.width,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    SizedBox(
-                                      width: 70.h,
-                                      child: Text(
-                                        "cardholder_name".tr,
-                                        style: theme.textTheme.labelMedium,
-                                      ),
-                                    ),
-                                    Expanded(
-                                      child: CustomTextFormField(
-                                        hintText: "name".tr,
-                                        hintStyle: CustomTextStyles
-                                            .labelMediumBluegray500,
-                                        suffix: Container(
-                                          margin: EdgeInsets.fromLTRB(
-                                              30.h, 9.v, 9.h, 9.v),
-                                          child: CustomImageView(
-                                            imagePath: "question_mark".icon.svg,
-                                            height: 10.adaptSize,
-                                            width: 10.adaptSize,
-                                          ),
-                                        ),
-                                        suffixConstraints: BoxConstraints(
-                                          maxHeight: 28.v,
-                                        ),
-                                        validator: (value) {
-                                          return null;
-                                        },
-                                        contentPadding: EdgeInsets.only(
-                                          left: 9.h,
-                                          top: 8.v,
-                                          bottom: 8.v,
-                                        ),
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ),
-                              SizedBox(height: 15.v),
-                              SizedBox(
-                                width: SizeUtils.width,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    SizedBox(
-                                      width: 70.h,
-                                      child: Text(
-                                        "country_of_origin".tr,
-                                        style: theme.textTheme.labelMedium,
-                                      ),
-                                    ),
-                                    Expanded(
-                                      child: CustomTextFormField(
-                                        hintText: "name".tr,
-                                        hintStyle: CustomTextStyles
-                                            .labelMediumBluegray500,
-                                        suffix: Container(
-                                          margin: EdgeInsets.fromLTRB(
-                                              30.h, 9.v, 9.h, 9.v),
-                                          child: CustomImageView(
-                                            imagePath: "question_mark".icon.svg,
-                                            height: 10.adaptSize,
-                                            width: 10.adaptSize,
-                                          ),
-                                        ),
-                                        suffixConstraints: BoxConstraints(
-                                          maxHeight: 28.v,
-                                        ),
-                                        validator: (value) {
-                                          return null;
-                                        },
-                                        contentPadding: EdgeInsets.only(
-                                          left: 9.h,
-                                          top: 8.v,
-                                          bottom: 8.v,
-                                        ),
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ),
-                              SizedBox(height: 30.v),
-                              CustomElevatedButton(
-                                width: 189.h,
-                                text: "pay_now".tr,
-                              ),
-                              SizedBox(height: 15.v),
-                            ],
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 24.v),
-                      SizedBox(
-                        width: SizeUtils.width,
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.only(
-                                top: 10.v,
-                                bottom: 33.v,
-                              ),
-                              child: Text(
-                                "power_by".tr,
-                                style: CustomTextStyles.bodyMediumBlack900_1,
-                              ),
-                            ),
-                            CustomImageView(
-                              imagePath: "stripe".icon.svg,
-                              height: 27.v,
-                              margin: EdgeInsets.only(
-                                top: 7.v,
-                                right: 8.h,
-                                left: 8.h,
-                              ),
-                            ),
-                            Opacity(
-                              opacity: 0.2,
-                              child: Padding(
-                                padding: EdgeInsets.only(left: 5.h),
-                                child: SizedBox(
-                                  height: 65.v,
-                                  child: VerticalDivider(
-                                    width: 1.h,
-                                    thickness: 1.v,
-                                    endIndent: 28.h,
+                                width: 140.h,
+                                child: Text(
+                                  "booking_date".tr,
+                                  style: CustomTextStyles
+                                      .titleSmallOnErrorContainerSemiBold
+                                      .copyWith(
+                                    fontSize: 12.fSize,
                                   ),
                                 ),
                               ),
+                              SizedBox(width: 16.h),
+                              Expanded(
+                                child: Text(
+                                  "${request.orders!.date?.format('EEE, dd MMM yyyy')}",
+                                  style: CustomTextStyles
+                                      .bodyLargeJaldiGray90001
+                                      .copyWith(
+                                    fontSize: 12.fSize,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              SizedBox(
+                                width: 140.h,
+                                child: Text(
+                                  "paid_on".tr,
+                                  style: CustomTextStyles
+                                      .titleSmallOnErrorContainerSemiBold
+                                      .copyWith(
+                                    fontSize: 12.fSize,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(width: 16.h),
+                              Expanded(
+                                child: Text(
+                                  "${request.orders!.date?.format('EEE, dd MMM yyyy')}",
+                                  style: CustomTextStyles
+                                      .bodyLargeJaldiGray90001
+                                      .copyWith(
+                                    fontSize: 12.fSize,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          Text(
+                            "share_or_print_your_booking_details".tr,
+                            style: CustomTextStyles.bodyLargeJaldiGray90001
+                                .copyWith(
+                              fontSize: 12.fSize,
                             ),
-                            Padding(
-                              padding: EdgeInsets.only(
-                                left: 9.h,
-                                top: 9.v,
-                                bottom: 33.v,
+                          ),
+                          Row(
+                            children: [
+                              Container(
+                                width: 100.v,
+                                height: 32.v,
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                  borderRadius:
+                                      BorderRadius.circular(8.adaptSize),
+                                  border: Border.all(
+                                    width: 1.0,
+                                    color: appTheme.gray500,
+                                  ),
+                                ),
+                                child: InkWell(
+                                  onTap: () {
+                                    Share.share(
+                                            'check out my website https://example.com')
+                                        .then((res) {});
+                                  },
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      CustomImageView(
+                                        width: 18.adaptSize,
+                                        height: 18.adaptSize,
+                                        imagePath: 'share'.icon.svg,
+                                      ),
+                                      SizedBox(width: 4.h),
+                                      Text('share'.tr)
+                                    ],
+                                  ),
+                                ),
                               ),
-                              child: Text(
-                                "terms_privacy".tr,
-                                style: CustomTextStyles.bodyMediumBlack900_2,
+                              SizedBox(width: 4.h),
+                              Container(
+                                width: 100.v,
+                                height: 32.v,
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                  borderRadius:
+                                      BorderRadius.circular(8.adaptSize),
+                                  border: Border.all(
+                                    width: 1.0,
+                                    color: appTheme.gray500,
+                                  ),
+                                ),
+                                child: InkWell(
+                                  onTap: () {
+                                    Launcher.mailto('').then((res) {});
+                                  },
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      CustomImageView(
+                                        width: 18.adaptSize,
+                                        height: 18.adaptSize,
+                                        imagePath: 'email'.icon.svg,
+                                      ),
+                                      SizedBox(width: 4.h),
+                                      Text('email'.tr)
+                                    ],
+                                  ),
+                                ),
                               ),
-                            )
-                          ],
-                        ),
+                              SizedBox(width: 4.h),
+                              Container(
+                                width: 100.v,
+                                height: 32.v,
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                  borderRadius:
+                                      BorderRadius.circular(8.adaptSize),
+                                  border: Border.all(
+                                    width: 1.0,
+                                    color: appTheme.gray500,
+                                  ),
+                                ),
+                                child: InkWell(
+                                  onTap: onTap,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      CustomImageView(
+                                        width: 18.adaptSize,
+                                        height: 18.adaptSize,
+                                        imagePath: 'print'.icon.svg,
+                                      ),
+                                      SizedBox(width: 4.h),
+                                      Text('print'.tr)
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                    SizedBox(height: 16.v),
+                    Container(
+                      width: double.maxFinite,
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 8.h, vertical: 8.v),
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: appTheme.gray500,
+                          width: 1.0,
+                        ),
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "booking_date".tr,
+                            style: CustomTextStyles
+                                .titleSmallOnErrorContainerSemiBold
+                                .copyWith(
+                              fontSize: 12.fSize,
+                            ),
+                          ),
+                          Text.rich(
+                            TextSpan(
+                              children: [
+                                TextSpan(
+                                  text: '${request.product?.locations ?? 0}',
+                                  style: CustomTextStyles
+                                      .titleSmallOnErrorContainerSemiBold
+                                      .copyWith(
+                                    fontSize: 12.fSize,
+                                  ),
+                                ),
+                                TextSpan(
+                                  text: 'locations_for'.tr,
+                                  style: CustomTextStyles.bodyMediumBlack900
+                                      .copyWith(
+                                    fontSize: 12.fSize,
+                                    fontWeight: FontWeight.w200,
+                                  ),
+                                ),
+                                TextSpan(
+                                  text: '${request.guests?.length ?? 0}',
+                                  style: CustomTextStyles
+                                      .titleSmallOnErrorContainerSemiBold
+                                      .copyWith(
+                                    fontSize: 12.fSize,
+                                  ),
+                                ),
+                                TextSpan(
+                                  text: 'people'.tr,
+                                  style: CustomTextStyles.bodyMediumBlack900
+                                      .copyWith(
+                                    fontSize: 12.fSize,
+                                    fontWeight: FontWeight.w200,
+                                  ),
+                                ),
+                                TextSpan(
+                                  text:
+                                      "${request.orders!.date?.format('EEE, dd MMM yyyy')}",
+                                  style: CustomTextStyles.bodyMediumBlack900
+                                      .copyWith(
+                                    fontSize: 12.fSize,
+                                    fontWeight: FontWeight.w200,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(
+                            height: 80.v,
+                            child: ListView.separated(
+                              itemCount: request.itineraries?.length ?? 0,
+                              padding: EdgeInsets.zero,
+                              scrollDirection: Axis.horizontal,
+                              itemBuilder: (BuildContext context, int index) {
+                                ProductItineraries itineraries =
+                                    request.itineraries![index];
+
+                                return ClipRRect(
+                                  borderRadius: BorderRadius.circular(8.h),
+                                  child: CustomImageView(
+                                    width: 80.h,
+                                    fit: BoxFit.cover,
+                                    imagePath: itineraries.imageUrl,
+                                  ),
+                                );
+                              },
+                              separatorBuilder:
+                                  (BuildContext context, int index) {
+                                return SizedBox(width: 4.h);
+                              },
+                            ),
+                          ),
+                          Container(
+                            padding: EdgeInsets.all(8.h),
+                            decoration: AppDecoration.fillWhiteA70001.copyWith(
+                              borderRadius: BorderRadiusStyle.roundedBorder10,
+                            ),
+                            child: Wrap(
+                              runSpacing: 8.v,
+                              children: List.generate(
+                                  request.itineraries?.length ?? 0, (index) {
+                                ProductItineraries itineraries =
+                                    request.itineraries![index];
+                                return Row(
+                                  children: [
+                                    CustomImageView(
+                                      width: 18.h,
+                                      height: 18.v,
+                                      fit: BoxFit.cover,
+                                      imagePath: itineraries.iconUrl,
+                                    ),
+                                    SizedBox(width: 6.h),
+                                    Text('${itineraries.title}')
+                                  ],
+                                );
+                              }),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 16.v),
+                    Container(
+                      width: double.maxFinite,
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 8.h, vertical: 8.v),
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: appTheme.gray500,
+                          width: 1.0,
+                        ),
+                        borderRadius:
+                            BorderRadius.circular(10.0), // Border radius
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              CustomImageView(
+                                width: 18.adaptSize,
+                                height: 18.adaptSize,
+                                imagePath: 'guest'.icon.svg,
+                              ),
+                              SizedBox(width: 4.h),
+                              Text(
+                                'guests_information'.tr,
+                                style: CustomTextStyles.bodyMediumBlack900
+                                    .copyWith(
+                                  fontSize: 12.fSize,
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 6.v),
+                          Wrap(
+                            children: List.generate(
+                              request.guests?.length ?? 0,
+                              (index) {
+                                OrderGuests guests = request.guests![index];
+                                return Row(
+                                  children: [
+                                    SizedBox(
+                                      width: 100.h,
+                                      child: Text(
+                                        "${guests.name}",
+                                        style: CustomTextStyles
+                                            .titleSmallOnErrorContainerSemiBold
+                                            .copyWith(
+                                          fontSize: 12.fSize,
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(width: 8.h),
+                                    Expanded(
+                                      child: Row(
+                                        children: [
+                                          Text(
+                                            "passport_no".tr,
+                                            style: CustomTextStyles
+                                                .bodyLargeJaldiGray90001
+                                                .copyWith(
+                                              fontSize: 12.fSize,
+                                            ),
+                                          ),
+                                          SizedBox(width: 4.h),
+                                          Text(
+                                            "${guests.passportNumber}",
+                                            style: CustomTextStyles
+                                                .bodyLargeJaldiGray90001
+                                                .copyWith(
+                                              fontSize: 12.fSize,
+                                            ),
+                                          ),
+                                          SizedBox(width: 4.h),
+                                          InkWell(
+                                            onTap: () {},
+                                            child: Text(
+                                              "edit".tr,
+                                              style: CustomTextStyles
+                                                  .bodyLargeJaldiGray90001
+                                                  .copyWith(
+                                                color: appTheme.blue500,
+                                                fontSize: 12.fSize,
+                                                decoration:
+                                                    TextDecoration.underline,
+                                              ),
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 16.v),
+                    Container(
+                      width: double.maxFinite,
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 8.h, vertical: 8.v),
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: appTheme.gray500,
+                          width: 1.0,
+                        ),
+                        borderRadius:
+                            BorderRadius.circular(10.0), // Border radius
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              CustomImageView(
+                                width: 18.adaptSize,
+                                height: 18.adaptSize,
+                                imagePath: 'print'.icon.svg,
+                              ),
+                              SizedBox(width: 4.h),
+                              Text(
+                                "cancellation_policy".tr,
+                                style: CustomTextStyles.bodyMediumBlack900
+                                    .copyWith(
+                                  fontSize: 12.fSize,
+                                ),
+                              ),
+                            ],
+                          ),
+                          Text.rich(
+                            TextSpan(
+                              children: [
+                                TextSpan(
+                                  text: 'free_cancellation'.tr,
+                                  style: CustomTextStyles.bodyMediumBlack900
+                                      .copyWith(
+                                    fontSize: 12.fSize,
+                                    fontWeight: FontWeight.w500,
+                                    decoration: TextDecoration.underline,
+                                  ),
+                                ),
+                                TextSpan(
+                                  text:
+                                      'up_to_24_hours_before_the_exprience_starts'
+                                          .tr,
+                                  style: CustomTextStyles.bodyMediumBlack900
+                                      .copyWith(
+                                    fontSize: 12.fSize,
+                                    fontWeight: FontWeight.w200,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 16.v),
+                    Container(
+                      width: double.maxFinite,
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 8.h, vertical: 8.v),
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: appTheme.gray500,
+                          width: 1.0,
+                        ),
+                        borderRadius:
+                            BorderRadius.circular(10.0), // Border radius
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              CustomImageView(
+                                width: 18.adaptSize,
+                                height: 18.adaptSize,
+                                imagePath: 'support'.icon.svg,
+                              ),
+                              SizedBox(width: 4.h),
+                              Text.rich(
+                                TextSpan(
+                                  children: [
+                                    TextSpan(
+                                      text: 'contact'.tr,
+                                      style: CustomTextStyles.bodyMediumBlack900
+                                          .copyWith(
+                                        fontSize: 12.fSize,
+                                      ),
+                                    ),
+                                    TextSpan(
+                                      text: 'tourly_tours'.tr,
+                                      style: CustomTextStyles.bodyMediumBlack900
+                                          .copyWith(
+                                        fontSize: 12.fSize,
+                                        fontWeight: FontWeight.w200,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 6.v),
+                          Row(
+                            children: [
+                              SizedBox(
+                                width: 140.h,
+                                child: Text(
+                                  "whatsapp".tr,
+                                  style: CustomTextStyles
+                                      .titleSmallOnErrorContainerSemiBold
+                                      .copyWith(
+                                    fontSize: 12.fSize,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(width: 16.h),
+                              Expanded(
+                                child: Text(
+                                  "${request.contacts?.whatsapp}",
+                                  style: CustomTextStyles
+                                      .bodyLargeJaldiGray90001
+                                      .copyWith(
+                                    fontSize: 12.fSize,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 2.v),
+                          Row(
+                            children: [
+                              SizedBox(
+                                width: 140.h,
+                                child: Text(
+                                  "instagram".tr,
+                                  style: CustomTextStyles
+                                      .titleSmallOnErrorContainerSemiBold
+                                      .copyWith(
+                                    fontSize: 12.fSize,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(width: 16.h),
+                              Expanded(
+                                child: Text(
+                                  "${request.contacts?.instagram}",
+                                  style: CustomTextStyles
+                                      .bodyLargeJaldiGray90001
+                                      .copyWith(
+                                    fontSize: 12.fSize,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 2.v),
+                          Row(
+                            children: [
+                              SizedBox(
+                                width: 140.h,
+                                child: Text(
+                                  "twitter".tr,
+                                  style: CustomTextStyles
+                                      .titleSmallOnErrorContainerSemiBold
+                                      .copyWith(
+                                    fontSize: 12.fSize,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(width: 16.h),
+                              Expanded(
+                                child: Text(
+                                  "${request.contacts?.twitter}",
+                                  style: CustomTextStyles
+                                      .bodyLargeJaldiGray90001
+                                      .copyWith(
+                                    fontSize: 12.fSize,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 2.v),
+                          Row(
+                            children: [
+                              SizedBox(
+                                width: 140.h,
+                                child: Text(
+                                  "wechat".tr,
+                                  style: CustomTextStyles
+                                      .titleSmallOnErrorContainerSemiBold
+                                      .copyWith(
+                                    fontSize: 12.fSize,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(width: 16.h),
+                              Expanded(
+                                child: Text(
+                                  "${request.contacts?.wechat}",
+                                  style: CustomTextStyles
+                                      .bodyLargeJaldiGray90001
+                                      .copyWith(
+                                    fontSize: 12.fSize,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 2.v),
+                          Row(
+                            children: [
+                              SizedBox(
+                                width: 140.h,
+                                child: Text(
+                                  "viber".tr,
+                                  style: CustomTextStyles
+                                      .titleSmallOnErrorContainerSemiBold
+                                      .copyWith(
+                                    fontSize: 12.fSize,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(width: 16.h),
+                              Expanded(
+                                child: Text(
+                                  "${request.contacts?.viber}",
+                                  style: CustomTextStyles
+                                      .bodyLargeJaldiGray90001
+                                      .copyWith(
+                                    fontSize: 12.fSize,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 2.v),
+                          Row(
+                            children: [
+                              SizedBox(
+                                width: 140.h,
+                                child: Text(
+                                  "threads".tr,
+                                  style: CustomTextStyles
+                                      .titleSmallOnErrorContainerSemiBold
+                                      .copyWith(
+                                    fontSize: 12.fSize,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(width: 16.h),
+                              Expanded(
+                                child: Text(
+                                  "${request.contacts?.threads}",
+                                  style: CustomTextStyles
+                                      .bodyLargeJaldiGray90001
+                                      .copyWith(
+                                    fontSize: 12.fSize,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 2.v),
+                          Row(
+                            children: [
+                              SizedBox(
+                                width: 140.h,
+                                child: Text(
+                                  "line".tr,
+                                  style: CustomTextStyles
+                                      .titleSmallOnErrorContainerSemiBold
+                                      .copyWith(
+                                    fontSize: 12.fSize,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(width: 16.h),
+                              Expanded(
+                                child: Text(
+                                  "${request.contacts?.line}",
+                                  style: CustomTextStyles
+                                      .bodyLargeJaldiGray90001
+                                      .copyWith(
+                                    fontSize: 12.fSize,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 16.v),
+                  ],
                 ),
-              ),
-            ],
-          ),
+              );
+            }
+          },
         ),
       ),
     );

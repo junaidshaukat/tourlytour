@@ -332,7 +332,7 @@ class VerticalProductCard extends StatelessWidget {
                       "read_more".tr,
                       style: CustomTextStyles.bodySmallLightblue500Regular,
                     ),
-                    SvgPicture.asset("arrow-forword".icon.svg)
+                    CustomImageView(imagePath: "arrow_forword".icon.svg)
                   ],
                 ),
               )

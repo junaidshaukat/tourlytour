@@ -206,7 +206,7 @@ class SignInScreenState extends State<SignInScreen> {
                       },
                       icon: CustomImageView(
                         imagePath: isShowPassword == false
-                            ? "eye-slash".icon.svg
+                            ? "eye_slash".icon.svg
                             : "eye".icon.svg,
                         height: 22.adaptSize,
                         width: 22.adaptSize,

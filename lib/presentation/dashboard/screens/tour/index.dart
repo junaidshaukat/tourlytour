@@ -46,7 +46,7 @@ class ToursScreenState extends State<ToursScreen> {
                 child: IconButton(
                   icon: CustomImageView(
                     color: appTheme.black900,
-                    imagePath: "arrow-left".icon.svg,
+                    imagePath: "arrow_left".icon.svg,
                   ),
                   onPressed: () {
                     NavigatorService.goBack();
@@ -60,51 +60,6 @@ class ToursScreenState extends State<ToursScreen> {
           padding: EdgeInsets.symmetric(horizontal: 10.h),
           child: Column(
             children: [
-              Container(
-                width: 373.h,
-                padding: EdgeInsets.symmetric(
-                  vertical: 12.v,
-                ),
-                decoration: BoxDecoration(
-                  color: appTheme.blue50,
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Consumer<SearchProvider>(
-                  builder: (context, provider, child) {
-                    return EasyDateTimeLine(
-                      locale: 'en_US',
-                      initialDate: provider.date,
-                      headerProps: const EasyHeaderProps(
-                        monthPickerType: MonthPickerType.switcher,
-                        dateFormatter: DateFormatter.fullDateDMY(),
-                      ),
-                      dayProps: EasyDayProps(
-                        todayStyle: DayStyle(
-                          decoration: BoxDecoration(
-                            color: appTheme.blue50,
-                            border: Border.all(
-                              color: appTheme.blue50,
-                            ),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                        activeDayStyle: DayStyle(
-                          decoration: BoxDecoration(
-                            color: appTheme.blue500,
-                            border: Border.all(
-                              color: appTheme.blue200,
-                            ),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                        dayStructure: DayStructure.dayStrDayNum,
-                      ),
-                      onDateChange: provider.onDateChange,
-                    );
-                  },
-                ),
-              ),
-              SizedBox(height: 16.v),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -112,7 +67,7 @@ class ToursScreenState extends State<ToursScreen> {
                     child: Consumer<SearchProvider>(
                       builder: (context, provider, child) {
                         return CustomTextFormField(
-                          hintText: "search_destination".tr,
+                          hintText: "search_tour".tr,
                           hintStyle: CustomTextStyles.bodySmallBlue200,
                           textInputAction: TextInputAction.done,
                           contentPadding: EdgeInsets.symmetric(
@@ -164,23 +119,23 @@ class ToursScreenState extends State<ToursScreen> {
                     ),
                   );
                 } else {
-                  List data = props.data as List;
-                  if (data.isEmpty) {
-                    return SizedBox(
-                      height: 300.v,
-                      child: const Center(
-                        child: NoRecordsFound(),
-                      ),
-                    );
-                  }
+                  // List data = props.data as List;
+                  // if (data.isEmpty) {
+                  //   return SizedBox(
+                  //     height: 300.v,
+                  //     child: const Center(
+                  //       child: NoRecordsFound(),
+                  //     ),
+                  //   );
+                  // }
 
                   return Wrap(
                     spacing: 4.adaptSize,
                     runSpacing: 8.adaptSize,
                     children: List.generate(
-                      data.length,
+                      10,
                       (index) {
-                        Products product = data[index];
+                        // Products product = data[index];
                         return Container(
                           width: SizeUtils.width,
                           padding: EdgeInsets.all(4.adaptSize),
@@ -196,11 +151,11 @@ class ToursScreenState extends State<ToursScreen> {
                                   .read<ProductItinerariesProvider>()
                                   .clear();
 
-                              NavigatorService.push(
-                                context,
-                                const ProductDetailsScreen(),
-                                arguments: product,
-                              );
+                              // NavigatorService.push(
+                              //   context,
+                              //   const ProductDetailsScreen(),
+                              //   arguments: product,
+                              // );
                             },
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.start,
@@ -213,7 +168,7 @@ class ToursScreenState extends State<ToursScreen> {
                                     width: 60.h,
                                     height: 60.v,
                                     fit: BoxFit.cover,
-                                    imagePath: product.thumbnailUrl,
+                                    imagePath: 'product'.image.png,
                                   ),
                                 ),
                                 SizedBox(width: 8.h),
@@ -224,7 +179,7 @@ class ToursScreenState extends State<ToursScreen> {
                                     SizedBox(
                                       width: 290.h,
                                       child: Text(
-                                        product.name ?? "",
+                                        'product.name',
                                         maxLines: 2,
                                         overflow: TextOverflow.ellipsis,
                                         style: CustomTextStyles
@@ -235,7 +190,7 @@ class ToursScreenState extends State<ToursScreen> {
                                     SizedBox(
                                       width: 290.h,
                                       child: Text(
-                                        "${product.locations ?? ""}",
+                                        "{product.locations ?? " "}",
                                         maxLines: 6,
                                         overflow: TextOverflow.ellipsis,
                                         style: CustomTextStyles.poppinsBlack900,

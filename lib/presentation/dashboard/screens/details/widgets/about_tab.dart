@@ -122,7 +122,7 @@ class AboutScreenState extends State<AboutScreen> {
                         return SizedBox(
                           width: 15.h,
                           child: CustomImageView(
-                            imagePath: "dash-line".icon.svg,
+                            imagePath: "dash_line".icon.svg,
                           ),
                         );
                       },

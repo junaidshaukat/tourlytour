@@ -50,17 +50,12 @@ class ProductDetailsScreenState extends State<ProductDetailsScreen>
     product = ModalRoute.of(context)!.settings.arguments as Products;
   }
 
-  Future<void> onPressed() async {
-    try {
-      await stripe.makePayment();
-    } catch (e) {
-      console.log(e);
-    }
-    // NavigatorService.push(
-    //   context,
-    //   const PackageSelectionScreen(),
-    //   arguments: product,
-    // );
+  void onPressed() {
+    NavigatorService.push(
+      context,
+      const PackageSelectionScreen(),
+      arguments: product,
+    );
   }
 
   @override
@@ -115,7 +110,7 @@ class ProductDetailsScreenState extends State<ProductDetailsScreen>
                       NavigatorService.goBack();
                     },
                     icon: CustomImageView(
-                      imagePath: "arrow-back".icon.svg,
+                      imagePath: "arrow_back".icon.svg,
                     ),
                   ),
                 ],

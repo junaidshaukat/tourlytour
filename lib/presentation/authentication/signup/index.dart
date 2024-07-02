@@ -106,7 +106,7 @@ class SignUpScreenState extends State<SignUpScreen> {
                 ),
                 child: IconButton(
                   icon: CustomImageView(
-                    imagePath: "arrow-back".icon.svg,
+                    imagePath: "arrow_back".icon.svg,
                   ),
                   onPressed: () {
                     NavigatorService.goBack();
@@ -235,7 +235,7 @@ class SignUpScreenState extends State<SignUpScreen> {
                       },
                       icon: CustomImageView(
                         imagePath: isShowPassword == false
-                            ? "eye-slash".icon.svg
+                            ? "eye_slash".icon.svg
                             : "eye".icon.svg,
                         height: 22.adaptSize,
                         width: 22.adaptSize,
@@ -272,7 +272,7 @@ class SignUpScreenState extends State<SignUpScreen> {
                       },
                       icon: CustomImageView(
                         imagePath: isShowConfirmPassword == false
-                            ? "eye-slash".icon.svg
+                            ? "eye_slash".icon.svg
                             : "eye".icon.svg,
                         height: 22.adaptSize,
                         width: 22.adaptSize,

@@ -505,7 +505,7 @@ class ProfileUpdateScreenState extends State<ProfileUpdateScreen> {
                 child: IconButton(
                   icon: CustomImageView(
                     color: appTheme.black900,
-                    imagePath: "arrow-left".icon.svg,
+                    imagePath: "arrow_left".icon.svg,
                   ),
                   onPressed: () {
                     NavigatorService.goBack();

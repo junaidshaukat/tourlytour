@@ -282,7 +282,7 @@ class OtherInformationScreenState extends State<OtherInformationScreen> {
                 ),
                 child: IconButton(
                   icon: CustomImageView(
-                    imagePath: "arrow-back".icon.svg,
+                    imagePath: "arrow_back".icon.svg,
                   ),
                   onPressed: () {
                     NavigatorService.goBack();

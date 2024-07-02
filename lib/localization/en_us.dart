@@ -116,6 +116,7 @@ final Map<String, String> enUs = {
   "sign_up": "Sign Up",
   "where": "Where",
   "search_destination": "Search Destination",
+  "search_tour": "Search Tour",
   "when": "When",
   "select_dates": "Select Dates",
   "update": "Update",

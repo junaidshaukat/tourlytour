@@ -1,9 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
-<svg width="800px" height="800px" viewBox="0 0 1024 1024" class="icon" version="1.1"
-    xmlns="http://www.w3.org/2000/svg">
-    <path d="M77.312 286.208h503.808v559.104H77.312z" fill="#5FFFBA" />
-    <path d="M133.632 342.016h391.68v335.36H133.632z" fill="#FFFFFF" />
-    <path d="M189.44 621.568h93.184L236.032 537.6zM375.808 453.632l-93.184 167.936h186.88z" fill="#FFD561" />
-    <path d="M637.44 621.568v83.456l337.408-165.376-211.456-432.64-252.928 122.88h110.08l120.32-58.368 127.488 259.584-230.912 113.152z" fill="#5FFFBA" />
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M1.81201 6.70801H13.62V19.812H1.81201V6.70801Z" fill="#5FFFBA"/>
+<path d="M3.13208 8.01599H12.3121V15.876H3.13208V8.01599Z" fill="white"/>
+<path d="M4.43994 14.568H6.62394L5.53194 12.6L4.43994 14.568ZM8.80794 10.632L6.62394 14.568H11.0039L8.80794 10.632Z" fill="#FFD561"/>
+<path d="M14.9401 14.5681V16.5241L22.8481 12.6481L17.8921 2.50806L11.9641 5.38806H14.5441L17.3641 4.02006L20.3521 10.1041L14.9401 12.7561V14.5681Z" fill="#5FFFBA"/>
 </svg>

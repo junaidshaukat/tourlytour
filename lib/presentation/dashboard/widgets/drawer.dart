@@ -18,9 +18,7 @@ class CustomDrawer extends StatelessWidget {
         ListTile(
           title: Row(
             children: [
-              CustomImageView(
-                imagePath: icon,
-              ),
+              CustomImageView(imagePath: icon),
               Padding(
                 padding: EdgeInsets.only(left: 13.h),
                 child: Text(
@@ -32,7 +30,9 @@ class CustomDrawer extends StatelessWidget {
               ),
               const Spacer(),
               CustomImageView(
-                imagePath: "arrow-right".icon.svg,
+                width: 20.h,
+                height: 20.h,
+                imagePath: "arrow_right".icon.svg,
               )
             ],
           ),
@@ -161,8 +161,10 @@ class CustomDrawer extends StatelessWidget {
                   child: IconButton(
                     color: Colors.white,
                     icon: CustomImageView(
+                      width: 20.h,
+                      height: 20.h,
                       color: appTheme.black900,
-                      imagePath: "arrow-left".icon.svg,
+                      imagePath: "arrow_left".icon.svg,
                     ),
                     onPressed: onPressed,
                   ),
@@ -173,7 +175,7 @@ class CustomDrawer extends StatelessWidget {
         ),
         tab(
           title: 'special_deals'.tr,
-          icon: 'special-deals'.icon.svg,
+          icon: 'special_deals'.icon.svg,
           onPressed: () {},
         ),
         tab(
@@ -188,7 +190,7 @@ class CustomDrawer extends StatelessWidget {
             NavigatorService.goBack();
             NavigatorService.push(
               context,
-              const FavouriteScreen(),
+              const ToursScreen(),
             );
           },
         ),

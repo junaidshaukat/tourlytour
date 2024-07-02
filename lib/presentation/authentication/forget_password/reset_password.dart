@@ -87,7 +87,7 @@ class ResetPasswordScreenState extends State<ResetPasswordScreen> {
                 ),
                 child: IconButton(
                   icon: CustomImageView(
-                    imagePath: "arrow-back".icon.svg,
+                    imagePath: "arrow_back".icon.svg,
                   ),
                   onPressed: () {
                     NavigatorService.goBack();
@@ -159,7 +159,7 @@ class ResetPasswordScreenState extends State<ResetPasswordScreen> {
                       },
                       icon: CustomImageView(
                         imagePath: isShowPassword == false
-                            ? "eye-slash".icon.svg
+                            ? "eye_slash".icon.svg
                             : "eye".icon.svg,
                         height: 22.adaptSize,
                         width: 22.adaptSize,
@@ -196,7 +196,7 @@ class ResetPasswordScreenState extends State<ResetPasswordScreen> {
                       },
                       icon: CustomImageView(
                         imagePath: isShowConfirmPassword == false
-                            ? "eye-slash".icon.svg
+                            ? "eye_slash".icon.svg
                             : "eye".icon.svg,
                         height: 22.adaptSize,
                         width: 22.adaptSize,

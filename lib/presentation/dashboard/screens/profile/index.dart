@@ -80,7 +80,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                 ),
                 child: IconButton(
                   icon: CustomImageView(
-                    imagePath: "arrow-left".icon.svg,
+                    imagePath: "arrow_left".icon.svg,
                     color: appTheme.black900,
                   ),
                   onPressed: () {

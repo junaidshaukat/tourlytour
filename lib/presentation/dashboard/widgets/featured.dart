@@ -28,7 +28,7 @@ class FeaturedPackage extends StatelessWidget {
                   style: CustomTextStyles.labelMediumLightblue500,
                 ),
                 SizedBox(width: 2.h),
-                SvgPicture.asset("arrow-forword".icon.svg)
+                CustomImageView(imagePath: "arrow_forword".icon.svg)
               ],
             ),
           )

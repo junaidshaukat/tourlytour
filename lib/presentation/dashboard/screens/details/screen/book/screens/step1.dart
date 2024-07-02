@@ -19,7 +19,7 @@ class PackageSelectionScreenState extends State<PackageSelectionScreen> {
 
   DateTime? initialSelectedDate;
   DateTime? date;
-  int totalNumberOfGuest = 0;
+  int totalNumberOfGuest = 1;
   String? errMsg;
 
   @override
@@ -44,13 +44,13 @@ class PackageSelectionScreenState extends State<PackageSelectionScreen> {
 
   void onIncrement() {
     setState(() {
-      if (totalNumberOfGuest < 100) totalNumberOfGuest++;
+      if (totalNumberOfGuest < 10) totalNumberOfGuest++;
     });
   }
 
   void onDecrement() {
     setState(() {
-      if (totalNumberOfGuest > 0) totalNumberOfGuest--;
+      if (totalNumberOfGuest > 1) totalNumberOfGuest--;
     });
   }
 
@@ -251,7 +251,7 @@ class PackageSelectionScreenState extends State<PackageSelectionScreen> {
                 ),
                 child: IconButton(
                   icon: CustomImageView(
-                    imagePath: "arrow-back".icon.svg,
+                    imagePath: "arrow_back".icon.svg,
                   ),
                   onPressed: () {
                     NavigatorService.goBack();

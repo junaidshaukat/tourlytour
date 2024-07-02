@@ -22,28 +22,29 @@ class AppRoutes {
   static const String packageSelection = '/package_selection';
   static const String payment = '/payment';
   static const String confirmation = '/confirmation';
+  static const String tour = '/tour';
 
   static Map<String, WidgetBuilder> get routes {
     return {
+      tour: (context) => const ToursScreen(),
       splash: (context) => const SplashScreen(),
-      onboarding: (context) => const OnboardingScreen(),
       signin: (context) => const SignInScreen(),
       signup: (context) => const SignUpScreen(),
-      forgetPassword: (context) => const ForgetPasswordScreen(),
-      resetPassword: (context) => const ResetPasswordScreen(),
-      otpVerification: (context) => const OtpVerificationScreen(),
-      dashboard: (context) => const DashboardScreen(),
       search: (context) => const SearchScreen(),
       profile: (context) => const ProfileScreen(),
+      favourite: (context) => const FavouriteScreen(),
+      dashboard: (context) => const DashboardScreen(),
+      onboarding: (context) => const OnboardingScreen(),
+      confirmation: (context) => const ConfirmationScreen(),
       profileUpdate: (context) => const ProfileUpdateScreen(),
       profileVerify: (context) => const ProfileVerifyScreen(),
-      featuredPackges: (context) => const FeaturedPackgesScreen(),
-      favourite: (context) => const FavouriteScreen(),
+      resetPassword: (context) => const ResetPasswordScreen(),
       productDetails: (context) => const ProductDetailsScreen(),
+      forgetPassword: (context) => const ForgetPasswordScreen(),
+      otpVerification: (context) => const OtpVerificationScreen(),
+      featuredPackges: (context) => const FeaturedPackgesScreen(),
       otherInformation: (context) => const OtherInformationScreen(),
       packageSelection: (context) => const PackageSelectionScreen(),
-      payment: (context) => const PaymentScreen(),
-      confirmation: (context) => const ConfirmationScreen(),
     };
   }
 }
