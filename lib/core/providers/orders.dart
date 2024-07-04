@@ -63,11 +63,9 @@ class OrdersProvider with ChangeNotifier {
         for (var data in response) {
           list.add(OrderGuests.fromJson(data));
         }
-        props.clear([]);
         props.setSuccess(currentData: list);
         notifyListeners();
       } else {
-        props.clear([]);
         props.setSuccess(currentData: []);
         notifyListeners();
       }

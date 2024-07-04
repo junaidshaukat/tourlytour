@@ -37,40 +37,39 @@ class SplashScreenState extends State<SplashScreen> {
         return NavigatorService.popAndPushNamed(
           AppRoutes.onboarding,
         );
-      }
+      } else {
+        await dependencies.inject();
 
-      if (currentUser.uuid != "") {
-        if (appMetadata.isGoogle) {
-          await dependencies.inject();
-          return NavigatorService.popAndPushNamed(
-            AppRoutes.dashboard,
-          );
-        }
-
-        if (appMetadata.isFacebook) {
-          await dependencies.inject();
-          return NavigatorService.popAndPushNamed(
-            AppRoutes.dashboard,
-          );
-        }
-
-        if (appMetadata.isEmail || appMetadata.isPhone) {
-          if (credentials.rememberMe == true) {
-            await dependencies.inject();
+        if (currentUser.uuid != "") {
+          if (appMetadata.isGoogle) {
             return NavigatorService.popAndPushNamed(
               AppRoutes.dashboard,
             );
           }
 
-          return NavigatorService.popAndPushNamed(
-            AppRoutes.dashboard,
-          );
-        }
-      }
+          if (appMetadata.isFacebook) {
+            return NavigatorService.popAndPushNamed(
+              AppRoutes.dashboard,
+            );
+          }
 
-      return NavigatorService.popAndPushNamed(
-        AppRoutes.dashboard,
-      );
+          if (appMetadata.isEmail || appMetadata.isPhone) {
+            if (credentials.rememberMe == true) {
+              return NavigatorService.popAndPushNamed(
+                AppRoutes.dashboard,
+              );
+            }
+
+            return NavigatorService.popAndPushNamed(
+              AppRoutes.dashboard,
+            );
+          }
+        }
+
+        return NavigatorService.popAndPushNamed(
+          AppRoutes.dashboard,
+        );
+      }
     } catch (error) {
       rethrow;
     }

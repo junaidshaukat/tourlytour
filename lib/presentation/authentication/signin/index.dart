@@ -54,7 +54,9 @@ class SignInScreenState extends State<SignInScreen> {
             'phone': phoneController.text,
             'password': passwordController.text,
           });
+
           await dependencies.inject();
+
           return NavigatorService.popAndPushNamed(
             AppRoutes.dashboard,
           );

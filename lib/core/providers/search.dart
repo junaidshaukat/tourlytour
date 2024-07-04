@@ -51,7 +51,6 @@ class SearchProvider extends ChangeNotifier {
       });
 
       if (response == null) {
-        props.clear([]);
         props.setSuccess(currentData: []);
         notifyListeners();
       } else {
@@ -59,7 +58,6 @@ class SearchProvider extends ChangeNotifier {
         for (var data in response) {
           list.add(Products.fromJson(data));
         }
-        props.clear([]);
         props.setSuccess(currentData: list);
         notifyListeners();
       }

@@ -21,7 +21,7 @@ class OnboardingScreenState extends State<OnboardingScreen> {
   Future<void> onContinue() async {
     await context.read<CurrentUserProvider>().setOnboarding(false);
     NavigatorService.pushNamed(
-      AppRoutes.signin,
+      AppRoutes.splash,
     );
   }
 

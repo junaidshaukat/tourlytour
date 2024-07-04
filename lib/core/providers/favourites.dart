@@ -43,13 +43,11 @@ class FavouritesProvider with ChangeNotifier {
         throw NoInternetException();
       }
 
-      var response = await supabase
-          .from('Favourites')
-          .select('*, Products(*)')
-          .eq('UserId', "${currentUser.id}");
+      var response = await supabase.rpc('favourites', params: {
+        'user_id': currentUser.id,
+      });
 
       if (response.isEmpty) {
-        props.clear([]);
         props.setSuccess(currentData: []);
         notifyListeners();
       } else {
@@ -57,7 +55,6 @@ class FavouritesProvider with ChangeNotifier {
         for (var data in response) {
           list.add(Favourites.fromJson(data));
         }
-        props.clear([]);
         props.setSuccess(currentData: list);
         notifyListeners();
       }

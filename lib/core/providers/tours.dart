@@ -38,7 +38,6 @@ class ToursProvider with ChangeNotifier {
 
   Future<void> onReady() async {
     try {
-      props.clear([]);
       props.setProcessing();
       notifyListeners();
 

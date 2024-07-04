@@ -43,7 +43,7 @@ class ProductsProvider with ChangeNotifier {
         throw NoInternetException();
       }
 
-      final response = await supabase.from('Products').select();
+      final response = await supabase.rpc('products');
       if (response.isEmpty) {
         props.setSuccess(currentData: []);
         notifyListeners();

@@ -45,7 +45,6 @@ class DependenciesProvider with ChangeNotifier {
       }
 
       await products.onReady();
-      await products.onReady();
       await favourites.onReady();
       return true;
     } on NoInternetException catch (error) {

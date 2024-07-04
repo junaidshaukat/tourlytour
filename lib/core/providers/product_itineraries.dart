@@ -85,7 +85,6 @@ class ProductItinerariesProvider with ChangeNotifier {
 
   void clear({String fun = 'onReady'}) {
     if (fun == 'onReady') {
-      props.clear([]);
       props.setLoading();
     }
     if (fun == 'findById') {

@@ -21,6 +21,8 @@ class NoRecordsFound extends StatelessWidget {
       crossAxisAlignment: crossAxisAlignment,
       children: [
         CustomImageView(
+          fit: BoxFit.cover,
+          size: 60.adaptSize,
           imagePath: "empty".icon.svg,
         ),
         SizedBox(height: 16.v),
