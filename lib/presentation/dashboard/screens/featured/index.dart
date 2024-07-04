@@ -351,8 +351,7 @@ class ProductCard extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       CustomImageView(
-                        width: 9.adaptSize,
-                        height: 9.adaptSize,
+                        size: 10.adaptSize,
                         imagePath: "compare".icon.svg,
                         margin: EdgeInsets.only(
                           top: 7.v,

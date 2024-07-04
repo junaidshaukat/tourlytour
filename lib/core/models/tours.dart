@@ -1,5 +1,70 @@
 import '/core/app_export.dart';
 
+class TourHistory {
+  final Orders order;
+  final Products products;
+  final Contacts contacts;
+  final List<OrderGuests> guests;
+  final ProductReviews reviews;
+  final List<ProductItineraries> itineraries;
+
+  TourHistory({
+    required this.order,
+    required this.guests,
+    required this.reviews,
+    required this.contacts,
+    required this.products,
+    required this.itineraries,
+  });
+
+  factory TourHistory.fromJson(Map<String, dynamic> json) {
+    return TourHistory(
+      order: Orders.fromJson(json['order'] ?? {}),
+      guests: (json['guests'] as List<dynamic>?)
+              ?.map((e) => OrderGuests.fromJson(e))
+              .toList() ??
+          [],
+      products: Products.fromJson(json['products'] ?? {}),
+      contacts: Contacts.fromJson(json['contacts'] ?? {}),
+      reviews: ProductReviews.fromJson(json['reviews'] ?? {}),
+      itineraries: (json['itineraries'] as List<dynamic>?)
+              ?.map((e) => ProductItineraries.fromJson(e))
+              .toList() ??
+          [],
+    );
+  }
+
+  Map<String, dynamic> toJson({List<String> skip = const []}) {
+    final Map<String, dynamic> data = {};
+    if (!skip.contains('order')) {
+      data['order'] = order.toJson(skip: skip);
+    }
+
+    if (!skip.contains('products')) {
+      data['products'] = products.toJson(skip: skip);
+    }
+
+    if (!skip.contains('contacts')) {
+      data['contacts'] = contacts.toJson(skip: skip);
+    }
+
+    if (!skip.contains('guests')) {
+      data['guests'] = guests.map((e) => e.toJson(skip: skip)).toList();
+    }
+
+    if (!skip.contains('reviews')) {
+      data['reviews'] = reviews.toJson(skip: skip);
+    }
+
+    if (!skip.contains('itineraries')) {
+      data['itineraries'] =
+          itineraries.map((e) => e.toJson(skip: skip)).toList();
+    }
+
+    return data;
+  }
+}
+
 class Tours {
   num? id;
   num? productId;

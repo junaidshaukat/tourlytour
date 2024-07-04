@@ -12,26 +12,26 @@ class ToursScreen extends StatefulWidget {
 
 class ToursScreenState extends State<ToursScreen> {
   bool preloader = true;
+  late ToursProvider tours;
 
   @override
   void initState() {
     super.initState();
+    tours = context.read<ToursProvider>();
+
     WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await tours.onReady();
       setState(() {
         preloader = false;
       });
     });
   }
 
-  void onTap(num id) {
-    context.read<ProductVideosProvider>().clear();
-    context.read<ProductPhotosProvider>().clear();
-    context.read<ProductReviewsProvider>().clear();
-    context.read<ProductItinerariesProvider>().clear();
-
+  void onTap(TourHistory tour) {
     NavigatorService.push(
       context,
       const TourDetailsScreen(),
+      arguments: tour,
     );
   }
 
@@ -113,7 +113,7 @@ class ToursScreenState extends State<ToursScreen> {
                 ],
               ),
               SizedBox(height: 5.v),
-              Consumer<SearchProvider>(builder: (context, provider, child) {
+              Consumer<ToursProvider>(builder: (context, provider, child) {
                 Props props = provider.props;
                 if (props.isNone || props.isProcessing) {
                   return SizedBox(
@@ -133,23 +133,24 @@ class ToursScreenState extends State<ToursScreen> {
                     ),
                   );
                 } else {
-                  // List data = props.data as List;
-                  // if (data.isEmpty) {
-                  //   return SizedBox(
-                  //     height: 300.v,
-                  //     child: const Center(
-                  //       child: NoRecordsFound(),
-                  //     ),
-                  //   );
-                  // }
+                  List data = props.data as List;
+                  if (data.isEmpty) {
+                    return SizedBox(
+                      height: 300.v,
+                      child: const Center(
+                        child: NoRecordsFound(),
+                      ),
+                    );
+                  }
 
                   return Wrap(
                     spacing: 4.adaptSize,
                     runSpacing: 8.adaptSize,
                     children: List.generate(
-                      10,
+                      data.length,
                       (index) {
-                        // Products product = data[index];
+                        TourHistory tour = data[index];
+
                         return Container(
                           width: SizeUtils.width,
                           padding: EdgeInsets.all(4.adaptSize),
@@ -158,7 +159,7 @@ class ToursScreenState extends State<ToursScreen> {
                           ),
                           child: InkWell(
                             onTap: () {
-                              onTap(1);
+                              onTap(tour);
                             },
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.start,
@@ -171,7 +172,7 @@ class ToursScreenState extends State<ToursScreen> {
                                     width: 100.h,
                                     height: 100.v,
                                     fit: BoxFit.cover,
-                                    imagePath: 'product'.image.png,
+                                    imagePath: tour.products.thumbnailUrl,
                                   ),
                                 ),
                                 SizedBox(width: 8.h),
@@ -186,7 +187,7 @@ class ToursScreenState extends State<ToursScreen> {
                                         child: SizedBox(
                                           width: double.maxFinite,
                                           child: Text(
-                                            'Enchanted Ayutthaya: A Journey Through History & Culture',
+                                            tour.products.name ?? '',
                                             overflow: TextOverflow.clip,
                                             style: CustomTextStyles
                                                 .labelMediumBlack900,
@@ -206,7 +207,8 @@ class ToursScreenState extends State<ToursScreen> {
                                             ),
                                             children: <TextSpan>[
                                               TextSpan(
-                                                text: ': 22-Jun-2024 ',
+                                                text:
+                                                    ': ${tour.order.date?.format('dd-MMM-yyyy')} ',
                                                 style: CustomTextStyles
                                                     .poppinsGray600
                                                     .copyWith(
@@ -222,7 +224,8 @@ class ToursScreenState extends State<ToursScreen> {
                                                 ),
                                               ),
                                               TextSpan(
-                                                text: ': 1',
+                                                text:
+                                                    ': ${tour.order.totalNumberOfGuest}',
                                                 style: CustomTextStyles
                                                     .poppinsGray600
                                                     .copyWith(
@@ -237,7 +240,7 @@ class ToursScreenState extends State<ToursScreen> {
                                       SizedBox(
                                         width: double.maxFinite,
                                         child: Text(
-                                          'completed'.tr,
+                                          '${tour.order.status}',
                                           maxLines: 2,
                                           overflow: TextOverflow.ellipsis,
                                           style: CustomTextStyles
@@ -246,7 +249,7 @@ class ToursScreenState extends State<ToursScreen> {
                                       ),
                                       GestureDetector(
                                         onTap: () {
-                                          onTap(1);
+                                          onTap(tour);
                                         },
                                         child: Text(
                                           'view_details'.tr,

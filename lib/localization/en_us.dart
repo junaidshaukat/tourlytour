@@ -119,6 +119,7 @@ final Map<String, String> enUs = {
   "completed": "Completed",
   "date": "Date",
   "tour_details": "Tour Details",
+  "enter_your_review": "Enter your review",
   "view_booking_details": "View Booking Details",
   "blogs": "Blogs",
   "search_destination": "Search Destination",

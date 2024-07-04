@@ -5,30 +5,35 @@ class CustomRatingBar extends StatelessWidget {
   const CustomRatingBar({
     super.key,
     this.alignment,
-    this.ignoreGestures,
-    this.initialRating,
-    this.itemSize,
-    this.itemCount,
-    this.color,
-    this.unselectedColor,
-    this.onRatingUpdate,
+    this.size = 32,
+    this.onChanged,
+    this.maxRating = 5,
+    this.halfFilledIcon,
+    this.readOnly = true,
+    this.initialRating = 1.0,
+    this.isHalfAllowed = false,
+    this.filledIcon = Icons.star,
+    this.direction = Axis.horizontal,
+    this.emptyIcon = Icons.star_border,
+    this.filledColor = const Color(0XFFF6AC1D),
+    this.emptyColor = const Color(0xFFC3DBF3),
+    this.halfFilledColor = const Color(0XFFF6AC1D),
   });
 
+  final bool readOnly;
   final Alignment? alignment;
-
-  final bool? ignoreGestures;
-
+  final IconData filledIcon;
+  final IconData emptyIcon;
+  final int maxRating;
+  final IconData? halfFilledIcon;
+  final bool isHalfAllowed;
+  final Axis direction;
   final double? initialRating;
-
-  final double? itemSize;
-
-  final int? itemCount;
-
-  final Color? color;
-
-  final Color? unselectedColor;
-
-  final Function(double)? onRatingUpdate;
+  final Color filledColor;
+  final Color emptyColor;
+  final Color halfFilledColor;
+  final double size;
+  final void Function(double)? onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -38,24 +43,38 @@ class CustomRatingBar extends StatelessWidget {
         : ratingBarWidget;
   }
 
-  Widget get ratingBarWidget => RatingBar.builder(
-        ignoreGestures: ignoreGestures ?? false,
-        initialRating: initialRating ?? 0,
-        minRating: 0,
-        direction: Axis.horizontal,
-        allowHalfRating: false,
-        itemSize: itemSize ?? 11.v,
-        unratedColor: unselectedColor,
-        itemCount: itemCount ?? 5,
-        updateOnDrag: true,
-        itemBuilder: (context, _) {
-          return Icon(
-            Icons.star,
-            color: color,
-          );
-        },
-        onRatingUpdate: (rating) {
-          onRatingUpdate!.call(rating);
-        },
+  Widget get ratingBarWidget {
+    if (readOnly) {
+      return RatingBar.readOnly(
+        size: size,
+        emptyIcon: emptyIcon,
+        maxRating: maxRating,
+        direction: direction,
+        emptyColor: emptyColor,
+        filledIcon: filledIcon,
+        filledColor: filledColor,
+        isHalfAllowed: isHalfAllowed,
+        halfFilledIcon: halfFilledIcon,
+        halfFilledColor: halfFilledColor,
+        initialRating: initialRating ?? 0.0,
+        alignment: alignment ?? Alignment.centerLeft,
       );
+    }
+
+    return RatingBar(
+      size: size,
+      emptyIcon: emptyIcon,
+      maxRating: maxRating,
+      direction: direction,
+      emptyColor: emptyColor,
+      filledIcon: filledIcon,
+      filledColor: filledColor,
+      onRatingChanged: onChanged,
+      isHalfAllowed: isHalfAllowed,
+      halfFilledIcon: halfFilledIcon,
+      halfFilledColor: halfFilledColor,
+      initialRating: initialRating ?? 0.0,
+      alignment: alignment ?? Alignment.centerLeft,
+    );
+  }
 }

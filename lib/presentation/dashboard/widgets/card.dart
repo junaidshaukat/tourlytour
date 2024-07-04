@@ -63,8 +63,7 @@ class HorizontalProductCard extends StatelessWidget {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             CustomImageView(
-                              width: 14.adaptSize,
-                              height: 14.adaptSize,
+                              size: 14.adaptSize,
                               imagePath: "star".icon.svg,
                               margin: EdgeInsets.symmetric(vertical: 3.v),
                             ),
@@ -142,8 +141,7 @@ class HorizontalProductCard extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               CustomImageView(
-                                width: 10.adaptSize,
-                                height: 10.adaptSize,
+                                size: 10.adaptSize,
                                 imagePath: "marker".icon.svg,
                                 margin: EdgeInsets.symmetric(vertical: 1.v),
                               ),
@@ -164,8 +162,7 @@ class HorizontalProductCard extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               CustomImageView(
-                                width: 10.adaptSize,
-                                height: 10.adaptSize,
+                                size: 10.adaptSize,
                                 imagePath: "loading".icon.svg,
                                 margin: EdgeInsets.symmetric(vertical: 1.v),
                               ),
@@ -227,8 +224,7 @@ class HorizontalProductCard extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           CustomImageView(
-                            width: 9.adaptSize,
-                            height: 9.adaptSize,
+                            size: 10.adaptSize,
                             imagePath: "compare".icon.svg,
                             margin: EdgeInsets.only(
                               top: 7.v,
@@ -333,8 +329,7 @@ class VerticalProductCard extends StatelessWidget {
                       style: CustomTextStyles.bodySmallLightblue500Regular,
                     ),
                     CustomImageView(
-                      width: 12.adaptSize,
-                      height: 12.adaptSize,
+                      size: 12.adaptSize,
                       imagePath: "arrow_forword".icon.svg,
                     )
                   ],

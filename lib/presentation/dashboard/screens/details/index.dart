@@ -94,6 +94,7 @@ class ProductDetailsScreenState extends State<ProductDetailsScreen>
                               }
                             : null,
                         icon: CustomImageView(
+                          size: 38.adaptSize,
                           imagePath: "heart".icon.svg,
                           color: find == false
                               ? appTheme.whiteA700
@@ -108,6 +109,7 @@ class ProductDetailsScreenState extends State<ProductDetailsScreen>
                       NavigatorService.goBack();
                     },
                     icon: CustomImageView(
+                      size: 38.adaptSize,
                       imagePath: "arrow_back".icon.svg,
                     ),
                   ),
@@ -163,22 +165,16 @@ class ProductDetailsScreenState extends State<ProductDetailsScreen>
                     ),
                     SizedBox(height: 7.v),
                     Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Text(
                           '${product.rating}',
                           style: CustomTextStyles.titleSmallBluegray500,
                         ),
-                        Padding(
-                          padding: EdgeInsets.only(
-                            left: 10.h,
-                            top: 4.v,
-                            bottom: 5.v,
-                          ),
-                          child: CustomRatingBar(
-                            color: appTheme.yellow800,
-                            initialRating: product.rating?.toDouble(),
-                          ),
+                        CustomRatingBar(
+                          size: 24.adaptSize,
+                          initialRating: product.rating?.toDouble(),
                         )
                       ],
                     ),

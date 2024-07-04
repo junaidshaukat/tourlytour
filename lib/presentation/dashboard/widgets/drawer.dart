@@ -19,9 +19,8 @@ class CustomDrawer extends StatelessWidget {
           title: Row(
             children: [
               CustomImageView(
+                size: 30.adaptSize,
                 imagePath: icon,
-                width: 24.adaptSize,
-                height: 24.adaptSize,
               ),
               Padding(
                 padding: EdgeInsets.only(left: 13.h),

@@ -172,11 +172,10 @@ class ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                         });
                       },
                       icon: CustomImageView(
+                        size: 22.adaptSize,
                         imagePath: provider == AuthProvider.email
                             ? "phone"
                             : "email".icon.svg,
-                        height: 22.adaptSize,
-                        width: 22.adaptSize,
                       ),
                     ),
                   ),

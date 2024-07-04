@@ -37,12 +37,13 @@ class CustomImageView extends StatelessWidget {
     this.radius,
     this.margin,
     this.border,
+    this.size,
     this.placeHolder = 'assets/images/image_not_found.png',
   });
 
   final String? imagePath;
   final String placeHolder;
-
+  final double? size;
   final double? height;
 
   final double? width;
@@ -148,18 +149,18 @@ class CustomImageView extends StatelessWidget {
     switch (src.imageType) {
       case ImageType.svg:
         return SizedBox(
-          width: width ?? 20.adaptSize,
-          height: height ?? 20.adaptSize,
+          width: width ?? size ?? 20.adaptSize,
+          height: height ?? size ?? 20.adaptSize,
           child: SvgPicture.asset(
             src,
-            width: width ?? 20.adaptSize,
-            height: height ?? 20.adaptSize,
+            width: width ?? size ?? 20.adaptSize,
+            height: height ?? size ?? 20.adaptSize,
             colorFilter: colorFilter,
             fit: fit ?? BoxFit.contain,
             placeholderBuilder: (context) {
               return SvgPicture.asset(
-                width: width ?? 20.adaptSize,
-                height: height ?? 20.adaptSize,
+                width: width ?? size ?? 20.adaptSize,
+                height: height ?? size ?? 20.adaptSize,
                 colorFilter: colorFilter,
                 fit: fit ?? BoxFit.contain,
                 "assets/icons/image_not_found.svg",
@@ -243,12 +244,12 @@ class CustomImageView extends StatelessWidget {
     switch (imagePath.imageType) {
       case ImageType.svg:
         return SizedBox(
-          width: width ?? 20.adaptSize,
-          height: height ?? 20.adaptSize,
+          width: width ?? size ?? 20.adaptSize,
+          height: height ?? size ?? 20.adaptSize,
           child: SvgPicture.asset(
             imagePath!,
-            width: width ?? 20.adaptSize,
-            height: height ?? 20.adaptSize,
+            width: width ?? size ?? 20.adaptSize,
+            height: height ?? size ?? 20.adaptSize,
             colorFilter: colorFilter,
             fit: fit ?? BoxFit.contain,
             placeholderBuilder: _placeholderBuilder,

@@ -41,8 +41,7 @@ class Appbar extends StatelessWidget implements PreferredSizeWidget {
         child: Row(
           children: [
             CustomImageView(
-              width: 30.adaptSize,
-              height: 30.adaptSize,
+              size: 30.adaptSize,
               imagePath: "menu".icon.svg,
               onTap: onPressed,
             ),
@@ -50,8 +49,7 @@ class Appbar extends StatelessWidget implements PreferredSizeWidget {
             Row(
               children: [
                 CustomImageView(
-                  width: 30.adaptSize,
-                  height: 30.adaptSize,
+                  size: 30.adaptSize,
                   imagePath: "logo".icon.svg,
                 ),
                 Text(
@@ -69,10 +67,10 @@ class Appbar extends StatelessWidget implements PreferredSizeWidget {
                 radius: 18,
                 backgroundColor: appTheme.gray500,
                 child: CustomImageView(
-                  width: 34,
-                  height: 34,
                   onTap: onTap,
                   fit: BoxFit.cover,
+                  width: 34.adaptSize,
+                  height: 34.adaptSize,
                   imagePath: provider.avatar,
                   placeHolder: 'profile'.image.png,
                   radius: BorderRadius.circular(100),

@@ -17,14 +17,17 @@ class HorizontalDivider extends StatelessWidget {
 }
 
 class LabelReview extends StatelessWidget {
+  final num initial;
   final String label;
-  final double initial;
-  final void Function(double) onChange;
+  final bool readOnly;
+  final void Function(double)? onChanged;
+
   const LabelReview({
     super.key,
+    this.onChanged,
     required this.label,
     required this.initial,
-    required this.onChange,
+    this.readOnly = false,
   });
 
   @override
@@ -42,21 +45,10 @@ class LabelReview extends StatelessWidget {
             fontWeight: FontWeight.w500,
           ),
         ),
-        RatingBar.builder(
-          minRating: 1,
-          itemCount: 5,
-          itemSize: 24,
-          initialRating: initial,
-          allowHalfRating: false,
-          onRatingUpdate: onChange,
-          direction: Axis.horizontal,
-          itemBuilder: (context, _) {
-            return const Icon(
-              Icons.star,
-              color: Colors.amber,
-            );
-          },
-          itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
+        CustomRatingBar(
+          readOnly: readOnly,
+          onChanged: onChanged,
+          initialRating: initial.toDouble(),
         ),
       ],
     );

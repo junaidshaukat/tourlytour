@@ -217,6 +217,9 @@ class LightCodeColors {
   Color get deepOrange40001 => const Color(0XFFF08740);
 // Gray
   Color get gray100 => const Color(0XFFF0F6FD);
+  Color get gray200 => const Color(0xFFE1EDF9);
+  Color get gray300 => const Color(0xFFC3DBF3);
+  Color get gray400 => const Color(0xFFA5C8ED);
   Color get gray500 => const Color(0XFFA8A8A8);
   Color get gray50001 => const Color(0XFFA5A5A5);
   Color get gray600 => const Color(0XFF7E7F80);

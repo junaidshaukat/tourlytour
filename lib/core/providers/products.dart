@@ -12,6 +12,7 @@ class ProductsProvider with ChangeNotifier {
   ProductsProvider(this.context) {
     connectivity = context.read<ConnectivityProvider>();
   }
+
   String get trace {
     final stackTrace = StackTrace.current;
     final frames = stackTrace.toString().split('\n');

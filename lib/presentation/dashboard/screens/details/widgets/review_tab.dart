@@ -108,8 +108,7 @@ class ReviewTabState extends State<ReviewTab> {
                           bottom: 5.v,
                         ),
                         child: CustomRatingBar(
-                          color: appTheme.yellow800,
-                          unselectedColor: appTheme.black900,
+                          size: 20.adaptSize,
                           initialRating: reviews.rate?.toDouble() ?? 0,
                         ),
                       ),

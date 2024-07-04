@@ -145,7 +145,7 @@ class ProductReviewsProvider with ChangeNotifier {
     }
   }
 
-  Future<void> update(ProductReviews reviews, List files,
+  Future<dynamic> update(ProductReviews reviews, List files,
       List<ProductReviewPhotos> remove) async {
     try {
       props.setLoading();
@@ -167,8 +167,7 @@ class ProductReviewsProvider with ChangeNotifier {
           String filename = '${fn.objectId()}.png';
           String path =
               await supabase.storage.from('content').upload(filename, file);
-          photos.add(
-              "https://vtdjscrvogtprhlhvdwr.supabase.co/storage/v1/object/public/$path");
+          photos.add("${Environment.bucket}/$path");
         }
       }
 
@@ -177,20 +176,16 @@ class ProductReviewsProvider with ChangeNotifier {
       params.addAll({'removePhotos': remove.map((e) => e.toJson()).toList()});
 
       var response = await supabase.rpc(
-        'product_reviews_update',
+        'reviews_update',
         params: {'data': params},
       );
 
       if (response.isEmpty) {
-        props.setSuccess(currentData: []);
-        notifyListeners();
         await onReady(reviews.productId);
-        NavigatorService.goBack();
+        return response;
       } else {
-        props.setSuccess(currentData: []);
-        notifyListeners();
         await onReady(reviews.productId);
-        NavigatorService.goBack();
+        return response;
       }
     } on NoInternetException catch (error) {
       console.internet(error, trace);
