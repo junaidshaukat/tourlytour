@@ -310,7 +310,7 @@ class PackageSelectionScreenState extends State<PackageSelectionScreen> {
                         ),
                         SizedBox(height: 5.v),
                         Text(
-                          "${product.price} ${"usd".tr}",
+                          "\$${product.price} ${"usd".tr}",
                           style: theme.textTheme.titleMedium,
                         )
                       ],

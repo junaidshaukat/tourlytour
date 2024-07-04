@@ -1,40 +1,27 @@
 import 'package:flutter/material.dart';
 import '/core/app_export.dart';
 
-class ConfirmationScreen extends StatefulWidget {
-  const ConfirmationScreen({super.key});
+class TourDetailsScreen extends StatefulWidget {
+  const TourDetailsScreen({super.key});
 
   @override
-  ConfirmationScreenState createState() => ConfirmationScreenState();
+  TourDetailsScreenState createState() => TourDetailsScreenState();
 }
 
-class ConfirmationScreenState extends State<ConfirmationScreen> {
+class TourDetailsScreenState extends State<TourDetailsScreen> {
   bool preloader = true;
-  GlobalKey<FormState> formKey = GlobalKey<FormState>();
-
-  late OrdersProvider orders;
-  late BookingRequest request;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      orders = context.read<OrdersProvider>();
-      await orders.findByOrderNumber(request.orderNumber);
-
       setState(() {
         preloader = false;
       });
     });
   }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    request = ModalRoute.of(context)!.settings.arguments as BookingRequest;
-  }
-
-  Future<void> onTap() async {}
+  void onTap() {}
 
   @override
   Widget build(BuildContext context) {
@@ -813,6 +800,10 @@ class ConfirmationScreenState extends State<ConfirmationScreen> {
                       ),
                     ),
                     SizedBox(height: 16.v),
+                    CustomElevatedButton(
+                      text: "share_your_opinion".tr,
+                      onPressed: () {},
+                    ),
                   ],
                 ),
               );

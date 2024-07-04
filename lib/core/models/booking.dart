@@ -32,24 +32,16 @@ class BookingRequest {
   }
 
   Products get product => _product;
-  String get status => _status;
   String get language => _language;
-  bool get isPaid => _isPaid;
-  String get stripeToken => _stripeToken;
   String get preferedDriverGender => _preferedDriverGender;
-  String get stripeReferrenceNumber => _stripeReferrenceNumber;
   num get userId => _userId;
   num get productId => _productId;
   String get orderNumber => _orderNumber;
   void setStep00(Products product, CurrentUserProvider currentUser) {
-    _totalAmount = 0;
-    _status = '';
     _language = '';
-    _isPaid = false;
-    _stripeToken = '';
+    _totalAmount = 0;
     _product = product;
     _preferedDriverGender = '';
-    _stripeReferrenceNumber = '';
     _userId = currentUser.id;
     _productId = product.id ?? -1;
     _orderNumber = fn.orderNumber();
@@ -71,26 +63,39 @@ class BookingRequest {
   String get hotelAddress => _hotelAddress;
   String get hotelRoomNumber => _hotelRoomNumber;
   List<OrderGuests> get guests => _guests;
+  String get stripeReferrenceNumber => _stripeReferrenceNumber;
+  String get stripeToken => _stripeToken;
   num get totalAmount => _totalAmount;
+  String get status => _status;
+  bool get isPaid => _isPaid;
   void setStep02({
-    required String phoneCode,
+    required bool paid,
+    required String status,
     required String fullName,
+    required String hotelName,
+    required String phoneCode,
+    required num totalPayment,
+    required String stripeToken,
     required String emailAddress,
     required String mobileNumber,
-    required String hotelName,
     required String hotelAddress,
     required String hotelRoomNumber,
     required List<OrderGuests> guests,
+    required String stripeReferrenceNumber,
   }) {
+    _isPaid = paid;
+    _status = status;
+    _guests = guests;
     _phoneCode = phoneCode;
+    _hotelName = hotelName;
+    _stripeToken = stripeToken;
+    _totalAmount = totalPayment;
+    _hotelAddress = hotelAddress;
     _contactPersonName = fullName;
+    _hotelRoomNumber = hotelRoomNumber;
     _contactPersonEmail = emailAddress;
     _contactPersonMobile = mobileNumber;
-    _hotelName = hotelName;
-    _hotelAddress = hotelAddress;
-    _hotelRoomNumber = hotelRoomNumber;
-    _guests = guests;
-    _totalAmount = guests.length * product.price!;
+    _stripeReferrenceNumber = stripeReferrenceNumber;
   }
 
   num get id => _id;
@@ -191,5 +196,35 @@ class BookingRequest {
     }
 
     return data;
+  }
+
+  void fromJson(Map<String, dynamic> json) {
+    _id = json['Id'];
+    _productId = json['ProductId'];
+    _userId = json['UserId'];
+    _orderNumber = json['OrderNumber'];
+    _date = DateTime.parse(json['Date']);
+    _totalNumberOfGuest = json['TotalNumberOfGuest'];
+    _language = json['Language'];
+    _preferedDriverGender = json['PreferedDriverGender'];
+    _hotelName = json['HotelName'];
+    _hotelAddress = json['HotelAddress'];
+    _hotelRoomNumber = json['HotelRoomNumber'];
+    _contactPersonName = json['ContactPersonName'];
+    _contactPersonEmail = json['ContactPersonEmail'];
+    _contactPersonMobile = json['ContactPersonMobile'];
+    _stripeToken = json['StripeToken'];
+    _stripeReferrenceNumber = json['StripeReferrenceNumber'];
+    _status = json['Status'];
+    _isPaid = json['IsPaid'];
+    _totalAmount = json['TotalAmount'];
+
+    if (json['guests'] != null) {
+      _guests = (json['guests'] as List)
+          .map((guestJson) => OrderGuests.fromJson(guestJson))
+          .toList();
+    } else {
+      _guests = [];
+    }
   }
 }

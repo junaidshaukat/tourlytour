@@ -14,6 +14,26 @@ class CurrentUserProvider with ChangeNotifier {
   CurrentUserProvider(this.context) {
     connectivity = context.read<ConnectivityProvider>();
   }
+  String get trace {
+    final stackTrace = StackTrace.current;
+    final frames = stackTrace.toString().split('\n');
+
+    if (frames.length > 1) {
+      final callerFrame = frames[1].trim();
+      final regex = RegExp(r'#\d+\s+(\S+)\.(\S+)\s+\(.*\)');
+      final match = regex.firstMatch(callerFrame);
+
+      if (match != null) {
+        final className = match.group(1);
+        final methodName = match.group(2);
+        return "$className::$methodName";
+      } else {
+        return "$runtimeType::unknown";
+      }
+    } else {
+      return "$runtimeType::unknown";
+    }
+  }
 
   bool get onboarding => box.get('onboarding', defaultValue: true);
   bool get rememberMe => box.get('rememberMe', defaultValue: false);
@@ -76,22 +96,22 @@ class CurrentUserProvider with ChangeNotifier {
         return false;
       }
     } on NoInternetException catch (error) {
-      console.log(error, 'CurrentUserProvider::find::NoInternetException');
+      console.internet(error, trace);
       props.setError(currentError: error.toString());
       notifyListeners();
       return false;
     } on CustomException catch (error) {
-      console.log(error, 'CurrentUserProvider::find::CustomException');
+      console.custom(error, trace);
       props.setError(currentError: error.toString());
       notifyListeners();
       return false;
     } on AuthException catch (error) {
-      console.log(error, 'CurrentUserProvider::find::AuthException');
+      console.authentication(error, trace);
       props.setError(currentError: error.message.toString());
       notifyListeners();
       return false;
     } catch (error) {
-      console.log(error, 'CurrentUserProvider::find');
+      console.error(error, trace);
       props.setError(currentError: "something_went_wrong".tr);
       notifyListeners();
       return false;
@@ -117,8 +137,6 @@ class CurrentUserProvider with ChangeNotifier {
         throw NoInternetException();
       }
 
-      console.log(users.toJson(skip: ['id']));
-
       var response = await supabase
           .from('Users')
           .update(users.toJson(skip: ['id']))
@@ -135,22 +153,22 @@ class CurrentUserProvider with ChangeNotifier {
         return false;
       }
     } on NoInternetException catch (error) {
-      console.log(error, 'CurrentUserProvider::update::NoInternetException');
+      console.internet(error, trace);
       props.setError(currentError: error.toString());
       notifyListeners();
       return false;
     } on CustomException catch (error) {
-      console.log(error, 'CurrentUserProvider::update::CustomException');
+      console.custom(error, trace);
       props.setError(currentError: error.toString());
       notifyListeners();
       return false;
     } on AuthException catch (error) {
-      console.log(error, 'CurrentUserProvider::update::AuthException');
+      console.authentication(error, trace);
       props.setError(currentError: error.message.toString());
       notifyListeners();
       return false;
     } catch (error) {
-      console.log(error, 'CurrentUserProvider::update');
+      console.error(error, trace);
       props.setError(currentError: "something_went_wrong".tr);
       notifyListeners();
       return false;
@@ -162,7 +180,6 @@ class CurrentUserProvider with ChangeNotifier {
       if (!connectivity.isConnected) {
         throw NoInternetException();
       }
-      console.log(users.toJson(skip: ['id']));
 
       var response = await supabase
           .from('Users')
@@ -183,22 +200,22 @@ class CurrentUserProvider with ChangeNotifier {
         return false;
       }
     } on NoInternetException catch (error) {
-      console.log(error, 'CurrentUserProvider::create::NoInternetException');
+      console.internet(error, trace);
       props.setError(currentError: error.toString());
       notifyListeners();
       return false;
     } on CustomException catch (error) {
-      console.log(error, 'CurrentUserProvider::create::CustomException');
+      console.custom(error, trace);
       props.setError(currentError: error.toString());
       notifyListeners();
       return false;
     } on AuthException catch (error) {
-      console.log(error, 'CurrentUserProvider::create::AuthException');
+      console.authentication(error, trace);
       props.setError(currentError: error.message.toString());
       notifyListeners();
       return false;
     } catch (error) {
-      console.log(error, 'CurrentUserProvider::create');
+      console.error(error, trace);
       props.setError(currentError: "something_went_wrong".tr);
       notifyListeners();
       return false;
@@ -218,19 +235,19 @@ class CurrentUserProvider with ChangeNotifier {
       props.setSuccess();
       notifyListeners();
     } on NoInternetException catch (error) {
-      console.log(error, 'CurrentUserProvider::setAvatar::NoInternetException');
+      console.internet(error, trace);
       props.setError(currentError: error.toString());
       notifyListeners();
     } on CustomException catch (error) {
-      console.log(error, 'CurrentUserProvider::setAvatar::CustomException');
+      console.custom(error, trace);
       props.setError(currentError: error.toString());
       notifyListeners();
     } on AuthException catch (error) {
-      console.log(error, 'CurrentUserProvider::setAvatar::AuthException');
+      console.authentication(error, trace);
       props.setError(currentError: error.message.toString());
       notifyListeners();
     } catch (error) {
-      console.log(error, 'CurrentUserProvider::setAvatar');
+      console.error(error, trace);
       props.setError(currentError: "something_went_wrong".tr);
       notifyListeners();
     }
@@ -244,7 +261,7 @@ class CurrentUserProvider with ChangeNotifier {
       }
       return files.any((file) => file.name == name);
     } catch (error) {
-      console.log(error, 'CurrentUserProvider::exists');
+      console.error(error, trace);
       return false;
     }
   }
@@ -269,20 +286,19 @@ class CurrentUserProvider with ChangeNotifier {
       props.setSuccess();
       notifyListeners();
     } on NoInternetException catch (error) {
-      console.log(
-          error, 'CurrentUserProvider::uploadProfile::NoInternetException');
+      console.internet(error, trace);
       props.setError(currentError: error.toString());
       notifyListeners();
     } on CustomException catch (error) {
-      console.log(error, 'CurrentUserProvider::uploadProfile::CustomException');
+      console.custom(error, trace);
       props.setError(currentError: error.toString());
       notifyListeners();
     } on AuthException catch (error) {
-      console.log(error, 'CurrentUserProvider::uploadProfile::AuthException');
+      console.authentication(error, trace);
       props.setError(currentError: error.message.toString());
       notifyListeners();
     } catch (error) {
-      console.log(error, 'CurrentUserProvider::uploadProfile');
+      console.error(error, trace);
       props.setError(currentError: "something_went_wrong".tr);
       notifyListeners();
     }

@@ -8,6 +8,7 @@ export 'order_guests.dart';
 export 'orders.dart';
 export 'product_itineraries.dart';
 export 'product_photos.dart';
+export 'product_price.dart';
 export 'product_review.dart';
 export 'product_videos.dart';
 export 'products.dart';

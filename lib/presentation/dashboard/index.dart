@@ -14,11 +14,15 @@ class DashboardScreen extends StatefulWidget {
 class DashboardScreenState extends State<DashboardScreen> {
   bool preloader = true;
   final scaffoldKey = GlobalKey<ScaffoldState>();
+  late ReviewService review;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      review = context.read<ReviewService>();
+
+      review.fetch(context);
       setState(() {
         preloader = false;
       });

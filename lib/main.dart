@@ -6,15 +6,11 @@ import 'core/app_export.dart';
 void main() async {
   Provider.debugCheckInvalidValueType = null;
   WidgetsFlutterBinding.ensureInitialized();
-  Stripe.publishableKey =
-      "pk_test_51JXpyCFGJlqg5MKbnfM9Pk4US23dbdTMnd3sabQOMIUxyU1JyU0kpKRH4k2FIbnM0KNk5kEoskGdy4PCf1hQppKB00AcKnhCH3";
-  Stripe.merchantIdentifier = "merchant.identifier";
 
   await Hive.initFlutter();
   await Supabase.initialize(
-    url: 'https://vtdjscrvogtprhlhvdwr.supabase.co',
-    anonKey:
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ0ZGpzY3J2b2d0cHJobGh2ZHdyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDc5NTEzNjUsImV4cCI6MjAyMzUyNzM2NX0.tOsJtFUD20JbYGk00O39jU3sYSrM2fOr8QiWGOSpvh0',
+    url: Environment.url,
+    anonKey: Environment.anonKey,
     authOptions: const FlutterAuthClientOptions(
       authFlowType: AuthFlowType.pkce,
     ),
@@ -48,6 +44,7 @@ void main() async {
           ChangeNotifierProvider(create: (c) => ProductsProvider(c)),
           ChangeNotifierProvider(create: (c) => FavouritesProvider(c)),
           ChangeNotifierProvider(create: (c) => OrderGuestsProvider(c)),
+          ChangeNotifierProvider(create: (c) => ProductPriceProvider(c)),
           ChangeNotifierProvider(create: (c) => DependenciesProvider(c)),
           ChangeNotifierProvider(create: (c) => ProductVideosProvider(c)),
           ChangeNotifierProvider(create: (c) => ProductPhotosProvider(c)),

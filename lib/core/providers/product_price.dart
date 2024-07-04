@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import '/core/app_export.dart';
 
-class ProductsProvider with ChangeNotifier {
+class ProductPriceProvider with ChangeNotifier {
   final BuildContext context;
   final supabase = Supabase.instance.client;
   late ConnectivityProvider connectivity;
 
   Props props = Props(data: [], initialData: []);
-  Props propsSingle = Props(data: [], initialData: []);
 
-  ProductsProvider(this.context) {
+  ProductPriceProvider(this.context) {
     connectivity = context.read<ConnectivityProvider>();
   }
   String get trace {
@@ -33,88 +32,55 @@ class ProductsProvider with ChangeNotifier {
     }
   }
 
-  Future<void> onReady() async {
+  Future<void> onRefresh(dynamic request) async {
+    await getPrice(request);
+  }
+
+  Future<ProductPrice> getPrice(Map<String, dynamic> params) async {
     try {
       props.setLoading();
       notifyListeners();
-
-      if (!connectivity.isConnected) {
-        throw NoInternetException();
-      }
-
-      final response = await supabase.from('Products').select();
-      if (response.isEmpty) {
-        props.setSuccess(currentData: []);
-        notifyListeners();
-      } else {
-        List<Products> list = [];
-        for (var data in response) {
-          list.add(Products.fromJson(data));
-        }
-        props.setSuccess(currentData: list);
-        notifyListeners();
-      }
-    } on NoInternetException catch (error) {
-      console.internet(error, trace);
-      props.setError(currentError: error.toString());
-      notifyListeners();
-    } on CustomException catch (error) {
-      console.custom(error, trace);
-      props.setError(currentError: error.toString());
-      notifyListeners();
-    } on AuthException catch (error) {
-      console.authentication(error, trace);
-      props.setError(currentError: error.message.toString());
-      notifyListeners();
-    } catch (error) {
-      console.error(error, trace);
-      props.setError(currentError: "something_went_wrong".tr);
-      notifyListeners();
-    }
-  }
-
-  Future<void> onRefresh() async {
-    await onReady();
-  }
-
-  Future<void> findById(num id) async {
-    try {
-      propsSingle.setLoading();
-      notifyListeners();
-
       if (!connectivity.isConnected) {
         throw NoInternetException();
       }
 
       final response = await supabase
-          .from('Products')
+          .from('ProductPrice')
           .select()
-          .eq('Id', '$id')
-          .limit(1)
-          .maybeSingle();
-      if (response == null) {
-        propsSingle.setSuccess(currentData: []);
+          .eq('ProductId', params['productId'])
+          .eq('Quantity', params['quantity'])
+          .single();
+
+      if (response.isEmpty) {
+        props.setSuccess(currentData: []);
         notifyListeners();
+        return ProductPrice();
       } else {
-        propsSingle.setSuccess(currentData: Products.fromJson(response));
+        ProductPrice productPrice = ProductPrice.fromJson(response);
+        props.setSuccess(currentData: productPrice);
         notifyListeners();
+        return productPrice;
       }
     } on NoInternetException catch (error) {
       console.internet(error, trace);
-      propsSingle.setError(currentError: error.toString());
+      props.setError(currentError: error.toString());
       notifyListeners();
+      return ProductPrice();
     } on CustomException catch (error) {
       console.custom(error, trace);
-      propsSingle.setError(currentError: error.toString());
+      props.setError(currentError: error.toString());
       notifyListeners();
+      return ProductPrice();
     } on AuthException catch (error) {
       console.authentication(error, trace);
-      propsSingle.setError(currentError: error.message.toString());
+      props.setError(currentError: error.message.toString());
       notifyListeners();
+      return ProductPrice();
     } catch (error) {
       console.error(error, trace);
-      propsSingle.setError(currentError: "something_went_wrong".tr);
+      props.setError(currentError: "something_went_wrong".tr);
       notifyListeners();
+      return ProductPrice();
     }
   }
 }

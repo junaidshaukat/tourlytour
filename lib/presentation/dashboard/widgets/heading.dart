@@ -67,8 +67,6 @@ class Heading extends StatelessWidget {
                           children: [
                             CustomImageView(
                               imagePath: "location".icon.svg,
-                              height: 19.v,
-                              width: 14.h,
                               margin: EdgeInsets.symmetric(vertical: 4.v),
                             ),
                             Padding(
@@ -104,8 +102,6 @@ class Heading extends StatelessWidget {
                             ),
                             CustomImageView(
                               imagePath: "calander".icon.svg,
-                              height: 18.adaptSize,
-                              width: 18.adaptSize,
                               margin: EdgeInsets.only(
                                 left: 18.h,
                                 top: 5.v,

@@ -41,8 +41,8 @@ class Appbar extends StatelessWidget implements PreferredSizeWidget {
         child: Row(
           children: [
             CustomImageView(
-              width: 38.v,
-              height: 38.v,
+              width: 30.adaptSize,
+              height: 30.adaptSize,
               imagePath: "menu".icon.svg,
               onTap: onPressed,
             ),
@@ -50,8 +50,8 @@ class Appbar extends StatelessWidget implements PreferredSizeWidget {
             Row(
               children: [
                 CustomImageView(
-                  width: 44.v,
-                  height: 44.v,
+                  width: 30.adaptSize,
+                  height: 30.adaptSize,
                   imagePath: "logo".icon.svg,
                 ),
                 Text(

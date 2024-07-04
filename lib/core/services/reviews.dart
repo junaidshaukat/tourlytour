@@ -8,18 +8,54 @@ class ReviewService with ChangeNotifier {
 
   late ConnectivityProvider connectivity;
   late CurrentUserProvider currentUser;
+  late ProductReviewsProvider productReviews;
 
   final BuildContext context;
   final supabase = Supabase.instance.client;
 
   Props props = Props(data: [], initialData: []);
 
+  num rating = 1;
+  num hospitality = 1;
+  num impressiveness = 1;
+  num valueForMoney = 1;
+  num seamlessExperience = 1;
+
+  String? errMsg;
+  List photos = [];
+  String? description;
+  List<ProductReviewPhotos> removePhotos = [];
+
   ReviewService(this.context) {
     connectivity = context.read<ConnectivityProvider>();
     currentUser = context.read<CurrentUserProvider>();
+    productReviews = context.read<ProductReviewsProvider>();
   }
 
-  Future<void> submit() async {
+  String get trace {
+    final stackTrace = StackTrace.current;
+    final frames = stackTrace.toString().split('\n');
+
+    if (frames.length > 1) {
+      final callerFrame = frames[1].trim();
+      final regex = RegExp(r'#\d+\s+(\S+)\.(\S+)\s+\(.*\)');
+      final match = regex.firstMatch(callerFrame);
+
+      if (match != null) {
+        final className = match.group(1);
+        final methodName = match.group(2);
+        return "$className::$methodName";
+      } else {
+        // here get auto class name and method where it call
+        return "$runtimeType::unknown";
+      }
+    } else {
+      // here get auto class name and method where it call
+      return "$runtimeType::unknown";
+    }
+  }
+
+  Future<void> submit(ReviewsPending item) async {
     try {
       props.setProcessing();
       notifyListeners();
@@ -28,49 +64,71 @@ class ReviewService with ChangeNotifier {
         throw NoInternetException();
       }
 
-      Future.delayed(const Duration(seconds: 5));
+      ProductReviews reviews = ProductReviews(
+        rate: rating,
+        userId: currentUser.id,
+        description: description,
+        hospitality: hospitality,
+        valueForMoney: valueForMoney,
+        impressiveness: impressiveness,
+        productId: item.order.productId,
+        seamlessExperience: seamlessExperience,
+      );
 
-      props.setSuccess();
-      notifyListeners();
+      final response =
+          await productReviews.create(reviews, photos, item.order.id);
+      if (response != null) {
+        props.setSuccess();
+        notifyListeners();
+        NavigatorService.goBack();
+      } else {
+        throw CustomException("");
+      }
     } on NoInternetException catch (error) {
-      console.log(error, 'AuthenticationProvider::signin::NoInternetException');
+      console.internet(error, trace);
       props.setError(currentError: error.toString());
       notifyListeners();
     } on CustomException catch (error) {
-      console.log(error, 'AuthenticationProvider::signin::CustomException');
+      console.custom(error, trace);
       props.setError(currentError: error.toString());
       notifyListeners();
     } on AuthException catch (error) {
-      console.log(error,
-          'AuthenticationProvider::signin::AuthException::AuthException');
+      console.authentication(error, trace);
       props.setError(currentError: error.message.toString());
       notifyListeners();
     } catch (error) {
-      console.log(error, 'AuthenticationProvider::signin');
+      console.error(error, trace);
       props.setError(currentError: "something_went_wrong".tr);
       notifyListeners();
     }
   }
 
-  void fetch(BuildContext ctx, [int seconds = 5]) {
+  void fetch(BuildContext ctx, [int seconds = 2]) {
     Future.delayed(Duration(seconds: seconds), () {
       if (!connectivity.isConnected) {
         throw NoInternetException();
       }
-      supabase
-          .from('Orders')
-          .select()
-          .eq('isReview', 0)
-          .eq('UserId', currentUser.id)
-          .single()
-          .then((response) {
-        console.log(response);
-        openBottomSheet(ctx);
+
+      supabase.rpc('reviews_pending', params: {
+        'data': {'UserId': currentUser.id}
+      }).then((response) {
+        if (response != null) {
+          openBottomSheet(ctx, ReviewsPending.fromJson(response));
+        }
       });
     });
   }
 
-  void openBottomSheet(BuildContext ctx) {
+  void openBottomSheet(BuildContext ctx, ReviewsPending item) {
+    errMsg = null;
+    photos = [];
+    removePhotos = [];
+    rating = 1;
+    hospitality = 1;
+    impressiveness = 1;
+    valueForMoney = 1;
+    seamlessExperience = 1;
+
     showModalBottomSheet(
       context: ctx,
       isScrollControlled: true,
@@ -86,22 +144,16 @@ class ReviewService with ChangeNotifier {
           minChildSize: 0.25,
           initialChildSize: 0.8,
           builder: (context, controller) {
-            String? errMsg;
-            List photos = [];
-            List<ProductReviewPhotos> removePhotos = [];
-
             return StatefulBuilder(
               builder: (context, setState) {
                 return PopScope(
                     canPop: false,
-                    onPopInvoked: (pop) {
-                      console.log(pop);
-                    },
+                    onPopInvoked: (pop) {},
                     child: Container(
                       width: double.maxFinite,
                       padding: EdgeInsets.symmetric(
                         horizontal: 8.h,
-                        vertical: 8.v,
+                        vertical: 4.v,
                       ),
                       decoration: BoxDecoration(
                         color: Colors.white,
@@ -138,9 +190,9 @@ class ReviewService with ChangeNotifier {
                               ),
                             ],
                           ),
-                          const SizedBox(height: 4.0),
+                          SizedBox(height: 2.v),
                           const HorizontalDivider(),
-                          const SizedBox(height: 4.0),
+                          SizedBox(height: 2.v),
                           Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.start,
@@ -149,77 +201,135 @@ class ReviewService with ChangeNotifier {
                                 fit: BoxFit.cover,
                                 height: 94.adaptSize,
                                 width: 100.adaptSize,
-                                imagePath: "product".image.png,
+                                imagePath: item.product.thumbnailUrl,
                                 radius: BorderRadius.circular(
                                   10.h,
                                 ),
                               ),
-                              Padding(
-                                padding: EdgeInsets.only(
-                                  left: 13.h,
-                                  bottom: 26.v,
-                                ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    SizedBox(
-                                      width: 196.h,
-                                      child: Text(
-                                        "Product Name",
-                                        maxLines: 2,
+                              Expanded(
+                                child: Padding(
+                                  padding: EdgeInsets.only(
+                                    left: 13.h,
+                                    bottom: 26.v,
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      SizedBox(
+                                        child: Text(
+                                          maxLines: 2,
+                                          item.product.name ?? '',
+                                          overflow: TextOverflow.ellipsis,
+                                          style: CustomTextStyles
+                                              .labelLargeSemiBold,
+                                        ),
+                                      ),
+                                      SizedBox(height: 2.v),
+                                      Text(
+                                        "Order Number: ${item.order.orderNumber ?? ''}",
                                         overflow: TextOverflow.ellipsis,
                                         style:
                                             CustomTextStyles.labelLargeSemiBold,
                                       ),
-                                    ),
-                                    SizedBox(height: 5.v),
-                                    Text(
-                                      "\$85 ${"usd".tr}",
-                                      style: theme.textTheme.titleMedium,
-                                    )
-                                  ],
+                                      SizedBox(height: 2.v),
+                                      Row(
+                                        children: [
+                                          Text(
+                                            "Price: \$${item.order.totalAmount ?? ''} ${"usd".tr}",
+                                            overflow: TextOverflow.ellipsis,
+                                            style: CustomTextStyles
+                                                .labelLargeSemiBold,
+                                          ),
+                                          SizedBox(width: 16.h),
+                                          Text(
+                                            "${'people'.tr} ${item.order.totalNumberOfGuest}",
+                                            overflow: TextOverflow.ellipsis,
+                                            style: CustomTextStyles
+                                                .labelLargeSemiBold,
+                                          )
+                                        ],
+                                      )
+                                    ],
+                                  ),
                                 ),
                               )
                             ],
                           ),
-                          const SizedBox(height: 8.0),
+                          SizedBox(height: 2.v),
                           CustomTextFormField(
                             maxLines: 4,
-                            onChanged: (val) {},
+                            onChanged: (val) {
+                              setState(() {
+                                description = val;
+                              });
+                            },
                           ),
-                          const SizedBox(height: 4.0),
+                          SizedBox(height: 2.v),
                           const HorizontalDivider(),
-                          const SizedBox(height: 4.0),
+                          SizedBox(height: 2.v),
+                          LabelReview(
+                            label: 'rating'.tr,
+                            initial: rating.toDouble(),
+                            onChange: (val) {
+                              setState(() {
+                                rating = val.toInt();
+                              });
+                            },
+                          ),
+                          SizedBox(height: 2.v),
+                          const HorizontalDivider(),
+                          SizedBox(height: 2.v),
                           LabelReview(
                             label: 'hospitality'.tr,
-                            onChange: (val) {},
+                            initial: hospitality.toDouble(),
+                            onChange: (val) {
+                              setState(() {
+                                hospitality = val.toInt();
+                              });
+                            },
                           ),
-                          const SizedBox(height: 4.0),
+                          SizedBox(height: 2.v),
                           const HorizontalDivider(),
-                          const SizedBox(height: 4.0),
+                          SizedBox(height: 2.v),
                           LabelReview(
                             label: 'impressiveness'.tr,
-                            onChange: (val) {},
+                            initial: impressiveness.toDouble(),
+                            onChange: (val) {
+                              setState(() {
+                                impressiveness = val.toInt();
+                              });
+                            },
                           ),
-                          const SizedBox(height: 4.0),
+                          SizedBox(height: 2.v),
                           const HorizontalDivider(),
-                          const SizedBox(height: 4.0),
+                          SizedBox(height: 2.v),
                           LabelReview(
                             label: 'value_for_money'.tr,
-                            onChange: (val) {},
+                            initial: valueForMoney.toDouble(),
+                            onChange: (val) {
+                              setState(() {
+                                valueForMoney = val.toInt();
+                              });
+                            },
                           ),
-                          const SizedBox(height: 4.0),
+                          SizedBox(height: 2.v),
                           const HorizontalDivider(),
-                          const SizedBox(height: 4.0),
+                          SizedBox(height: 2.v),
                           LabelReview(
                             label: 'seamless_experience'.tr,
-                            onChange: (val) {},
+                            initial: seamlessExperience.toDouble(),
+                            onChange: (val) {
+                              setState(() {
+                                seamlessExperience = val.toInt();
+                              });
+                            },
                           ),
-                          const SizedBox(height: 4.0),
+                          SizedBox(height: 2.v),
                           const HorizontalDivider(),
-                          const SizedBox(height: 4.0),
+                          SizedBox(height: 2.v),
                           SizedBox(
-                            height: 80,
+                            height: 70.v,
                             child: ListView.separated(
                               padding: EdgeInsets.zero,
                               itemCount: photos.length + 1,
@@ -232,7 +342,8 @@ class ReviewService with ChangeNotifier {
                                           .pickMultiImage(limit: 4)
                                           .then((files) {
                                         if (files.isNotEmpty) {
-                                          if (files.length > 4) {
+                                          if (files.length > 4 ||
+                                              photos.length > 4) {
                                             errMsg =
                                                 'Please select up to 4 images only.';
                                             setState(() {});
@@ -245,12 +356,12 @@ class ReviewService with ChangeNotifier {
                                       });
                                     },
                                     child: Container(
-                                      width: 80,
-                                      height: 80,
+                                      width: 70.h,
+                                      height: 70.v,
                                       color: Colors.grey[300],
-                                      child: const Icon(
+                                      child: Icon(
                                         Icons.add_a_photo,
-                                        size: 50,
+                                        size: 50.adaptSize,
                                       ),
                                     ),
                                   );
@@ -261,14 +372,14 @@ class ReviewService with ChangeNotifier {
                                         padding: const EdgeInsets.all(8.0),
                                         child: photos[index] is XFile
                                             ? Image.file(
-                                                width: 80,
-                                                height: 80,
+                                                width: 70.h,
+                                                height: 70.v,
                                                 fit: BoxFit.cover,
                                                 File(photos[index].path),
                                               )
                                             : Image.network(
-                                                width: 80,
-                                                height: 80,
+                                                width: 70.h,
+                                                height: 70.v,
                                                 fit: BoxFit.cover,
                                                 photos[index].url,
                                               ),
@@ -328,8 +439,8 @@ class ReviewService with ChangeNotifier {
                                 ),
                               ],
                             ),
-                          if (errMsg != null) const SizedBox(height: 4.0),
-                          const SizedBox(height: 4.0),
+                          if (errMsg != null) SizedBox(height: 2.v),
+                          SizedBox(height: 2.v),
                           Consumer<ReviewService>(
                             builder: (BuildContext context, provider,
                                 Widget? child) {
@@ -341,7 +452,7 @@ class ReviewService with ChangeNotifier {
                                   leftIcon: CustomProgressButton(
                                     lable: 'processing'.tr,
                                     textStyle:
-                                        CustomTextStyles.titleLargeBlack900,
+                                        CustomTextStyles.titleLargeWhite900,
                                   ),
                                   buttonStyle:
                                       CustomButtonStyles.fillPrimaryTL29,
@@ -376,7 +487,7 @@ class ReviewService with ChangeNotifier {
                                         buttonTextStyle:
                                             CustomTextStyles.titleLargeWhite900,
                                         onPressed: () async {
-                                          await provider.submit();
+                                          await provider.submit(item);
                                         },
                                       )
                                     ],
@@ -391,21 +502,12 @@ class ReviewService with ChangeNotifier {
                                   buttonTextStyle:
                                       CustomTextStyles.titleLargeWhite900,
                                   onPressed: () async {
-                                    await provider.submit();
+                                    await provider.submit(item);
                                   },
                                 );
                               }
                             },
                           ),
-                          // CustomElevatedButton(
-                          //   text: "submit_review".tr,
-                          //   buttonStyle: CustomButtonStyles.fillYellow,
-                          //   buttonTextStyle:
-                          //       CustomTextStyles.titleLargeBlack900.copyWith(
-                          //     color: appTheme.whiteA700,
-                          //   ),
-                          //   onPressed: () {},
-                          // ),
                         ],
                       ),
                     ));

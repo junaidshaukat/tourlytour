@@ -9,11 +9,15 @@ class OtherInformationScreen extends StatefulWidget {
 }
 
 class OtherInformationScreenState extends State<OtherInformationScreen> {
-  late BookingRequest request;
   bool preloader = true;
 
-  String phoneCode = "+93";
+  late BookingRequest request;
+  late ProductPriceProvider productPriceProvider;
+
+  String phoneCode = "+1";
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
+  ProductPrice productPrice = ProductPrice(price: 0);
 
   Map<int, Map<String, dynamic>> controllers = {};
   Map<int, Map<String, dynamic>> values = {};
@@ -24,21 +28,28 @@ class OtherInformationScreenState extends State<OtherInformationScreen> {
   TextEditingController hotelName = TextEditingController();
   TextEditingController hotelAddress = TextEditingController();
   TextEditingController hotelRoomNumber = TextEditingController();
+  late StripeProvider stripe;
 
   @override
   void initState() {
     super.initState();
+    stripe = context.read<StripeProvider>();
+    productPriceProvider = context.read<ProductPriceProvider>();
+
     WidgetsBinding.instance.addPostFrameCallback((_) async {
+      productPrice = await productPriceProvider.getPrice({
+        'productId': request.productId,
+        'quantity': request.totalNumberOfGuest
+      });
+
       for (var i = 0; i < request.totalNumberOfGuest; i++) {
         controllers[i] = {
           'name': TextEditingController(),
           'passport': TextEditingController(),
-          'date_of_birth': TextEditingController(),
         };
         values[i] = {
           'name': null,
           'passport': null,
-          'date_of_birth': null,
         };
       }
 
@@ -56,33 +67,44 @@ class OtherInformationScreenState extends State<OtherInformationScreen> {
 
   Future<void> onContinue() async {
     if (formKey.currentState!.validate()) {
+      Payment payment = await stripe.payment(productPrice.price ?? 0);
+      String stripeToken = payment.data.clientSecret;
+      String stripeReferrenceNumber = payment.data.id;
+
       List<OrderGuests> guests = [];
       values.forEach((int key, Map<String, dynamic> value) {
         guests.add(OrderGuests.toGuest(value));
       });
 
       request.setStep02(
+        guests: guests,
+        paid: payment.paid,
         phoneCode: phoneCode,
+        status: payment.status,
         fullName: fullName.text,
+        stripeToken: stripeToken,
+        hotelName: hotelName.text,
+        totalPayment: productPrice.price ?? 0,
+        hotelAddress: hotelAddress.text,
         emailAddress: emailAddress.text,
         mobileNumber: mobileNumber.text,
-        hotelName: hotelName.text,
-        hotelAddress: hotelAddress.text,
         hotelRoomNumber: hotelRoomNumber.text,
-        guests: guests,
+        stripeReferrenceNumber: stripeReferrenceNumber,
       );
 
-      context.read<BookingProvider>().booking(request: request).then(
-        (orders) {
-          request.setOrders(orders.toJson());
-          NavigatorService.push(
-            context,
-            const ConfirmationScreen(),
-            arguments: request,
-          );
-        },
-        onError: (error) {},
-      );
+      if (mounted) {
+        context.read<BookingProvider>().booking(request: request).then(
+          (orders) {
+            request.setOrders(orders.toJson());
+            NavigatorService.push(
+              context,
+              const ConfirmationScreen(),
+              arguments: request,
+            );
+          },
+          onError: (error) {},
+        );
+      }
     }
   }
 
@@ -342,7 +364,7 @@ class OtherInformationScreenState extends State<OtherInformationScreen> {
                           ),
                           SizedBox(height: 5.v),
                           Text(
-                            "${request.product.price} ${"usd".tr}",
+                            "\$${productPrice.price} ${"usd".tr}",
                             style: theme.textTheme.titleMedium,
                           )
                         ],
@@ -469,7 +491,6 @@ class OtherInformationScreenState extends State<OtherInformationScreen> {
                             request.totalNumberOfGuest.toInt(), (i) {
                           final name = controllers[i]?['name'];
                           final passport = controllers[i]?['passport'];
-                          final dateOfBirth = controllers[i]?['date_of_birth'];
 
                           return Column(
                             children: [
@@ -502,26 +523,6 @@ class OtherInformationScreenState extends State<OtherInformationScreen> {
                                 },
                                 validator: (val) {
                                   return Validator.passport(val);
-                                },
-                              ),
-                              SizedBox(height: 4.v),
-                              input(
-                                type: 'date_of_birth',
-                                hintText: values[i]?['date_of_birth'] ??
-                                    'date_of_birth'.tr,
-                                controller: dateOfBirth,
-                                onTap: () async {
-                                  DateTime? dateTime =
-                                      await Pickers.date(context);
-                                  values[i]?['date_of_birth'] =
-                                      dateTime?.format('yyyy-MM-dd');
-                                  dateOfBirth.text =
-                                      dateTime?.format('yyyy-MM-dd');
-
-                                  setState(() {});
-                                },
-                                validator: (val) {
-                                  return Validator.dateOfBirth(val);
                                 },
                               ),
                               SizedBox(height: 12.v),

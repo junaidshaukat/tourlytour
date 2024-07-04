@@ -18,10 +18,12 @@ class HorizontalDivider extends StatelessWidget {
 
 class LabelReview extends StatelessWidget {
   final String label;
+  final double initial;
   final void Function(double) onChange;
   const LabelReview({
     super.key,
     required this.label,
+    required this.initial,
     required this.onChange,
   });
 
@@ -43,9 +45,9 @@ class LabelReview extends StatelessWidget {
         RatingBar.builder(
           minRating: 1,
           itemCount: 5,
-          initialRating: 3,
           itemSize: 24,
-          allowHalfRating: true,
+          initialRating: initial,
+          allowHalfRating: false,
           onRatingUpdate: onChange,
           direction: Axis.horizontal,
           itemBuilder: (context, _) {

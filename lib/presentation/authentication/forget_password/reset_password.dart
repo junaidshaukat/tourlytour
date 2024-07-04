@@ -161,8 +161,6 @@ class ResetPasswordScreenState extends State<ResetPasswordScreen> {
                         imagePath: isShowPassword == false
                             ? "eye_slash".icon.svg
                             : "eye".icon.svg,
-                        height: 22.adaptSize,
-                        width: 22.adaptSize,
                       ),
                     ),
                   ),
@@ -198,8 +196,6 @@ class ResetPasswordScreenState extends State<ResetPasswordScreen> {
                         imagePath: isShowConfirmPassword == false
                             ? "eye_slash".icon.svg
                             : "eye".icon.svg,
-                        height: 22.adaptSize,
-                        width: 22.adaptSize,
                       ),
                     ),
                   ),

@@ -235,8 +235,6 @@ class ProductCard extends StatelessWidget {
                       children: [
                         CustomImageView(
                           imagePath: "star".icon.svg,
-                          height: 12.adaptSize,
-                          width: 12.adaptSize,
                         ),
                         SizedBox(width: 2.h),
                         Text(
@@ -266,8 +264,6 @@ class ProductCard extends StatelessWidget {
                       children: [
                         CustomImageView(
                           imagePath: "marker".icon.svg,
-                          height: 12.adaptSize,
-                          width: 12.adaptSize,
                         ),
                         SizedBox(width: 2.h),
                         Text(
@@ -300,8 +296,6 @@ class ProductCard extends StatelessWidget {
                       children: [
                         CustomImageView(
                           imagePath: "loading".icon.svg,
-                          height: 12.adaptSize,
-                          width: 12.adaptSize,
                         ),
                         SizedBox(width: 2.h),
                         Text(
@@ -357,9 +351,9 @@ class ProductCard extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       CustomImageView(
-                        imagePath: "compare".icon.svg,
-                        height: 9.adaptSize,
                         width: 9.adaptSize,
+                        height: 9.adaptSize,
+                        imagePath: "compare".icon.svg,
                         margin: EdgeInsets.only(
                           top: 7.v,
                           bottom: 8.v,

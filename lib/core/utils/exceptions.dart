@@ -25,3 +25,16 @@ class CustomException implements Exception {
     return _message;
   }
 }
+
+class PaymentIntentException implements Exception {
+  late String _message;
+
+  PaymentIntentException([String message = 'something_went_wrong']) {
+    _message = message.tr;
+  }
+
+  @override
+  String toString() {
+    return _message;
+  }
+}

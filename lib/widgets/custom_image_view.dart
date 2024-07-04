@@ -148,18 +148,18 @@ class CustomImageView extends StatelessWidget {
     switch (src.imageType) {
       case ImageType.svg:
         return SizedBox(
-          width: width,
-          height: height,
+          width: width ?? 20.adaptSize,
+          height: height ?? 20.adaptSize,
           child: SvgPicture.asset(
             src,
-            width: width,
-            height: height,
+            width: width ?? 20.adaptSize,
+            height: height ?? 20.adaptSize,
             colorFilter: colorFilter,
             fit: fit ?? BoxFit.contain,
             placeholderBuilder: (context) {
               return SvgPicture.asset(
-                width: width,
-                height: height,
+                width: width ?? 20.adaptSize,
+                height: height ?? 20.adaptSize,
                 colorFilter: colorFilter,
                 fit: fit ?? BoxFit.contain,
                 "assets/icons/image_not_found.svg",
@@ -243,12 +243,12 @@ class CustomImageView extends StatelessWidget {
     switch (imagePath.imageType) {
       case ImageType.svg:
         return SizedBox(
-          width: width,
-          height: height,
+          width: width ?? 20.adaptSize,
+          height: height ?? 20.adaptSize,
           child: SvgPicture.asset(
             imagePath!,
-            width: width,
-            height: height,
+            width: width ?? 20.adaptSize,
+            height: height ?? 20.adaptSize,
             colorFilter: colorFilter,
             fit: fit ?? BoxFit.contain,
             placeholderBuilder: _placeholderBuilder,

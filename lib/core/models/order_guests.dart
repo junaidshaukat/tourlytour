@@ -1,14 +1,12 @@
 class OrderGuests {
   num? id;
   String? name;
-  DateTime? dateOfBirth;
   String? passportNumber;
   num? orderId;
 
   OrderGuests({
     this.id,
     this.name,
-    this.dateOfBirth,
     this.passportNumber,
     this.orderId,
   });
@@ -17,9 +15,6 @@ class OrderGuests {
     return OrderGuests(
       id: json['Id'] as num?,
       name: json['Name'] as String?,
-      dateOfBirth: json['DateOfBirth'] != null
-          ? DateTime.parse(json['DateOfBirth'])
-          : null,
       passportNumber: json['PassportNumber'] as String?,
       orderId: json['OrderId'] as num?,
     );
@@ -28,9 +23,6 @@ class OrderGuests {
   factory OrderGuests.toGuest(dynamic json) {
     return OrderGuests(
       name: json['name'] as String?,
-      dateOfBirth: json['date_of_birth'] != null
-          ? DateTime.parse(json['date_of_birth'])
-          : null,
       passportNumber: json['passport'] as String?,
     );
   }
@@ -44,10 +36,6 @@ class OrderGuests {
 
     if (!skip.contains('name')) {
       data['Name'] = name;
-    }
-
-    if (!skip.contains('dateOfBirth')) {
-      data['DateOfBirth'] = dateOfBirth?.toIso8601String();
     }
 
     if (!skip.contains('passportNumber')) {

@@ -214,11 +214,11 @@ class ReviewTabState extends State<ReviewTab> {
                   children: [
                     progress(
                       title: 'seamless_experience'.tr,
-                      value: provider.seamlessExperience(data),
+                      value: provider.average(data, 'seamless_experience'),
                     ),
                     progress(
                       title: 'hospitality'.tr,
-                      value: provider.hospitality(data),
+                      value: provider.average(data, 'hospitality'),
                     ),
                   ],
                 ),
@@ -228,11 +228,11 @@ class ReviewTabState extends State<ReviewTab> {
                   children: [
                     progress(
                       title: 'value_for_money'.tr,
-                      value: provider.valueForMoney(data),
+                      value: provider.average(data, 'value_for_money'),
                     ),
                     progress(
                       title: 'impressiveness'.tr,
-                      value: provider.impressiveness(data),
+                      value: provider.average(data, 'impressiveness'),
                     ),
                   ],
                 ),

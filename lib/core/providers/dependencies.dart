@@ -17,6 +17,26 @@ class DependenciesProvider with ChangeNotifier {
     products = context.read<ProductsProvider>();
     favourites = context.read<FavouritesProvider>();
   }
+  String get trace {
+    final stackTrace = StackTrace.current;
+    final frames = stackTrace.toString().split('\n');
+
+    if (frames.length > 1) {
+      final callerFrame = frames[1].trim();
+      final regex = RegExp(r'#\d+\s+(\S+)\.(\S+)\s+\(.*\)');
+      final match = regex.firstMatch(callerFrame);
+
+      if (match != null) {
+        final className = match.group(1);
+        final methodName = match.group(2);
+        return "$className::$methodName";
+      } else {
+        return "$runtimeType::unknown";
+      }
+    } else {
+      return "$runtimeType::unknown";
+    }
+  }
 
   Future<bool> inject() async {
     try {
@@ -29,16 +49,16 @@ class DependenciesProvider with ChangeNotifier {
       await favourites.onReady();
       return true;
     } on NoInternetException catch (error) {
-      console.log(error, 'DependenciesProvider::inject::NoInternetException');
+      console.internet(error, trace);
       rethrow;
     } on CustomException catch (error) {
-      console.log(error, 'DependenciesProvider::inject::CustomException');
+      console.custom(error, trace);
       rethrow;
     } on AuthException catch (error) {
-      console.log(error, 'DependenciesProvider::inject::AuthException');
+      console.authentication(error, trace);
       rethrow;
     } catch (error) {
-      console.log(error, 'DependenciesProvider::inject');
+      console.error(error, trace);
       rethrow;
     }
   }

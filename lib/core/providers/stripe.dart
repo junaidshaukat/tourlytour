@@ -1,78 +1,120 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import '/core/app_export.dart';
-import 'package:http/http.dart' as http;
 
 class StripeProvider extends ChangeNotifier {
   final BuildContext context;
   late ConnectivityProvider connectivity;
-  Props props = Props(data: [], initialData: []);
-
-  String secretKey =
-      'sk_test_51JXpyCFGJlqg5MKbY1QvJ6SDfxHqup8uDSo5OvViftVHu0kHkaswjB9RtxJ4aSt78uPm7P50IZ4qURPYZyjwX6DE00iXMUa44s';
 
   StripeProvider(this.context) {
+    Stripe.publishableKey = Environment.publishableKey;
     connectivity = context.read<ConnectivityProvider>();
+    Stripe.merchantIdentifier = Environment.merchantIdentifier;
   }
+  String get trace {
+    final stackTrace = StackTrace.current;
+    final frames = stackTrace.toString().split('\n');
 
-  Future<void> makePayment() async {
-    try {
-      //STEP 1: Create Payment Intent
-      var paymentIntent = await createPaymentIntent('100', 'USD');
+    if (frames.length > 1) {
+      final callerFrame = frames[1].trim();
+      final regex = RegExp(r'#\d+\s+(\S+)\.(\S+)\s+\(.*\)');
+      final match = regex.firstMatch(callerFrame);
 
-      //STEP 2: Initialize Payment Sheet
-      await Stripe.instance
-          .initPaymentSheet(
-              paymentSheetParameters: SetupPaymentSheetParameters(
-                  paymentIntentClientSecret: paymentIntent![
-                      'client_secret'], //Gotten from payment intent
-                  style: ThemeMode.light,
-                  merchantDisplayName: 'Ikay'))
-          .then((value) {});
-
-      //STEP 3: Display Payment sheet
-      displayPaymentSheet();
-    } catch (err) {
-      throw Exception(err);
+      if (match != null) {
+        final className = match.group(1);
+        final methodName = match.group(2);
+        return "$className::$methodName";
+      } else {
+        return "$runtimeType::unknown";
+      }
+    } else {
+      return "$runtimeType::unknown";
     }
   }
 
-  createPaymentIntent(String amount, String currency) async {
+  Future<Payment> payment(num amount, [String currency = 'USD']) async {
+    dynamic intent = {};
     try {
-      //Request body
+      if (!connectivity.isConnected) {
+        throw NoInternetException();
+      }
+
+      intent = await createIntents('${amount * 100}', currency);
+
+      SetupPaymentSheetParameters params = SetupPaymentSheetParameters(
+        paymentIntentClientSecret: intent!['client_secret'],
+        style: ThemeMode.light,
+        merchantDisplayName: 'Ikay',
+      );
+
+      await Stripe.instance.initPaymentSheet(paymentSheetParameters: params);
+
+      await Stripe.instance.presentPaymentSheet();
+
+      return Payment.fromJson({
+        'error': false,
+        'data': intent,
+        'message': 'payment process complete',
+      });
+    } on NoInternetException catch (error) {
+      notifyListeners();
+      console.internet(error, trace);
+      return Payment.fromJson({
+        'error': true,
+        'data': intent,
+        'message': error.toString(),
+      });
+    } on PaymentIntentException catch (error) {
+      notifyListeners();
+      console.intent(error, trace);
+      return Payment.fromJson({
+        'error': true,
+        'data': intent,
+        'message': error.toString(),
+      });
+    } on StripeException catch (exception) {
+      notifyListeners();
+      console.stripe(exception, trace);
+      return Payment.fromJson({
+        'error': true,
+        'data': intent,
+        'message': exception.error.message.toString(),
+      });
+    } catch (error) {
+      notifyListeners();
+      console.error(error, trace);
+      return Payment.fromJson({
+        'error': true,
+        'data': intent,
+        'message': error.toString(),
+      });
+    }
+  }
+
+  Future<dynamic> createIntents(String amount, String currency) async {
+    try {
       Map<String, dynamic> body = {
         'amount': amount,
         'currency': currency,
       };
 
-      //Make post request to Stripe
-      var response = await http.post(
+      Response response = await post(
         Uri.parse('https://api.stripe.com/v1/payment_intents'),
         headers: {
-          'Authorization': 'Bearer $secretKey',
+          'Authorization': 'Bearer ${Environment.secretKey}',
           'Content-Type': 'application/x-www-form-urlencoded'
         },
         body: body,
       );
-      return json.decode(response.body);
-    } catch (err) {
-      throw Exception(err.toString());
-    }
-  }
 
-  displayPaymentSheet() async {
-    try {
-      await Stripe.instance
-          .presentPaymentSheet()
-          .then((value) {})
-          .onError((error, stackTrace) {
-        throw Exception(error);
-      });
-    } on StripeException catch (e) {
-      console.log('Error is:---> $e');
-    } catch (e) {
-      console.log('$e');
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else {
+        throw json.decode(response.body);
+      }
+    } catch (error) {
+      console.error(error, trace);
+      throw PaymentIntentException(error.toString());
     }
   }
 }

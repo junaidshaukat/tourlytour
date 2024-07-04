@@ -1,5 +1,6 @@
 export 'box.dart';
 export 'console.dart';
+export 'env.dart';
 export 'exceptions.dart';
 export 'extension.dart';
 export 'functions.dart';

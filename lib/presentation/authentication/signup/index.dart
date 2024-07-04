@@ -148,9 +148,9 @@ class SignUpScreenState extends State<SignUpScreen> {
                           ),
                         ),
                         CustomImageView(
-                          imagePath: "logo".icon.svg,
-                          height: 64.v,
                           width: 90.h,
+                          height: 64.v,
+                          imagePath: "logo".icon.svg,
                           alignment: Alignment.centerLeft,
                         )
                       ],
@@ -203,8 +203,6 @@ class SignUpScreenState extends State<SignUpScreen> {
                         imagePath: provider == AuthProvider.email
                             ? "phone".icon.svg
                             : "email".icon.svg,
-                        height: 22.adaptSize,
-                        width: 22.adaptSize,
                       ),
                     ),
                   ),
@@ -237,8 +235,6 @@ class SignUpScreenState extends State<SignUpScreen> {
                         imagePath: isShowPassword == false
                             ? "eye_slash".icon.svg
                             : "eye".icon.svg,
-                        height: 22.adaptSize,
-                        width: 22.adaptSize,
                       ),
                     ),
                   ),
@@ -274,8 +270,6 @@ class SignUpScreenState extends State<SignUpScreen> {
                         imagePath: isShowConfirmPassword == false
                             ? "eye_slash".icon.svg
                             : "eye".icon.svg,
-                        height: 22.adaptSize,
-                        width: 22.adaptSize,
                       ),
                     ),
                   ),

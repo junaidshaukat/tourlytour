@@ -69,7 +69,6 @@ class AuthForm {
 
     return data;
   }
-
 }
 
 class AuthProvider {

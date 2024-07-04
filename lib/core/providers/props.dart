@@ -5,6 +5,26 @@ class Props {
   Object? initialData;
 
   Props({this.state = 0, this.error, this.data, this.initialData});
+  String get trace {
+    final stackTrace = StackTrace.current;
+    final frames = stackTrace.toString().split('\n');
+
+    if (frames.length > 1) {
+      final callerFrame = frames[1].trim();
+      final regex = RegExp(r'#\d+\s+(\S+)\.(\S+)\s+\(.*\)');
+      final match = regex.firstMatch(callerFrame);
+
+      if (match != null) {
+        final className = match.group(1);
+        final methodName = match.group(2);
+        return "$className::$methodName";
+      } else {
+        return "$runtimeType::unknown";
+      }
+    } else {
+      return "$runtimeType::unknown";
+    }
+  }
 
   bool get isNone => state == 0 ? true : false;
   void setNone({

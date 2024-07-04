@@ -9,6 +9,26 @@ class ConnectivityProvider with ChangeNotifier {
   ConnectivityProvider(this.context) {
     connectivity.onConnectivityChanged.listen(listen);
   }
+  String get trace {
+    final stackTrace = StackTrace.current;
+    final frames = stackTrace.toString().split('\n');
+
+    if (frames.length > 1) {
+      final callerFrame = frames[1].trim();
+      final regex = RegExp(r'#\d+\s+(\S+)\.(\S+)\s+\(.*\)');
+      final match = regex.firstMatch(callerFrame);
+
+      if (match != null) {
+        final className = match.group(1);
+        final methodName = match.group(2);
+        return "$className::$methodName";
+      } else {
+        return "$runtimeType::unknown";
+      }
+    } else {
+      return "$runtimeType::unknown";
+    }
+  }
 
   void listen(List<ConnectivityResult> result) {
     if (result.contains(ConnectivityResult.mobile)) {
@@ -46,7 +66,7 @@ class ConnectivityProvider with ChangeNotifier {
         throw NoInternetException();
       }
     } catch (error) {
-      console.log(error, 'ConnectivityProvider::isConnected');
+      console.error(error, trace);
       throw NoInternetException();
     }
   }

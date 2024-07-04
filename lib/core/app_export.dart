@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 export 'package:hive/hive.dart';
 export 'package:intl/intl.dart';
+export 'package:http/http.dart';
 export 'package:provider/provider.dart';
 export 'package:share_plus/share_plus.dart';
 export 'package:flutter_svg/flutter_svg.dart';
@@ -12,6 +13,7 @@ export 'package:image_picker/image_picker.dart';
 export 'package:intl/date_symbol_data_local.dart';
 export 'package:country_picker/country_picker.dart';
 export 'package:flutter_stripe/flutter_stripe.dart';
+export 'package:webview_flutter/webview_flutter.dart';
 export 'package:pin_code_fields/pin_code_fields.dart';
 export 'package:supabase_flutter/supabase_flutter.dart';
 export 'package:connectivity_plus/connectivity_plus.dart';

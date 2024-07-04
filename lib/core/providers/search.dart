@@ -16,6 +16,26 @@ class SearchProvider extends ChangeNotifier {
     props.setSuccess();
     notifyListeners();
   }
+  String get trace {
+    final stackTrace = StackTrace.current;
+    final frames = stackTrace.toString().split('\n');
+
+    if (frames.length > 1) {
+      final callerFrame = frames[1].trim();
+      final regex = RegExp(r'#\d+\s+(\S+)\.(\S+)\s+\(.*\)');
+      final match = regex.firstMatch(callerFrame);
+
+      if (match != null) {
+        final className = match.group(1);
+        final methodName = match.group(2);
+        return "$className::$methodName";
+      } else {
+        return "$runtimeType::unknown";
+      }
+    } else {
+      return "$runtimeType::unknown";
+    }
+  }
 
   Future<void> onSearch() async {
     try {
@@ -44,19 +64,19 @@ class SearchProvider extends ChangeNotifier {
         notifyListeners();
       }
     } on NoInternetException catch (error) {
-      console.log(error, 'SearchProvider::onSearch::NoInternetException');
+      console.internet(error, trace);
       props.setError(currentError: error.toString());
       notifyListeners();
     } on CustomException catch (error) {
-      console.log(error, 'SearchProvider::onSearch::CustomException');
+      console.custom(error, trace);
       props.setError(currentError: error.toString());
       notifyListeners();
     } on AuthException catch (error) {
-      console.log(error, 'SearchProvider::onSearch::AuthException');
+      console.authentication(error, trace);
       props.setError(currentError: error.message.toString());
       notifyListeners();
     } catch (error) {
-      console.log(error, 'SearchProvider::onSearch');
+      console.error(error, trace);
       props.setError(currentError: "something_went_wrong".tr);
       notifyListeners();
     }

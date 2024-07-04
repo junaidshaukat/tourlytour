@@ -61,14 +61,15 @@ class SplashScreenState extends State<SplashScreen> {
               AppRoutes.dashboard,
             );
           }
+
           return NavigatorService.popAndPushNamed(
-            AppRoutes.signin,
+            AppRoutes.dashboard,
           );
         }
       }
 
       return NavigatorService.popAndPushNamed(
-        AppRoutes.signin,
+        AppRoutes.dashboard,
       );
     } catch (error) {
       rethrow;
@@ -85,9 +86,9 @@ class SplashScreenState extends State<SplashScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               CustomImageView(
-                imagePath: "logo".icon.svg,
-                height: 86.v,
                 width: 120.h,
+                height: 86.v,
+                imagePath: "logo".icon.svg,
               ),
               SizedBox(height: 21.v),
               Text(

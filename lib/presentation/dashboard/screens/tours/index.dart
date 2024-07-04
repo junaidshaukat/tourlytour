@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '/core/app_export.dart';
 
+export 'screens/index.dart';
+
 class ToursScreen extends StatefulWidget {
   const ToursScreen({super.key});
 
@@ -21,6 +23,18 @@ class ToursScreenState extends State<ToursScreen> {
     });
   }
 
+  void onTap(num id) {
+    context.read<ProductVideosProvider>().clear();
+    context.read<ProductPhotosProvider>().clear();
+    context.read<ProductReviewsProvider>().clear();
+    context.read<ProductItinerariesProvider>().clear();
+
+    NavigatorService.push(
+      context,
+      const TourDetailsScreen(),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Preloader(
@@ -31,7 +45,7 @@ class ToursScreenState extends State<ToursScreen> {
           title: Padding(
             padding: EdgeInsets.only(left: 16.h),
             child: AppbarTitle(
-              text: "tours".tr,
+              text: "tour_history".tr,
             ),
           ),
           actions: [
@@ -144,18 +158,7 @@ class ToursScreenState extends State<ToursScreen> {
                           ),
                           child: InkWell(
                             onTap: () {
-                              context.read<ProductVideosProvider>().clear();
-                              context.read<ProductPhotosProvider>().clear();
-                              context.read<ProductReviewsProvider>().clear();
-                              context
-                                  .read<ProductItinerariesProvider>()
-                                  .clear();
-
-                              // NavigatorService.push(
-                              //   context,
-                              //   const ProductDetailsScreen(),
-                              //   arguments: product,
-                              // );
+                              onTap(1);
                             },
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.start,
@@ -165,38 +168,96 @@ class ToursScreenState extends State<ToursScreen> {
                                   borderRadius:
                                       BorderRadius.circular(8.adaptSize),
                                   child: CustomImageView(
-                                    width: 60.h,
-                                    height: 60.v,
+                                    width: 100.h,
+                                    height: 100.v,
                                     fit: BoxFit.cover,
                                     imagePath: 'product'.image.png,
                                   ),
                                 ),
                                 SizedBox(width: 8.h),
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    SizedBox(
-                                      width: 290.h,
-                                      child: Text(
-                                        'product.name',
-                                        maxLines: 2,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: CustomTextStyles
-                                            .labelMediumBlack900,
+                                Expanded(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Padding(
+                                        padding: EdgeInsets.only(right: 8.h),
+                                        child: SizedBox(
+                                          width: double.maxFinite,
+                                          child: Text(
+                                            'Enchanted Ayutthaya: A Journey Through History & Culture',
+                                            overflow: TextOverflow.clip,
+                                            style: CustomTextStyles
+                                                .labelMediumBlack900,
+                                          ),
+                                        ),
                                       ),
-                                    ),
-                                    SizedBox(height: 4.v),
-                                    SizedBox(
-                                      width: 290.h,
-                                      child: Text(
-                                        "{product.locations ?? " "}",
-                                        maxLines: 6,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: CustomTextStyles.poppinsBlack900,
+                                      SizedBox(height: 4.v),
+                                      SizedBox(
+                                        width: double.maxFinite,
+                                        child: RichText(
+                                          text: TextSpan(
+                                            text: 'Date ',
+                                            style: CustomTextStyles
+                                                .poppinsBlack900
+                                                .copyWith(
+                                              fontSize: 12.fSize,
+                                            ),
+                                            children: <TextSpan>[
+                                              TextSpan(
+                                                text: ': 22-Jun-2024 ',
+                                                style: CustomTextStyles
+                                                    .poppinsGray600
+                                                    .copyWith(
+                                                  fontSize: 12.fSize,
+                                                ),
+                                              ),
+                                              TextSpan(
+                                                text: 'peolpe'.tr,
+                                                style: CustomTextStyles
+                                                    .poppinsBlack900
+                                                    .copyWith(
+                                                  fontSize: 12.fSize,
+                                                ),
+                                              ),
+                                              TextSpan(
+                                                text: ': 1',
+                                                style: CustomTextStyles
+                                                    .poppinsGray600
+                                                    .copyWith(
+                                                  fontSize: 12.fSize,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                      SizedBox(height: 4.v),
+                                      SizedBox(
+                                        width: double.maxFinite,
+                                        child: Text(
+                                          'completed'.tr,
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: CustomTextStyles
+                                              .labelMediumBlack900,
+                                        ),
+                                      ),
+                                      GestureDetector(
+                                        onTap: () {
+                                          onTap(1);
+                                        },
+                                        child: Text(
+                                          'view_details'.tr,
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: CustomTextStyles
+                                              .labelMediumBlue500,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 )
                               ],
                             ),

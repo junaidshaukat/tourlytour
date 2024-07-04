@@ -211,6 +211,7 @@ class CustomTextStyles {
       theme.textTheme.labelMedium!.copyWith(
         color: appTheme.black900,
       );
+
   static TextStyle get labelMediumBluegray500 =>
       theme.textTheme.labelMedium!.copyWith(
         color: appTheme.blueGray500,
@@ -260,6 +261,12 @@ class CustomTextStyles {
         fontSize: 7.fSize,
         fontWeight: FontWeight.w400,
       ).poppins;
+  static TextStyle get poppinsGray600 => TextStyle(
+        color: appTheme.gray600,
+        fontSize: 7.fSize,
+        fontWeight: FontWeight.w400,
+      ).poppins;
+
   static TextStyle get poppinsLightblue500 => TextStyle(
         color: appTheme.lightBlue500,
         fontSize: 7.fSize,

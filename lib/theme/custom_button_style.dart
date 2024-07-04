@@ -30,7 +30,7 @@ class CustomButtonStyles {
       );
 // text button style
   static ButtonStyle get none => ButtonStyle(
-        backgroundColor: WidgetStateProperty .all<Color>(Colors.transparent),
-        elevation: WidgetStateProperty .all<double>(0),
+        backgroundColor: WidgetStateProperty.all<Color>(Colors.transparent),
+        elevation: WidgetStateProperty.all<double>(0),
       );
 }

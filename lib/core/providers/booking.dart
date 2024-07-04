@@ -15,6 +15,26 @@ class BookingProvider with ChangeNotifier {
     connectivity = context.read<ConnectivityProvider>();
     currentUser = context.read<CurrentUserProvider>();
   }
+  String get trace {
+    final stackTrace = StackTrace.current;
+    final frames = stackTrace.toString().split('\n');
+
+    if (frames.length > 1) {
+      final callerFrame = frames[1].trim();
+      final regex = RegExp(r'#\d+\s+(\S+)\.(\S+)\s+\(.*\)');
+      final match = regex.firstMatch(callerFrame);
+
+      if (match != null) {
+        final className = match.group(1);
+        final methodName = match.group(2);
+        return "$className::$methodName";
+      } else {
+        return "$runtimeType::unknown";
+      }
+    } else {
+      return "$runtimeType::unknown";
+    }
+  }
 
   Future<void> onRefresh() async {}
 
@@ -55,20 +75,19 @@ class BookingProvider with ChangeNotifier {
         notifyListeners();
       }
     } on NoInternetException catch (error) {
-      console.log(
-          error, 'BookingProvider::getBlackoutDates::NoInternetException');
+      console.internet(error, trace);
       propsBlackoutDates.setError(currentError: error.toString());
       notifyListeners();
     } on CustomException catch (error) {
-      console.log(error, 'BookingProvider::getBlackoutDates::CustomException');
+      console.custom(error, trace);
       propsBlackoutDates.setError(currentError: error.toString());
       notifyListeners();
     } on AuthException catch (error) {
-      console.log(error, 'BookingProvider::getBlackoutDates::AuthException');
+      console.authentication(error, trace);
       propsBlackoutDates.setError(currentError: error.message.toString());
       notifyListeners();
     } catch (error) {
-      console.log(error, 'BookingProvider::getBlackoutDates');
+      console.error(error, trace);
       propsBlackoutDates.setError(currentError: "something_went_wrong".tr);
       notifyListeners();
     }
@@ -99,22 +118,22 @@ class BookingProvider with ChangeNotifier {
         throw CustomException();
       }
     } on NoInternetException catch (error) {
-      console.log(error, 'BookingProvider::booking::NoInternetException');
+      console.internet(error, trace);
       props.setError(currentError: error.toString());
       notifyListeners();
       rethrow;
     } on CustomException catch (error) {
-      console.log(error, 'BookingProvider::booking::CustomException');
+      console.custom(error, trace);
       props.setError(currentError: error.toString());
       notifyListeners();
       rethrow;
     } on AuthException catch (error) {
-      console.log(error, 'BookingProvider::booking::AuthException');
+      console.authentication(error, trace);
       props.setError(currentError: error.message.toString());
       notifyListeners();
       rethrow;
     } catch (error) {
-      console.log(error, 'BookingProvider::booking');
+      console.error(error, trace);
       props.setError(currentError: "something_went_wrong".tr);
       notifyListeners();
       rethrow;

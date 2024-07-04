@@ -18,7 +18,11 @@ class CustomDrawer extends StatelessWidget {
         ListTile(
           title: Row(
             children: [
-              CustomImageView(imagePath: icon),
+              CustomImageView(
+                imagePath: icon,
+                width: 24.adaptSize,
+                height: 24.adaptSize,
+              ),
               Padding(
                 padding: EdgeInsets.only(left: 13.h),
                 child: Text(
@@ -30,8 +34,6 @@ class CustomDrawer extends StatelessWidget {
               ),
               const Spacer(),
               CustomImageView(
-                width: 20.h,
-                height: 20.h,
                 imagePath: "arrow_right".icon.svg,
               )
             ],
@@ -141,8 +143,8 @@ class CustomDrawer extends StatelessWidget {
                             ),
                             const Spacer(),
                             CustomImageView(
-                              height: 34.v,
                               width: 45.h,
+                              height: 34.v,
                               color: appTheme.whiteA700,
                               imagePath: "logo".icon.svg,
                             )
@@ -161,8 +163,6 @@ class CustomDrawer extends StatelessWidget {
                   child: IconButton(
                     color: Colors.white,
                     icon: CustomImageView(
-                      width: 20.h,
-                      height: 20.h,
                       color: appTheme.black900,
                       imagePath: "arrow_left".icon.svg,
                     ),
@@ -207,7 +207,13 @@ class CustomDrawer extends StatelessWidget {
         tab(
           title: 'blog'.tr,
           icon: 'blog'.icon.svg,
-          onPressed: () {},
+          onPressed: () {
+            NavigatorService.goBack();
+            NavigatorService.push(
+              context,
+              const BlogsScreen(),
+            );
+          },
         ),
         tab(
           title: 'wishlist'.tr,

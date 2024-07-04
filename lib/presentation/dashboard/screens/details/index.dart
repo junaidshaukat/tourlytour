@@ -60,8 +60,6 @@ class ProductDetailsScreenState extends State<ProductDetailsScreen>
 
   @override
   Widget build(BuildContext context) {
-    var theme = Theme.of(context);
-
     return Preloader(
       safeArea: false,
       preloader: preloader,
@@ -189,8 +187,6 @@ class ProductDetailsScreenState extends State<ProductDetailsScreen>
                       children: [
                         CustomImageView(
                           imagePath: "marker".icon.svg,
-                          height: 12.v,
-                          width: 9.h,
                         ),
                         Padding(
                           padding: EdgeInsets.only(left: 5.h),
@@ -201,8 +197,6 @@ class ProductDetailsScreenState extends State<ProductDetailsScreen>
                         ),
                         CustomImageView(
                           imagePath: "loading".icon.svg,
-                          height: 12.v,
-                          width: 8.h,
                           margin: EdgeInsets.only(
                             left: 15.h,
                             bottom: 2.v,

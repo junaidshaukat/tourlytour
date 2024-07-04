@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import '/core/app_export.dart';
 
@@ -113,6 +115,36 @@ class AuthenticationProvider with ChangeNotifier {
     });
   }
 
+  String get trace {
+    final stackTrace = StackTrace.current;
+    final frames = stackTrace.toString().split('\n');
+
+    if (frames.length > 1) {
+      final callerFrame = frames[1].trim();
+      final regex = RegExp(r'#\d+\s+(\S+)\.(\S+)\s+\(.*\)');
+      final match = regex.firstMatch(callerFrame);
+
+      if (match != null) {
+        final className = match.group(1);
+        final methodName = match.group(2);
+        return "$className::$methodName";
+      } else {
+        return "$runtimeType::unknown";
+      }
+    } else {
+      return "$runtimeType::unknown";
+    }
+  }
+
+  bool get isAuthorized {
+    try {
+      if (currentUser.id <= 0) return false;
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
   Future<void> signinWithGoogle() async {
     await supabase.auth.signInWithOAuth(
       OAuthProvider.google,
@@ -154,23 +186,22 @@ class AuthenticationProvider with ChangeNotifier {
         throw CustomException();
       }
     } on NoInternetException catch (error) {
-      console.log(error, 'AuthenticationProvider::signin::NoInternetException');
+      console.internet(error, trace);
       props.setError(currentError: error.toString());
       notifyListeners();
       return false;
     } on CustomException catch (error) {
-      console.log(error, 'AuthenticationProvider::signin::CustomException');
+      console.custom(error, trace);
       props.setError(currentError: error.toString());
       notifyListeners();
       return false;
     } on AuthException catch (error) {
-      console.log(error,
-          'AuthenticationProvider::signin::AuthException::AuthException');
+      console.authentication(error, trace);
       props.setError(currentError: error.message.toString());
       notifyListeners();
       return false;
     } catch (error) {
-      console.log(error, 'AuthenticationProvider::signin');
+      console.error(error, trace);
       props.setError(currentError: "something_went_wrong".tr);
       notifyListeners();
       return false;
@@ -218,22 +249,22 @@ class AuthenticationProvider with ChangeNotifier {
         throw CustomException();
       }
     } on NoInternetException catch (error) {
-      console.log(error, 'AuthenticationProvider::signup::NoInternetException');
+      console.internet(error, trace);
       props.setError(currentError: error.toString());
       notifyListeners();
       return false;
     } on CustomException catch (error) {
-      console.log(error, 'AuthenticationProvider::signup::CustomException');
+      console.custom(error, trace);
       props.setError(currentError: error.toString());
       notifyListeners();
       return false;
     } on AuthException catch (error) {
-      console.log(error, 'AuthenticationProvider::signup::AuthException');
+      console.authentication(error, trace);
       props.setError(currentError: error.message.toString());
       notifyListeners();
       return false;
     } catch (error) {
-      console.log(error, 'AuthenticationProvider::signup');
+      console.error(error, trace);
       props.setError(currentError: "something_went_wrong".tr);
       notifyListeners();
       return false;
@@ -320,23 +351,22 @@ class AuthenticationProvider with ChangeNotifier {
 
       throw CustomException();
     } on NoInternetException catch (error) {
-      console.log(
-          error, 'AuthenticationProvider::verifyOtp::NoInternetException');
+      console.internet(error, trace);
       props.setError(currentError: error.toString());
       notifyListeners();
       return false;
     } on CustomException catch (error) {
-      console.log(error, 'AuthenticationProvider::verifyOtp::CustomException');
+      console.custom(error, trace);
       props.setError(currentError: error.toString());
       notifyListeners();
       return false;
     } on AuthException catch (error) {
-      console.log(error, 'AuthenticationProvider::verifyOtp::AuthException');
+      console.authentication(error, trace);
       props.setError(currentError: error.message.toString());
       notifyListeners();
       return false;
     } catch (error) {
-      console.log(error, 'AuthenticationProvider::verifyOtp');
+      console.error(error, trace);
       props.setError(currentError: "something_went_wrong".tr);
       notifyListeners();
       return false;
@@ -422,23 +452,22 @@ class AuthenticationProvider with ChangeNotifier {
 
       throw CustomException();
     } on NoInternetException catch (error) {
-      console.log(
-          error, 'AuthenticationProvider::sendOTP::NoInternetException');
+      console.internet(error, trace);
       props.setError(currentError: error.toString());
       notifyListeners();
       return false;
     } on CustomException catch (error) {
-      console.log(error, 'AuthenticationProvider::sendOTP::CustomException');
+      console.custom(error, trace);
       props.setError(currentError: error.toString());
       notifyListeners();
       return false;
     } on AuthException catch (error) {
-      console.log(error, 'AuthenticationProvider::sendOTP::AuthException');
+      console.authentication(error, trace);
       props.setError(currentError: error.message.toString());
       notifyListeners();
       return false;
     } catch (error) {
-      console.log(error, 'AuthenticationProvider::sendOTP');
+      console.error(error, trace);
       props.setError(currentError: "something_went_wrong".tr);
       notifyListeners();
       return false;
@@ -476,25 +505,22 @@ class AuthenticationProvider with ChangeNotifier {
       notifyListeners();
       return false;
     } on NoInternetException catch (error) {
-      console.log(
-          error, 'AuthenticationProvider::forgetPassword::NoInternetException');
+      console.internet(error, trace);
       props.setError(currentError: error.toString());
       notifyListeners();
       return false;
     } on CustomException catch (error) {
-      console.log(
-          error, 'AuthenticationProvider::forgetPassword::CustomException');
+      console.custom(error, trace);
       props.setError(currentError: error.toString());
       notifyListeners();
       return false;
     } on AuthException catch (error) {
-      console.log(
-          error, 'AuthenticationProvider::forgetPassword::AuthException');
+      console.authentication(error, trace);
       props.setError(currentError: error.message.toString());
       notifyListeners();
       return false;
     } catch (error) {
-      console.log(error, 'AuthenticationProvider::forgetPassword');
+      console.error(error, trace);
       props.setError(currentError: "something_went_wrong".tr);
       notifyListeners();
       return false;
@@ -524,25 +550,22 @@ class AuthenticationProvider with ChangeNotifier {
         return false;
       }
     } on NoInternetException catch (error) {
-      console.log(
-          error, 'AuthenticationProvider::resetPassword::NoInternetException');
+      console.internet(error, trace);
       props.setError(currentError: error.toString());
       notifyListeners();
       return false;
     } on CustomException catch (error) {
-      console.log(
-          error, 'AuthenticationProvider::resetPassword::CustomException');
+      console.custom(error, trace);
       props.setError(currentError: error.toString());
       notifyListeners();
       return false;
     } on AuthException catch (error) {
-      console.log(
-          error, 'AuthenticationProvider::resetPassword::AuthException');
+      console.authentication(error, trace);
       props.setError(currentError: error.message.toString());
       notifyListeners();
       return false;
     } catch (error) {
-      console.log(error, 'AuthenticationProvider::resetPassword');
+      console.error(error, trace);
       props.setError(currentError: "something_went_wrong".tr);
       notifyListeners();
       return false;
@@ -573,25 +596,22 @@ class AuthenticationProvider with ChangeNotifier {
         return false;
       }
     } on NoInternetException catch (error) {
-      console.log(
-          error, 'AuthenticationProvider::onUpdateEmail::NoInternetException');
+      console.internet(error, trace);
       props.setError(currentError: error.toString());
       notifyListeners();
       return false;
     } on CustomException catch (error) {
-      console.log(
-          error, 'AuthenticationProvider::onUpdateEmail::CustomException');
+      console.custom(error, trace);
       props.setError(currentError: error.toString());
       notifyListeners();
       return false;
     } on AuthException catch (error) {
-      console.log(
-          error, 'AuthenticationProvider::onUpdateEmail::AuthException');
+      console.authentication(error, trace);
       props.setError(currentError: error.message.toString());
       notifyListeners();
       return false;
     } catch (error) {
-      console.log(error, 'AuthenticationProvider::onUpdateEmail');
+      console.error(error, trace);
       props.setError(currentError: "something_went_wrong".tr);
       notifyListeners();
       return false;
@@ -621,25 +641,22 @@ class AuthenticationProvider with ChangeNotifier {
         return false;
       }
     } on NoInternetException catch (error) {
-      console.log(
-          error, 'AuthenticationProvider::onUpdatePhone::NoInternetException');
+      console.internet(error, trace);
       props.setError(currentError: error.toString());
       notifyListeners();
       return false;
     } on CustomException catch (error) {
-      console.log(
-          error, 'AuthenticationProvider::onUpdatePhone::CustomException');
+      console.custom(error, trace);
       props.setError(currentError: error.toString());
       notifyListeners();
       return false;
     } on AuthException catch (error) {
-      console.log(
-          error, 'AuthenticationProvider::onUpdatePhone::AuthException');
+      console.authentication(error, trace);
       props.setError(currentError: error.message.toString());
       notifyListeners();
       return false;
     } catch (error) {
-      console.log(error, 'AuthenticationProvider::onUpdatePhone');
+      console.error(error, trace);
       props.setError(currentError: "something_went_wrong".tr);
       notifyListeners();
       return false;
@@ -671,25 +688,22 @@ class AuthenticationProvider with ChangeNotifier {
         return false;
       }
     } on NoInternetException catch (error) {
-      console.log(error,
-          'AuthenticationProvider::updateUserMetadata::NoInternetException');
+      console.internet(error, trace);
       props.setError(currentError: error.toString());
       notifyListeners();
       return false;
     } on CustomException catch (error) {
-      console.log(
-          error, 'AuthenticationProvider::updateUserMetadata::CustomException');
+      console.custom(error, trace);
       props.setError(currentError: error.toString());
       notifyListeners();
       return false;
     } on AuthException catch (error) {
-      console.log(
-          error, 'AuthenticationProvider::updateUserMetadata::AuthException');
+      console.authentication(error, trace);
       props.setError(currentError: error.message.toString());
       notifyListeners();
       return false;
     } catch (error) {
-      console.log(error, 'AuthenticationProvider::updateUserMetadata');
+      console.error(error, trace);
       props.setError(currentError: "something_went_wrong".tr);
       notifyListeners();
       return false;
