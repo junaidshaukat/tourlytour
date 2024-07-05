@@ -26,7 +26,7 @@ class FavouriteScreenState extends State<FavouriteScreen> {
     return Preloader(
       preloader: preloader,
       child: Scaffold(
-        backgroundColor: appTheme.blue50,
+        // backgroundColor: appTheme.blue50,
         appBar: CustomAppBar(
           centerTitle: true,
           title: AppbarTitle(
@@ -70,18 +70,20 @@ class FavouriteScreenState extends State<FavouriteScreen> {
                   ),
                 );
               } else if (props.isUnauthorized) {
-                console.log(props.error);
                 return SizedBox(
-                  height: 135.v,
+                  height: 300.v,
                   child: Center(
-                    child: TryAgain(
-                      imagePath: "refresh".icon.svg,
-                      onRefresh: provider.onRefresh,
+                    child: Unauthorized(
+                      width: 200.h,
+                      buttonWidth: 100.h,
+                      message: props.error,
+                      onPressed: () {
+                        context.read<AuthenticationService>().onSignin(context);
+                      },
                     ),
                   ),
                 );
               } else if (props.isError) {
-                console.log(props.error);
                 return SizedBox(
                   height: 135.v,
                   child: Center(

@@ -54,6 +54,7 @@ void main() async {
 
           ///
           ChangeNotifierProvider(create: (c) => ReviewService(c)),
+          ChangeNotifierProvider(create: (c) => AuthenticationService(c)),
         ],
         child: const MyApp(),
       ),

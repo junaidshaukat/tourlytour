@@ -123,13 +123,18 @@ class ToursScreenState extends State<ToursScreen> {
                     ),
                   );
                 } else if (props.isUnauthorized) {
-                  console.log(props.error);
                   return SizedBox(
                     height: 300.v,
                     child: Center(
-                      child: TryAgain(
-                        imagePath: "refresh".icon.svg,
-                        onRefresh: provider.onRefresh,
+                      child: Unauthorized(
+                        width: 200.h,
+                        buttonWidth: 100.h,
+                        message: props.error,
+                        onPressed: () {
+                          context
+                              .read<AuthenticationService>()
+                              .onSignin(context);
+                        },
                       ),
                     ),
                   );

@@ -181,6 +181,7 @@ final Map<String, String> enUs = {
   "people": " People ",
   "auth_session_missing": "Auth session missing",
   "401_unauthorized": "401 Unauthorized",
+  'signin': 'Sign In',
   //
   "please_enter_your_email_or_phone":
       "Please enter your email or phone number\nto receive the code",
