@@ -4,6 +4,8 @@ import '/core/app_export.dart';
 class SearchProvider extends ChangeNotifier {
   final BuildContext context;
   final supabase = Supabase.instance.client;
+
+  late AuthenticationProvider auth;
   late ConnectivityProvider connectivity;
 
   Props props = Props(data: [], initialData: []);
@@ -12,6 +14,7 @@ class SearchProvider extends ChangeNotifier {
   DateTime date = DateTime.now();
 
   SearchProvider(this.context) {
+    auth = context.read<AuthenticationProvider>();
     connectivity = context.read<ConnectivityProvider>();
     props.setSuccess();
     notifyListeners();
@@ -71,7 +74,7 @@ class SearchProvider extends ChangeNotifier {
       notifyListeners();
     } on AuthException catch (error) {
       console.authentication(error, trace);
-      props.setError(currentError: error.message.toString());
+      props.setUnauthorized(currentError: error.message.toString());
       notifyListeners();
     } catch (error) {
       console.error(error, trace);

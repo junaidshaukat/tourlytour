@@ -6,13 +6,16 @@ class FavouritesProvider with ChangeNotifier {
   final supabase = Supabase.instance.client;
   Props props = Props(data: [], initialData: []);
 
+  late AuthenticationProvider auth;
   late CurrentUserProvider currentUser;
   late ConnectivityProvider connectivity;
 
   FavouritesProvider(this.context) {
+    auth = context.read<AuthenticationProvider>();
     connectivity = context.read<ConnectivityProvider>();
     currentUser = context.read<CurrentUserProvider>();
   }
+
   String get trace {
     final stackTrace = StackTrace.current;
     final frames = stackTrace.toString().split('\n');
@@ -43,6 +46,10 @@ class FavouritesProvider with ChangeNotifier {
         throw NoInternetException();
       }
 
+      if (!auth.isAuthorized) {
+        throw UnauthorizedException();
+      }
+
       var response = await supabase.rpc('favourites', params: {
         'user_id': currentUser.id,
       });
@@ -62,13 +69,13 @@ class FavouritesProvider with ChangeNotifier {
       console.internet(error, trace);
       props.setError(currentError: error.toString());
       notifyListeners();
+    } on AuthException catch (error) {
+      console.authentication(error, trace);
+      props.setUnauthorized(currentError: error.message.toString());
+      notifyListeners();
     } on CustomException catch (error) {
       console.custom(error, trace);
       props.setError(currentError: error.toString());
-      notifyListeners();
-    } on AuthException catch (error) {
-      console.authentication(error, trace);
-      props.setError(currentError: error.message.toString());
       notifyListeners();
     } catch (error) {
       console.error(error, trace);
@@ -87,6 +94,10 @@ class FavouritesProvider with ChangeNotifier {
       notifyListeners();
       if (!connectivity.isConnected) {
         throw NoInternetException();
+      }
+
+      if (!auth.isAuthorized) {
+        throw UnauthorizedException();
       }
 
       var response = await supabase
@@ -125,7 +136,7 @@ class FavouritesProvider with ChangeNotifier {
       notifyListeners();
     } on AuthException catch (error) {
       console.authentication(error, trace);
-      props.setError(currentError: error.message.toString());
+      props.setUnauthorized(currentError: error.message.toString());
       notifyListeners();
     } catch (error) {
       console.error(error, trace);
@@ -141,6 +152,10 @@ class FavouritesProvider with ChangeNotifier {
 
       if (!connectivity.isConnected) {
         throw NoInternetException();
+      }
+
+      if (!auth.isAuthorized) {
+        throw UnauthorizedException();
       }
 
       var response =
@@ -164,7 +179,7 @@ class FavouritesProvider with ChangeNotifier {
       notifyListeners();
     } on AuthException catch (error) {
       console.authentication(error, trace);
-      props.setError(currentError: error.message.toString());
+      props.setUnauthorized(currentError: error.message.toString());
       notifyListeners();
     } catch (error) {
       console.error(error, trace);

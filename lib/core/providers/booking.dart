@@ -8,13 +8,16 @@ class BookingProvider with ChangeNotifier {
   Props props = Props(data: [], initialData: []);
   Props propsBlackoutDates = Props(data: [], initialData: []);
 
+  late AuthenticationProvider auth;
   late ConnectivityProvider connectivity;
   late CurrentUserProvider currentUser;
 
   BookingProvider(this.context) {
+    auth = context.read<AuthenticationProvider>();
     connectivity = context.read<ConnectivityProvider>();
     currentUser = context.read<CurrentUserProvider>();
   }
+
   String get trace {
     final stackTrace = StackTrace.current;
     final frames = stackTrace.toString().split('\n');
@@ -57,6 +60,10 @@ class BookingProvider with ChangeNotifier {
 
       if (!connectivity.isConnected) {
         throw NoInternetException();
+      }
+
+      if (!auth.isAuthorized) {
+        throw UnauthorizedException();
       }
 
       var response = await supabase.rpc('blackout_dates', params: {
@@ -102,6 +109,10 @@ class BookingProvider with ChangeNotifier {
         throw NoInternetException();
       }
 
+      if (!auth.isAuthorized) {
+        throw UnauthorizedException();
+      }
+
       Map<String, dynamic> params = request.toJson(skip: ['id']);
 
       var response = await supabase.rpc('booking', params: {'data': params});
@@ -129,7 +140,7 @@ class BookingProvider with ChangeNotifier {
       rethrow;
     } on AuthException catch (error) {
       console.authentication(error, trace);
-      props.setError(currentError: error.message.toString());
+      props.setUnauthorized(currentError: error.message.toString());
       notifyListeners();
       rethrow;
     } catch (error) {

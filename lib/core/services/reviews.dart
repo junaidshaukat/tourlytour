@@ -101,7 +101,7 @@ class ReviewService with ChangeNotifier {
       notifyListeners();
     } on AuthException catch (error) {
       console.authentication(error, trace);
-      props.setError(currentError: error.message.toString());
+      props.setUnauthorized(currentError: error.message.toString());
       notifyListeners();
     } catch (error) {
       console.error(error, trace);
@@ -150,7 +150,7 @@ class ReviewService with ChangeNotifier {
       notifyListeners();
     } on AuthException catch (error) {
       console.authentication(error, trace);
-      props.setError(currentError: error.message.toString());
+      props.setUnauthorized(currentError: error.message.toString());
       notifyListeners();
     } catch (error) {
       console.error(error, trace);
@@ -439,7 +439,6 @@ class ReviewService with ChangeNotifier {
                               if (index == photos.length) {
                                 return GestureDetector(
                                   onTap: () {
-                                    console.log(photos.length);
                                     picker
                                         .pickMultiImage(limit: 4)
                                         .then((files) {

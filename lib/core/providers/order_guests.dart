@@ -6,9 +6,11 @@ class OrderGuestsProvider with ChangeNotifier {
   final supabase = Supabase.instance.client;
   Props props = Props(data: [], initialData: []);
 
+  late AuthenticationProvider auth;
   late ConnectivityProvider connectivity;
 
   OrderGuestsProvider(this.context) {
+    auth = context.read<AuthenticationProvider>();
     connectivity = context.read<ConnectivityProvider>();
   }
   String get trace {
@@ -42,6 +44,10 @@ class OrderGuestsProvider with ChangeNotifier {
         throw NoInternetException();
       }
 
+      if (!auth.isAuthorized) {
+        throw UnauthorizedException();
+      }
+
       var response =
           await supabase.from('Guests').select().eq('OrderId', '$orderId');
 
@@ -66,7 +72,7 @@ class OrderGuestsProvider with ChangeNotifier {
       notifyListeners();
     } on AuthException catch (error) {
       console.authentication(error, trace);
-      props.setError(currentError: error.message.toString());
+      props.setUnauthorized(currentError: error.message.toString());
       notifyListeners();
     } catch (error) {
       console.error(error, trace);

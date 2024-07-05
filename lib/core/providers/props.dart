@@ -5,6 +5,7 @@ class Props {
   Object? initialData;
 
   Props({this.state = 0, this.error, this.data, this.initialData});
+
   String get trace {
     final stackTrace = StackTrace.current;
     final frames = stackTrace.toString().split('\n');
@@ -106,6 +107,17 @@ class Props {
   bool get isUploading => state == 7 ? true : false;
   void setUploading({
     int currentState = 7,
+    String? currentError,
+    Object? currentData,
+  }) {
+    state = currentState;
+    error = currentError;
+    data = currentData ?? initialData;
+  }
+
+  bool get isUnauthorized => state == 8 ? true : false;
+  void setUnauthorized({
+    int currentState = 8,
     String? currentError,
     Object? currentData,
   }) {

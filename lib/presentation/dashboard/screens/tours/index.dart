@@ -78,7 +78,7 @@ class ToursScreenState extends State<ToursScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Expanded(
-                    child: Consumer<SearchProvider>(
+                    child: Consumer<ToursProvider>(
                       builder: (context, provider, child) {
                         return CustomTextFormField(
                           hintText: "search_tour".tr,
@@ -95,7 +95,7 @@ class ToursScreenState extends State<ToursScreen> {
                   ),
                   Padding(
                     padding: EdgeInsets.only(left: 8.h),
-                    child: Consumer<SearchProvider>(
+                    child: Consumer<ToursProvider>(
                       builder: (context, provider, child) {
                         return CustomIconButton(
                           height: 46.adaptSize,
@@ -120,6 +120,17 @@ class ToursScreenState extends State<ToursScreen> {
                     height: 300.v,
                     child: const Center(
                       child: Loading(),
+                    ),
+                  );
+                } else if (props.isUnauthorized) {
+                  console.log(props.error);
+                  return SizedBox(
+                    height: 300.v,
+                    child: Center(
+                      child: TryAgain(
+                        imagePath: "refresh".icon.svg,
+                        onRefresh: provider.onRefresh,
+                      ),
                     ),
                   );
                 } else if (props.isError) {

@@ -14,7 +14,7 @@ class FavouriteScreenState extends State<FavouriteScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       setState(() {
         preloader = false;
       });
@@ -69,7 +69,19 @@ class FavouriteScreenState extends State<FavouriteScreen> {
                     child: Loading(),
                   ),
                 );
+              } else if (props.isUnauthorized) {
+                console.log(props.error);
+                return SizedBox(
+                  height: 135.v,
+                  child: Center(
+                    child: TryAgain(
+                      imagePath: "refresh".icon.svg,
+                      onRefresh: provider.onRefresh,
+                    ),
+                  ),
+                );
               } else if (props.isError) {
+                console.log(props.error);
                 return SizedBox(
                   height: 135.v,
                   child: Center(

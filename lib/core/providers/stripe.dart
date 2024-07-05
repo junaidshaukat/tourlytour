@@ -4,13 +4,17 @@ import '/core/app_export.dart';
 
 class StripeProvider extends ChangeNotifier {
   final BuildContext context;
+  late AuthenticationProvider auth;
   late ConnectivityProvider connectivity;
 
   StripeProvider(this.context) {
     Stripe.publishableKey = Environment.publishableKey;
-    connectivity = context.read<ConnectivityProvider>();
     Stripe.merchantIdentifier = Environment.merchantIdentifier;
+
+    auth = context.read<AuthenticationProvider>();
+    connectivity = context.read<ConnectivityProvider>();
   }
+
   String get trace {
     final stackTrace = StackTrace.current;
     final frames = stackTrace.toString().split('\n');
@@ -37,6 +41,10 @@ class StripeProvider extends ChangeNotifier {
     try {
       if (!connectivity.isConnected) {
         throw NoInternetException();
+      }
+
+      if (!auth.isAuthorized) {
+        throw UnauthorizedException();
       }
 
       intent = await createIntents('${amount * 100}', currency);

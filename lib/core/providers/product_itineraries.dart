@@ -5,14 +5,17 @@ class ProductItinerariesProvider with ChangeNotifier {
   final BuildContext context;
   final supabase = Supabase.instance.client;
 
+  late AuthenticationProvider auth;
   late ConnectivityProvider connectivity;
 
   Props props = Props(data: [], initialData: []);
   Props propsConfirmation = Props(data: [], initialData: []);
 
   ProductItinerariesProvider(this.context) {
+    auth = context.read<AuthenticationProvider>();
     connectivity = context.read<ConnectivityProvider>();
   }
+
   String get trace {
     final stackTrace = StackTrace.current;
     final frames = stackTrace.toString().split('\n');
@@ -43,6 +46,10 @@ class ProductItinerariesProvider with ChangeNotifier {
         throw NoInternetException();
       }
 
+      if (!auth.isAuthorized) {
+        throw UnauthorizedException();
+      }
+
       final response = await supabase
           .from('ProductItineraries')
           .select()
@@ -69,7 +76,7 @@ class ProductItinerariesProvider with ChangeNotifier {
       notifyListeners();
     } on AuthException catch (error) {
       console.authentication(error, trace);
-      props.setError(currentError: error.message.toString());
+      props.setUnauthorized(currentError: error.message.toString());
       notifyListeners();
     } catch (error) {
       console.error(error, trace);
@@ -100,6 +107,10 @@ class ProductItinerariesProvider with ChangeNotifier {
 
       if (!connectivity.isConnected) {
         throw NoInternetException();
+      }
+
+      if (!auth.isAuthorized) {
+        throw UnauthorizedException();
       }
 
       final response = await supabase

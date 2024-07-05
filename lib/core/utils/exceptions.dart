@@ -38,3 +38,7 @@ class PaymentIntentException implements Exception {
     return _message;
   }
 }
+
+class UnauthorizedException extends AuthException {
+  UnauthorizedException() : super('401 Unauthorized!', statusCode: '401');
+}

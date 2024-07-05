@@ -114,6 +114,7 @@ final Map<String, String> enUs = {
   "wishlist": "Wishlist",
   "contact_us": "Contact Us",
   "sign_up": "Sign Up",
+  "profile": "Profile",
   "peolpe": "Peolpe",
   "where": "Where",
   "completed": "Completed",
@@ -178,6 +179,8 @@ final Map<String, String> enUs = {
   "passport_no": "Passport No.",
   "locations_for": " Locations for ",
   "people": " People ",
+  "auth_session_missing": "Auth session missing",
+  "401_unauthorized": "401 Unauthorized",
   //
   "please_enter_your_email_or_phone":
       "Please enter your email or phone number\nto receive the code",

@@ -7,6 +7,8 @@ class ProductReviewsProvider with ChangeNotifier {
 
   final BuildContext context;
   final supabase = Supabase.instance.client;
+
+  late AuthenticationProvider auth;
   late ConnectivityProvider connectivity;
   late CurrentUserProvider currentUser;
 
@@ -24,6 +26,7 @@ class ProductReviewsProvider with ChangeNotifier {
   Props currentReviews = Props(data: [], initialData: null);
 
   ProductReviewsProvider(this.context) {
+    auth = context.read<AuthenticationProvider>();
     connectivity = context.read<ConnectivityProvider>();
     currentUser = context.read<CurrentUserProvider>();
   }
@@ -56,6 +59,10 @@ class ProductReviewsProvider with ChangeNotifier {
         throw NoInternetException();
       }
 
+      if (!auth.isAuthorized) {
+        throw UnauthorizedException();
+      }
+
       final response = await supabase
           .from('ProductReviews')
           .select(
@@ -83,7 +90,7 @@ class ProductReviewsProvider with ChangeNotifier {
       notifyListeners();
     } on AuthException catch (error) {
       console.authentication(error, trace);
-      props.setError(currentError: error.message.toString());
+      props.setUnauthorized(currentError: error.message.toString());
       notifyListeners();
     } catch (error) {
       console.error(error, trace);
@@ -96,6 +103,10 @@ class ProductReviewsProvider with ChangeNotifier {
     try {
       if (!connectivity.isConnected) {
         throw NoInternetException();
+      }
+
+      if (!auth.isAuthorized) {
+        throw UnauthorizedException();
       }
 
       List skip = [];
@@ -154,6 +165,10 @@ class ProductReviewsProvider with ChangeNotifier {
         throw NoInternetException();
       }
 
+      if (!auth.isAuthorized) {
+        throw UnauthorizedException();
+      }
+
       List skip = [];
       List photos = [];
 
@@ -199,7 +214,7 @@ class ProductReviewsProvider with ChangeNotifier {
       NavigatorService.goBack();
     } on AuthException catch (error) {
       console.authentication(error, trace);
-      props.setError(currentError: error.message.toString());
+      props.setUnauthorized(currentError: error.message.toString());
       notifyListeners();
       NavigatorService.goBack();
     } catch (error) {

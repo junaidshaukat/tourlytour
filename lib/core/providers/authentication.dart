@@ -138,7 +138,8 @@ class AuthenticationProvider with ChangeNotifier {
 
   bool get isAuthorized {
     try {
-      if (currentUser.id <= 0) return false;
+      if (currentUser.id < 1) return false;
+
       return true;
     } catch (e) {
       return false;
@@ -190,14 +191,14 @@ class AuthenticationProvider with ChangeNotifier {
       props.setError(currentError: error.toString());
       notifyListeners();
       return false;
+    } on AuthException catch (error) {
+      console.authentication(error, trace);
+      props.setUnauthorized(currentError: error.message.toString());
+      notifyListeners();
+      return false;
     } on CustomException catch (error) {
       console.custom(error, trace);
       props.setError(currentError: error.toString());
-      notifyListeners();
-      return false;
-    } on AuthException catch (error) {
-      console.authentication(error, trace);
-      props.setError(currentError: error.message.toString());
       notifyListeners();
       return false;
     } catch (error) {
@@ -253,14 +254,14 @@ class AuthenticationProvider with ChangeNotifier {
       props.setError(currentError: error.toString());
       notifyListeners();
       return false;
+    } on AuthException catch (error) {
+      console.authentication(error, trace);
+      props.setUnauthorized(currentError: error.message.toString());
+      notifyListeners();
+      return false;
     } on CustomException catch (error) {
       console.custom(error, trace);
       props.setError(currentError: error.toString());
-      notifyListeners();
-      return false;
-    } on AuthException catch (error) {
-      console.authentication(error, trace);
-      props.setError(currentError: error.message.toString());
       notifyListeners();
       return false;
     } catch (error) {
@@ -362,7 +363,7 @@ class AuthenticationProvider with ChangeNotifier {
       return false;
     } on AuthException catch (error) {
       console.authentication(error, trace);
-      props.setError(currentError: error.message.toString());
+      props.setUnauthorized(currentError: error.message.toString());
       notifyListeners();
       return false;
     } catch (error) {
@@ -463,7 +464,7 @@ class AuthenticationProvider with ChangeNotifier {
       return false;
     } on AuthException catch (error) {
       console.authentication(error, trace);
-      props.setError(currentError: error.message.toString());
+      props.setUnauthorized(currentError: error.message.toString());
       notifyListeners();
       return false;
     } catch (error) {
@@ -516,7 +517,7 @@ class AuthenticationProvider with ChangeNotifier {
       return false;
     } on AuthException catch (error) {
       console.authentication(error, trace);
-      props.setError(currentError: error.message.toString());
+      props.setUnauthorized(currentError: error.message.toString());
       notifyListeners();
       return false;
     } catch (error) {
@@ -561,7 +562,7 @@ class AuthenticationProvider with ChangeNotifier {
       return false;
     } on AuthException catch (error) {
       console.authentication(error, trace);
-      props.setError(currentError: error.message.toString());
+      props.setUnauthorized(currentError: error.message.toString());
       notifyListeners();
       return false;
     } catch (error) {
@@ -607,7 +608,7 @@ class AuthenticationProvider with ChangeNotifier {
       return false;
     } on AuthException catch (error) {
       console.authentication(error, trace);
-      props.setError(currentError: error.message.toString());
+      props.setUnauthorized(currentError: error.message.toString());
       notifyListeners();
       return false;
     } catch (error) {
@@ -652,7 +653,7 @@ class AuthenticationProvider with ChangeNotifier {
       return false;
     } on AuthException catch (error) {
       console.authentication(error, trace);
-      props.setError(currentError: error.message.toString());
+      props.setUnauthorized(currentError: error.message.toString());
       notifyListeners();
       return false;
     } catch (error) {
@@ -699,7 +700,7 @@ class AuthenticationProvider with ChangeNotifier {
       return false;
     } on AuthException catch (error) {
       console.authentication(error, trace);
-      props.setError(currentError: error.message.toString());
+      props.setUnauthorized(currentError: error.message.toString());
       notifyListeners();
       return false;
     } catch (error) {

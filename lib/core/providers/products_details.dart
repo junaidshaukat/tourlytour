@@ -4,11 +4,14 @@ import '/core/app_export.dart';
 class ProductsDetailsProvider with ChangeNotifier {
   final BuildContext context;
   final supabase = Supabase.instance.client;
+
+  late AuthenticationProvider auth;
   late ConnectivityProvider connectivity;
 
   Props props = Props(data: [], initialData: []);
 
   ProductsDetailsProvider(this.context) {
+    auth = context.read<AuthenticationProvider>();
     connectivity = context.read<ConnectivityProvider>();
   }
 
@@ -41,11 +44,13 @@ class ProductsDetailsProvider with ChangeNotifier {
         throw NoInternetException();
       }
 
+      if (!auth.isAuthorized) {
+        throw UnauthorizedException();
+      }
+
       final response = await supabase.rpc('products_details', params: {
         'productid': productId,
       });
-
-      console.log(response, trace);
 
       if (response.isEmpty) {
         props.setSuccess(currentData: []);
@@ -68,7 +73,7 @@ class ProductsDetailsProvider with ChangeNotifier {
       notifyListeners();
     } on AuthException catch (error) {
       console.authentication(error, trace);
-      props.setError(currentError: error.message.toString());
+      props.setUnauthorized(currentError: error.message.toString());
       notifyListeners();
     } catch (error) {
       console.error(error, trace);

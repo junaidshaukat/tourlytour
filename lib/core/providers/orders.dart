@@ -7,9 +7,11 @@ class OrdersProvider with ChangeNotifier {
   Props props = Props(data: [], initialData: []);
   Props propsOrder = Props(data: null, initialData: null);
 
+  late AuthenticationProvider auth;
   late ConnectivityProvider connectivity;
 
   OrdersProvider(this.context) {
+    auth = context.read<AuthenticationProvider>();
     connectivity = context.read<ConnectivityProvider>();
   }
   String get trace {
@@ -54,6 +56,10 @@ class OrdersProvider with ChangeNotifier {
         throw NoInternetException();
       }
 
+      if (!auth.isAuthorized) {
+        throw UnauthorizedException();
+      }
+
       var response = await supabase.rpc('blackout_dates', params: {
         'order_number': orderId,
       });
@@ -79,7 +85,7 @@ class OrdersProvider with ChangeNotifier {
       notifyListeners();
     } on AuthException catch (error) {
       console.authentication(error, trace);
-      props.setError(currentError: error.message.toString());
+      props.setUnauthorized(currentError: error.message.toString());
       notifyListeners();
     } catch (error) {
       console.error(error, trace);
@@ -94,6 +100,10 @@ class OrdersProvider with ChangeNotifier {
       notifyListeners();
       if (!connectivity.isConnected) {
         throw NoInternetException();
+      }
+
+      if (!auth.isAuthorized) {
+        throw UnauthorizedException();
       }
 
       var response = await supabase.rpc('order_details', params: {

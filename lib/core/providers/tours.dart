@@ -45,6 +45,10 @@ class ToursProvider with ChangeNotifier {
         throw NoInternetException();
       }
 
+      if (!auth.isAuthorized) {
+        throw UnauthorizedException();
+      }
+
       var response = await supabase.rpc('tour_history', params: {
         'user_id': currentUser.id,
       });
@@ -65,13 +69,13 @@ class ToursProvider with ChangeNotifier {
       console.internet(error, trace);
       props.setError(currentError: error.toString());
       notifyListeners();
+    } on AuthException catch (error) {
+      console.authentication(error, trace);
+      props.setUnauthorized(currentError: error.message.toString());
+      notifyListeners();
     } on CustomException catch (error) {
       console.custom(error, trace);
       props.setError(currentError: error.toString());
-      notifyListeners();
-    } on AuthException catch (error) {
-      console.authentication(error, trace);
-      props.setError(currentError: error.message.toString());
       notifyListeners();
     } catch (error) {
       console.error(error, trace);
@@ -83,4 +87,8 @@ class ToursProvider with ChangeNotifier {
   Future<void> onRefresh() async {
     await onReady();
   }
+
+  void onTap() {}
+
+  void onChanged(String p1) {}
 }

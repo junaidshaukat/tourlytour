@@ -9,6 +9,7 @@ class CurrentUserProvider with ChangeNotifier {
   Props props = Props(data: [], initialData: []);
 
   late Box box;
+  late AuthenticationProvider auth;
   late ConnectivityProvider connectivity;
 
   CurrentUserProvider(this.context) {
@@ -84,6 +85,7 @@ class CurrentUserProvider with ChangeNotifier {
       if (!connectivity.isConnected) {
         throw NoInternetException();
       }
+
       var response = await supabase
           .from('Users')
           .select()
@@ -107,7 +109,7 @@ class CurrentUserProvider with ChangeNotifier {
       return false;
     } on AuthException catch (error) {
       console.authentication(error, trace);
-      props.setError(currentError: error.message.toString());
+      props.setUnauthorized(currentError: error.message.toString());
       notifyListeners();
       return false;
     } catch (error) {
@@ -164,7 +166,7 @@ class CurrentUserProvider with ChangeNotifier {
       return false;
     } on AuthException catch (error) {
       console.authentication(error, trace);
-      props.setError(currentError: error.message.toString());
+      props.setUnauthorized(currentError: error.message.toString());
       notifyListeners();
       return false;
     } catch (error) {
@@ -211,7 +213,7 @@ class CurrentUserProvider with ChangeNotifier {
       return false;
     } on AuthException catch (error) {
       console.authentication(error, trace);
-      props.setError(currentError: error.message.toString());
+      props.setUnauthorized(currentError: error.message.toString());
       notifyListeners();
       return false;
     } catch (error) {
@@ -244,7 +246,7 @@ class CurrentUserProvider with ChangeNotifier {
       notifyListeners();
     } on AuthException catch (error) {
       console.authentication(error, trace);
-      props.setError(currentError: error.message.toString());
+      props.setUnauthorized(currentError: error.message.toString());
       notifyListeners();
     } catch (error) {
       console.error(error, trace);
@@ -295,7 +297,7 @@ class CurrentUserProvider with ChangeNotifier {
       notifyListeners();
     } on AuthException catch (error) {
       console.authentication(error, trace);
-      props.setError(currentError: error.message.toString());
+      props.setUnauthorized(currentError: error.message.toString());
       notifyListeners();
     } catch (error) {
       console.error(error, trace);
