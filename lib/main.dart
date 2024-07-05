@@ -49,6 +49,7 @@ void main() async {
           ChangeNotifierProvider(create: (c) => ProductVideosProvider(c)),
           ChangeNotifierProvider(create: (c) => ProductPhotosProvider(c)),
           ChangeNotifierProvider(create: (c) => ProductReviewsProvider(c)),
+          ChangeNotifierProvider(create: (c) => ProductsDetailsProvider(c)),
           ChangeNotifierProvider(create: (c) => ProductItinerariesProvider(c)),
 
           ///

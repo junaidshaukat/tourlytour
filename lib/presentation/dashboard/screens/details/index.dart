@@ -23,10 +23,14 @@ class ProductDetailsScreenState extends State<ProductDetailsScreen>
   late ProductItinerariesProvider itineraries;
   late Products product;
 
+  late ProductsDetailsProvider productsDetails;
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
+      productsDetails = context.read<ProductsDetailsProvider>();
+
       videos = context.read<ProductVideosProvider>();
       photos = context.read<ProductPhotosProvider>();
       reviews = context.read<ProductReviewsProvider>();
@@ -36,6 +40,7 @@ class ProductDetailsScreenState extends State<ProductDetailsScreen>
       await photos.onReady(product.id);
       await reviews.onReady(product.id);
       await itineraries.onReady(product.id);
+      await productsDetails.onReady(product.id);
 
       setState(() {
         preloader = false;

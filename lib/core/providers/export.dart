@@ -12,6 +12,7 @@ export 'product_price.dart';
 export 'product_review.dart';
 export 'product_videos.dart';
 export 'products.dart';
+export 'products_details.dart';
 export 'props.dart';
 export 'search.dart';
 export 'stripe.dart';
