@@ -58,29 +58,29 @@ class SignUpScreenState extends State<SignUpScreen> {
   }
 
   Future<void> onPressed() async {
-    Props props = auth.props;
-    if (!props.isProcessing) {
-      if (formKey.currentState!.validate()) {
-        AuthForm body = AuthForm(
-          provider: provider,
-          event: AuthEvent.signup,
-          email: emailController.text,
-          phone: phoneController.text,
-          name: usernameController.text,
-          password: passwordController.text,
-          passwordConfirm: passwordConfirmController.text,
-        );
-        bool response = await auth.signup(body);
+    // Props props = auth.props;
+    // if (!props.isProcessing) {
+    //   if (formKey.currentState!.validate()) {
+    //     AuthForm body = AuthForm(
+    //       provider: provider,
+    //       event: AuthEvent.signup,
+    //       email: emailController.text,
+    //       phone: phoneController.text,
+    //       name: usernameController.text,
+    //       password: passwordController.text,
+    //       passwordConfirm: passwordConfirmController.text,
+    //     );
+    //     bool response = await auth.signup(body);
 
-        if (response && mounted) {
-          NavigatorService.push(
-            context,
-            const OtpVerificationScreen(),
-            arguments: body,
-          );
-        }
-      }
-    }
+    //     if (response && mounted) {
+    //       NavigatorService.push(
+    //         context,
+    //         const OtpVerificationScreen(),
+    //         arguments: body,
+    //       );
+    //     }
+    //   }
+    // }
   }
 
   @override

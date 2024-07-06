@@ -54,23 +54,23 @@ class ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
   }
 
   Future<void> onPressed() async {
-    Props props = auth.props;
-    if (!props.isProcessing) {
-      if (formKey.currentState!.validate()) {
-        AuthForm body = AuthForm(
-          provider: provider,
-          event: AuthEvent.forgetPassword,
-          email: emailController.text,
-          phone: phoneController.text,
-        );
+    // Props props = auth.props;
+    // if (!props.isProcessing) {
+    //   if (formKey.currentState!.validate()) {
+    //     AuthForm body = AuthForm(
+    //       provider: provider,
+    //       event: AuthEvent.forgetPassword,
+    //       email: emailController.text,
+    //       phone: phoneController.text,
+    //     );
 
-        bool response = await auth.forgetPassword(body);
-        if (response && mounted) {
-          NavigatorService.push(context, const OtpVerificationScreen(),
-              arguments: body);
-        }
-      }
-    }
+    //     bool response = await auth.forgetPassword(body);
+    //     if (response && mounted) {
+    //       NavigatorService.push(context, const OtpVerificationScreen(),
+    //           arguments: body);
+    //     }
+    //   }
+    // }
   }
 
   @override

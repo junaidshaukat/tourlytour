@@ -28,46 +28,46 @@ class OtpVerificationScreenState extends State<OtpVerificationScreen> {
   }
 
   Future<void> onPressed() async {
-    Props props = auth.props;
-    if (!props.isProcessing) {
-      if (formKey.currentState!.validate()) {
-        if (body.event == AuthEvent.signup) {
-          bool response = await auth.verifyOtp(
-            body: body,
-            token: otpController.text,
-          );
-          if (response) {
-            NavigatorService.popAndPushNamed(AppRoutes.splash);
-          }
-        }
+    // Props props = auth.props;
+    // if (!props.isProcessing) {
+    //   if (formKey.currentState!.validate()) {
+    //     if (body.event == AuthEvent.signup) {
+    //       bool response = await auth.verifyOtp(
+    //         body: body,
+    //         token: otpController.text,
+    //       );
+    //       if (response) {
+    //         NavigatorService.popAndPushNamed(AppRoutes.splash);
+    //       }
+    //     }
 
-        if (body.event == AuthEvent.forgetPassword) {
-          bool response = await auth.verifyOtp(
-            body: body,
-            token: otpController.text,
-          );
+    //     if (body.event == AuthEvent.forgetPassword) {
+    //       bool response = await auth.verifyOtp(
+    //         body: body,
+    //         token: otpController.text,
+    //       );
 
-          if (response && mounted) {
-            NavigatorService.push(
-              context,
-              const ResetPasswordScreen(),
-            );
-          }
-        }
-      }
-    }
+    //       if (response && mounted) {
+    //         NavigatorService.push(
+    //           context,
+    //           const ResetPasswordScreen(),
+    //         );
+    //       }
+    //     }
+    //   }
+    // }
   }
 
   Future<void> onSendOTP() async {
-    Props props = auth.props;
-    if (!props.isProcessing) {
-      if (body.event == AuthEvent.signup) {
-        await auth.sendOTP(body);
-      }
-      if (body.event == AuthEvent.forgetPassword) {
-        await auth.sendOTP(body);
-      }
-    }
+    // Props props = auth.props;
+    // if (!props.isProcessing) {
+    //   if (body.event == AuthEvent.signup) {
+    //     await auth.sendOTP(body);
+    //   }
+    //   if (body.event == AuthEvent.forgetPassword) {
+    //     await auth.sendOTP(body);
+    //   }
+    // }
   }
 
   @override

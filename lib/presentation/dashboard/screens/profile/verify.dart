@@ -37,33 +37,33 @@ class ProfileVerifyScreenState extends State<ProfileVerifyScreen> {
   }
 
   Future<void> onPressed() async {
-    Props props = auth.props;
-    if (!props.isProcessing) {
-      if (formKey.currentState!.validate()) {
-        bool response = await auth.verifyOtp(
-          body: body,
-          token: controller.text,
-        );
+    // Props props = auth.props;
+    // if (!props.isProcessing) {
+    //   if (formKey.currentState!.validate()) {
+    //     bool response = await auth.verifyOtp(
+    //       body: body,
+    //       token: controller.text,
+    //     );
 
-        if (response) {
-          NavigatorService.popAndPushNamed(
-            AppRoutes.profileUpdate,
-            arguments: {
-              'verified': true,
-              'field': field,
-              'hintText': hintText,
-            },
-          );
-        }
-      }
-    }
+    //     if (response) {
+    //       NavigatorService.popAndPushNamed(
+    //         AppRoutes.profileUpdate,
+    //         arguments: {
+    //           'verified': true,
+    //           'field': field,
+    //           'hintText': hintText,
+    //         },
+    //       );
+    //     }
+    //   }
+    // }
   }
 
   Future<void> onSendOTP() async {
-    Props props = auth.props;
-    if (!props.isProcessing) {
-      await auth.sendOTP(body);
-    }
+    // Props props = auth.props;
+    // if (!props.isProcessing) {
+    //   await auth.sendOTP(body);
+    // }
   }
 
   @override

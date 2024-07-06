@@ -23,11 +23,6 @@ class AuthenticationProvider with ChangeNotifier {
       AuthChangeEvent event = data.event;
       Session? session = data.session;
 
-      console.log(
-        {'event': data.event, 'session': session?.toJson()},
-        trace,
-      );
-
       if (event == AuthChangeEvent.initialSession) {
         currentSession = session;
         props.setInitialSession(currentData: data);
@@ -169,6 +164,55 @@ class AuthenticationProvider with ChangeNotifier {
     }
   }
 
+  Future<AuthResponse> signinWithEmail({
+    String? email,
+    String? phone,
+    required String password,
+    String? captchaToken,
+  }) async {
+    try {
+      props.setProcessing();
+      notifyListeners();
+
+      if (!connectivity.isConnected) {
+        throw NoInternetException();
+      }
+
+      AuthResponse response = await supabase.auth.signInWithPassword(
+        email: email,
+        phone: phone,
+        password: password,
+        captchaToken: captchaToken,
+      );
+
+      if (response.session != null) {
+        return response;
+      } else {
+        throw CustomException();
+      }
+    } on NoInternetException catch (error) {
+      console.internet(error, trace);
+      props.setError(currentError: error.toString());
+      notifyListeners();
+      rethrow;
+    } on AuthException catch (error) {
+      console.authentication(error, trace);
+      props.setUnauthorized(currentError: error.message.toString());
+      notifyListeners();
+      rethrow;
+    } on CustomException catch (error) {
+      console.custom(error, trace);
+      props.setError(currentError: error.toString());
+      notifyListeners();
+      rethrow;
+    } catch (error) {
+      console.error(error, trace);
+      props.setError(currentError: "something_went_wrong".tr);
+      notifyListeners();
+      rethrow;
+    }
+  }
+
   Future<void> signinWithGoogle() async {
     await supabase.auth.signInWithOAuth(
       OAuthProvider.google,
@@ -183,556 +227,556 @@ class AuthenticationProvider with ChangeNotifier {
     );
   }
 
-  Future<bool> signin(AuthForm body) async {
-    try {
-      props.setProcessing();
-      notifyListeners();
+  // Future<bool> signin(AuthForm body) async {
+  //   try {
+  //     props.setProcessing();
+  //     notifyListeners();
 
-      if (!connectivity.isConnected) {
-        throw NoInternetException();
-      }
+  //     if (!connectivity.isConnected) {
+  //       throw NoInternetException();
+  //     }
 
-      AuthResponse response = body.provider == AuthProvider.email
-          ? await supabase.auth.signInWithPassword(
-              email: body.email,
-              password: body.password ?? '',
-            )
-          : await supabase.auth.signInWithPassword(
-              phone: body.phone,
-              password: body.password ?? '',
-            );
+  //     AuthResponse response = body.provider == AuthProvider.email
+  //         ? await supabase.auth.signInWithPassword(
+  //             email: body.email,
+  //             password: body.password ?? '',
+  //           )
+  //         : await supabase.auth.signInWithPassword(
+  //             phone: body.phone,
+  //             password: body.password ?? '',
+  //           );
 
-      if (response.session != null) {
-        props.setSuccess();
-        notifyListeners();
-        return true;
-      } else {
-        throw CustomException();
-      }
-    } on NoInternetException catch (error) {
-      console.internet(error, trace);
-      props.setError(currentError: error.toString());
-      notifyListeners();
-      return false;
-    } on AuthException catch (error) {
-      console.authentication(error, trace);
-      props.setUnauthorized(currentError: error.message.toString());
-      notifyListeners();
-      return false;
-    } on CustomException catch (error) {
-      console.custom(error, trace);
-      props.setError(currentError: error.toString());
-      notifyListeners();
-      return false;
-    } catch (error) {
-      console.error(error, trace);
-      props.setError(currentError: "something_went_wrong".tr);
-      notifyListeners();
-      return false;
-    }
-  }
+  //     if (response.session != null) {
+  //       props.setSuccess();
+  //       notifyListeners();
+  //       return true;
+  //     } else {
+  //       throw CustomException();
+  //     }
+  //   } on NoInternetException catch (error) {
+  //     console.internet(error, trace);
+  //     props.setError(currentError: error.toString());
+  //     notifyListeners();
+  //     return false;
+  //   } on AuthException catch (error) {
+  //     console.authentication(error, trace);
+  //     props.setUnauthorized(currentError: error.message.toString());
+  //     notifyListeners();
+  //     return false;
+  //   } on CustomException catch (error) {
+  //     console.custom(error, trace);
+  //     props.setError(currentError: error.toString());
+  //     notifyListeners();
+  //     return false;
+  //   } catch (error) {
+  //     console.error(error, trace);
+  //     props.setError(currentError: "something_went_wrong".tr);
+  //     notifyListeners();
+  //     return false;
+  //   }
+  // }
 
-  Future<bool> signup(AuthForm body) async {
-    try {
-      props.setProcessing();
-      notifyListeners();
+  // Future<bool> signup(AuthForm body) async {
+  //   try {
+  //     props.setProcessing();
+  //     notifyListeners();
 
-      if (!connectivity.isConnected) {
-        throw NoInternetException();
-      }
+  //     if (!connectivity.isConnected) {
+  //       throw NoInternetException();
+  //     }
 
-      AuthResponse response = body.provider == AuthProvider.email
-          ? await supabase.auth.signUp(
-              email: body.email,
-              password: body.password ?? '',
-              data: {
-                "email": body.email,
-                "full_name": body.name,
-                "name": body.name,
-                "phone": body.phone,
-                "provider": body.provider,
-              },
-            )
-          : await supabase.auth.signUp(
-              phone: body.phone,
-              password: body.password ?? '',
-              data: {
-                "email": body.email,
-                "full_name": body.name,
-                "name": body.name,
-                "phone": body.phone,
-                "provider": body.provider,
-              },
-            );
+  //     AuthResponse response = body.provider == AuthProvider.email
+  //         ? await supabase.auth.signUp(
+  //             email: body.email,
+  //             password: body.password ?? '',
+  //             data: {
+  //               "email": body.email,
+  //               "full_name": body.name,
+  //               "name": body.name,
+  //               "phone": body.phone,
+  //               "provider": body.provider,
+  //             },
+  //           )
+  //         : await supabase.auth.signUp(
+  //             phone: body.phone,
+  //             password: body.password ?? '',
+  //             data: {
+  //               "email": body.email,
+  //               "full_name": body.name,
+  //               "name": body.name,
+  //               "phone": body.phone,
+  //               "provider": body.provider,
+  //             },
+  //           );
 
-      if (response.user != null) {
-        props.setSuccess();
-        notifyListeners();
-        return true;
-      } else {
-        throw CustomException();
-      }
-    } on NoInternetException catch (error) {
-      console.internet(error, trace);
-      props.setError(currentError: error.toString());
-      notifyListeners();
-      return false;
-    } on AuthException catch (error) {
-      console.authentication(error, trace);
-      props.setUnauthorized(currentError: error.message.toString());
-      notifyListeners();
-      return false;
-    } on CustomException catch (error) {
-      console.custom(error, trace);
-      props.setError(currentError: error.toString());
-      notifyListeners();
-      return false;
-    } catch (error) {
-      console.error(error, trace);
-      props.setError(currentError: "something_went_wrong".tr);
-      notifyListeners();
-      return false;
-    }
-  }
+  //     if (response.user != null) {
+  //       props.setSuccess();
+  //       notifyListeners();
+  //       return true;
+  //     } else {
+  //       throw CustomException();
+  //     }
+  //   } on NoInternetException catch (error) {
+  //     console.internet(error, trace);
+  //     props.setError(currentError: error.toString());
+  //     notifyListeners();
+  //     return false;
+  //   } on AuthException catch (error) {
+  //     console.authentication(error, trace);
+  //     props.setUnauthorized(currentError: error.message.toString());
+  //     notifyListeners();
+  //     return false;
+  //   } on CustomException catch (error) {
+  //     console.custom(error, trace);
+  //     props.setError(currentError: error.toString());
+  //     notifyListeners();
+  //     return false;
+  //   } catch (error) {
+  //     console.error(error, trace);
+  //     props.setError(currentError: "something_went_wrong".tr);
+  //     notifyListeners();
+  //     return false;
+  //   }
+  // }
 
-  Future<bool> verifyOtp({
-    required AuthForm body,
-    required String token,
-  }) async {
-    try {
-      props.setProcessing();
-      notifyListeners();
+  // Future<bool> verifyOtp({
+  //   required AuthForm body,
+  //   required String token,
+  // }) async {
+  //   try {
+  //     props.setProcessing();
+  //     notifyListeners();
 
-      if (!connectivity.isConnected) {
-        throw NoInternetException();
-      }
+  //     if (!connectivity.isConnected) {
+  //       throw NoInternetException();
+  //     }
 
-      if (body.event == AuthEvent.signup) {
-        AuthResponse response = body.provider == AuthProvider.email
-            ? await supabase.auth.verifyOTP(
-                email: body.email,
-                token: token,
-                type: OtpType.signup,
-              )
-            : await supabase.auth.verifyOTP(
-                phone: body.phone,
-                token: token,
-                type: OtpType.signup,
-              );
+  //     if (body.event == AuthEvent.signup) {
+  //       AuthResponse response = body.provider == AuthProvider.email
+  //           ? await supabase.auth.verifyOTP(
+  //               email: body.email,
+  //               token: token,
+  //               type: OtpType.signup,
+  //             )
+  //           : await supabase.auth.verifyOTP(
+  //               phone: body.phone,
+  //               token: token,
+  //               type: OtpType.signup,
+  //             );
 
-        if (response.session != null) {
-          props.setSuccess();
-          notifyListeners();
-          return true;
-        } else {
-          throw CustomException();
-        }
-      }
+  //       if (response.session != null) {
+  //         props.setSuccess();
+  //         notifyListeners();
+  //         return true;
+  //       } else {
+  //         throw CustomException();
+  //       }
+  //     }
 
-      if (body.event == AuthEvent.forgetPassword) {
-        AuthResponse response = body.provider == AuthProvider.email
-            ? await supabase.auth.verifyOTP(
-                email: body.email,
-                token: token,
-                type: OtpType.recovery,
-              )
-            : await supabase.auth.verifyOTP(
-                phone: body.phone,
-                token: token,
-                type: OtpType.recovery,
-              );
+  //     if (body.event == AuthEvent.forgetPassword) {
+  //       AuthResponse response = body.provider == AuthProvider.email
+  //           ? await supabase.auth.verifyOTP(
+  //               email: body.email,
+  //               token: token,
+  //               type: OtpType.recovery,
+  //             )
+  //           : await supabase.auth.verifyOTP(
+  //               phone: body.phone,
+  //               token: token,
+  //               type: OtpType.recovery,
+  //             );
 
-        if (response.session != null) {
-          props.setSuccess();
-          notifyListeners();
-          return true;
-        } else {
-          throw CustomException();
-        }
-      }
+  //       if (response.session != null) {
+  //         props.setSuccess();
+  //         notifyListeners();
+  //         return true;
+  //       } else {
+  //         throw CustomException();
+  //       }
+  //     }
 
-      if (body.event == AuthEvent.update) {
-        AuthResponse response = body.provider == AuthProvider.email
-            ? await supabase.auth.verifyOTP(
-                email: body.email,
-                token: token,
-                type: OtpType.email,
-              )
-            : await supabase.auth.verifyOTP(
-                phone: body.phone,
-                token: token,
-                type: OtpType.sms,
-              );
+  //     if (body.event == AuthEvent.update) {
+  //       AuthResponse response = body.provider == AuthProvider.email
+  //           ? await supabase.auth.verifyOTP(
+  //               email: body.email,
+  //               token: token,
+  //               type: OtpType.email,
+  //             )
+  //           : await supabase.auth.verifyOTP(
+  //               phone: body.phone,
+  //               token: token,
+  //               type: OtpType.sms,
+  //             );
 
-        if (response.session != null) {
-          props.setSuccess();
-          notifyListeners();
-          return true;
-        } else {
-          throw CustomException();
-        }
-      }
+  //       if (response.session != null) {
+  //         props.setSuccess();
+  //         notifyListeners();
+  //         return true;
+  //       } else {
+  //         throw CustomException();
+  //       }
+  //     }
 
-      throw CustomException();
-    } on NoInternetException catch (error) {
-      console.internet(error, trace);
-      props.setError(currentError: error.toString());
-      notifyListeners();
-      return false;
-    } on CustomException catch (error) {
-      console.custom(error, trace);
-      props.setError(currentError: error.toString());
-      notifyListeners();
-      return false;
-    } on AuthException catch (error) {
-      console.authentication(error, trace);
-      props.setUnauthorized(currentError: error.message.toString());
-      notifyListeners();
-      return false;
-    } catch (error) {
-      console.error(error, trace);
-      props.setError(currentError: "something_went_wrong".tr);
-      notifyListeners();
-      return false;
-    }
-  }
+  //     throw CustomException();
+  //   } on NoInternetException catch (error) {
+  //     console.internet(error, trace);
+  //     props.setError(currentError: error.toString());
+  //     notifyListeners();
+  //     return false;
+  //   } on CustomException catch (error) {
+  //     console.custom(error, trace);
+  //     props.setError(currentError: error.toString());
+  //     notifyListeners();
+  //     return false;
+  //   } on AuthException catch (error) {
+  //     console.authentication(error, trace);
+  //     props.setUnauthorized(currentError: error.message.toString());
+  //     notifyListeners();
+  //     return false;
+  //   } catch (error) {
+  //     console.error(error, trace);
+  //     props.setError(currentError: "something_went_wrong".tr);
+  //     notifyListeners();
+  //     return false;
+  //   }
+  // }
 
-  Future<bool> sendOTP(AuthForm body) async {
-    try {
-      props.setSending();
-      notifyListeners();
+  // Future<bool> sendOTP(AuthForm body) async {
+  //   try {
+  //     props.setSending();
+  //     notifyListeners();
 
-      if (!connectivity.isConnected) {
-        throw NoInternetException();
-      }
+  //     if (!connectivity.isConnected) {
+  //       throw NoInternetException();
+  //     }
 
-      if (body.event == AuthEvent.signup) {
-        ResendResponse response = body.provider == AuthProvider.email
-            ? await supabase.auth.resend(
-                email: body.email,
-                type: OtpType.signup,
-              )
-            : await supabase.auth.resend(
-                phone: body.phone,
-                type: OtpType.signup,
-              );
+  //     if (body.event == AuthEvent.signup) {
+  //       ResendResponse response = body.provider == AuthProvider.email
+  //           ? await supabase.auth.resend(
+  //               email: body.email,
+  //               type: OtpType.signup,
+  //             )
+  //           : await supabase.auth.resend(
+  //               phone: body.phone,
+  //               type: OtpType.signup,
+  //             );
 
-        if (response.messageId != null) {
-          props.setSuccess();
-          notifyListeners();
-          return true;
-        }
+  //       if (response.messageId != null) {
+  //         props.setSuccess();
+  //         notifyListeners();
+  //         return true;
+  //       }
 
-        props.setSuccess();
-        notifyListeners();
-        return true;
-      }
+  //       props.setSuccess();
+  //       notifyListeners();
+  //       return true;
+  //     }
 
-      if (body.event == AuthEvent.forgetPassword) {
-        if (body.provider == AuthProvider.email) {
-          await supabase.auth.resetPasswordForEmail(
-            body.email ?? "",
-            redirectTo: redirectTo,
-          );
-          props.setSuccess();
-          notifyListeners();
-          return true;
-        } else if (body.provider == AuthProvider.phone) {
-          await supabase.auth.resetPasswordForEmail(
-            body.email ?? "",
-            redirectTo: redirectTo,
-          );
-          props.setSuccess();
-          notifyListeners();
-          return true;
-        }
+  //     if (body.event == AuthEvent.forgetPassword) {
+  //       if (body.provider == AuthProvider.email) {
+  //         await supabase.auth.resetPasswordForEmail(
+  //           body.email ?? "",
+  //           redirectTo: redirectTo,
+  //         );
+  //         props.setSuccess();
+  //         notifyListeners();
+  //         return true;
+  //       } else if (body.provider == AuthProvider.phone) {
+  //         await supabase.auth.resetPasswordForEmail(
+  //           body.email ?? "",
+  //           redirectTo: redirectTo,
+  //         );
+  //         props.setSuccess();
+  //         notifyListeners();
+  //         return true;
+  //       }
 
-        props.setSuccess();
-        notifyListeners();
-        return false;
-      }
+  //       props.setSuccess();
+  //       notifyListeners();
+  //       return false;
+  //     }
 
-      if (body.event == AuthEvent.update) {
-        ResendResponse response = body.provider == AuthProvider.email
-            ? await supabase.auth.resend(
-                email: body.email,
-                type: OtpType.signup,
-              )
-            : await supabase.auth.resend(
-                phone: body.phone,
-                type: OtpType.sms,
-              );
+  //     if (body.event == AuthEvent.update) {
+  //       ResendResponse response = body.provider == AuthProvider.email
+  //           ? await supabase.auth.resend(
+  //               email: body.email,
+  //               type: OtpType.signup,
+  //             )
+  //           : await supabase.auth.resend(
+  //               phone: body.phone,
+  //               type: OtpType.sms,
+  //             );
 
-        if (response.messageId != null) {
-          props.setSuccess();
-          notifyListeners();
-          return true;
-        }
+  //       if (response.messageId != null) {
+  //         props.setSuccess();
+  //         notifyListeners();
+  //         return true;
+  //       }
 
-        props.setSuccess();
-        notifyListeners();
-        return true;
-      }
+  //       props.setSuccess();
+  //       notifyListeners();
+  //       return true;
+  //     }
 
-      throw CustomException();
-    } on NoInternetException catch (error) {
-      console.internet(error, trace);
-      props.setError(currentError: error.toString());
-      notifyListeners();
-      return false;
-    } on CustomException catch (error) {
-      console.custom(error, trace);
-      props.setError(currentError: error.toString());
-      notifyListeners();
-      return false;
-    } on AuthException catch (error) {
-      console.authentication(error, trace);
-      props.setUnauthorized(currentError: error.message.toString());
-      notifyListeners();
-      return false;
-    } catch (error) {
-      console.error(error, trace);
-      props.setError(currentError: "something_went_wrong".tr);
-      notifyListeners();
-      return false;
-    }
-  }
+  //     throw CustomException();
+  //   } on NoInternetException catch (error) {
+  //     console.internet(error, trace);
+  //     props.setError(currentError: error.toString());
+  //     notifyListeners();
+  //     return false;
+  //   } on CustomException catch (error) {
+  //     console.custom(error, trace);
+  //     props.setError(currentError: error.toString());
+  //     notifyListeners();
+  //     return false;
+  //   } on AuthException catch (error) {
+  //     console.authentication(error, trace);
+  //     props.setUnauthorized(currentError: error.message.toString());
+  //     notifyListeners();
+  //     return false;
+  //   } catch (error) {
+  //     console.error(error, trace);
+  //     props.setError(currentError: "something_went_wrong".tr);
+  //     notifyListeners();
+  //     return false;
+  //   }
+  // }
 
-  Future<bool> forgetPassword(AuthForm body) async {
-    try {
-      props.setProcessing();
-      notifyListeners();
+  // Future<bool> forgetPassword(AuthForm body) async {
+  //   try {
+  //     props.setProcessing();
+  //     notifyListeners();
 
-      if (!connectivity.isConnected) {
-        throw NoInternetException();
-      }
+  //     if (!connectivity.isConnected) {
+  //       throw NoInternetException();
+  //     }
 
-      if (body.provider == AuthProvider.email) {
-        await supabase.auth.resetPasswordForEmail(
-          body.email ?? "",
-          redirectTo: redirectTo,
-        );
-        props.setSuccess();
-        notifyListeners();
-        return true;
-      } else if (body.provider == AuthProvider.phone) {
-        await supabase.auth.resetPasswordForEmail(
-          body.email ?? "",
-          redirectTo: redirectTo,
-        );
-        props.setSuccess();
-        notifyListeners();
-        return true;
-      }
+  //     if (body.provider == AuthProvider.email) {
+  //       await supabase.auth.resetPasswordForEmail(
+  //         body.email ?? "",
+  //         redirectTo: redirectTo,
+  //       );
+  //       props.setSuccess();
+  //       notifyListeners();
+  //       return true;
+  //     } else if (body.provider == AuthProvider.phone) {
+  //       await supabase.auth.resetPasswordForEmail(
+  //         body.email ?? "",
+  //         redirectTo: redirectTo,
+  //       );
+  //       props.setSuccess();
+  //       notifyListeners();
+  //       return true;
+  //     }
 
-      props.setSuccess();
-      notifyListeners();
-      return false;
-    } on NoInternetException catch (error) {
-      console.internet(error, trace);
-      props.setError(currentError: error.toString());
-      notifyListeners();
-      return false;
-    } on CustomException catch (error) {
-      console.custom(error, trace);
-      props.setError(currentError: error.toString());
-      notifyListeners();
-      return false;
-    } on AuthException catch (error) {
-      console.authentication(error, trace);
-      props.setUnauthorized(currentError: error.message.toString());
-      notifyListeners();
-      return false;
-    } catch (error) {
-      console.error(error, trace);
-      props.setError(currentError: "something_went_wrong".tr);
-      notifyListeners();
-      return false;
-    }
-  }
+  //     props.setSuccess();
+  //     notifyListeners();
+  //     return false;
+  //   } on NoInternetException catch (error) {
+  //     console.internet(error, trace);
+  //     props.setError(currentError: error.toString());
+  //     notifyListeners();
+  //     return false;
+  //   } on CustomException catch (error) {
+  //     console.custom(error, trace);
+  //     props.setError(currentError: error.toString());
+  //     notifyListeners();
+  //     return false;
+  //   } on AuthException catch (error) {
+  //     console.authentication(error, trace);
+  //     props.setUnauthorized(currentError: error.message.toString());
+  //     notifyListeners();
+  //     return false;
+  //   } catch (error) {
+  //     console.error(error, trace);
+  //     props.setError(currentError: "something_went_wrong".tr);
+  //     notifyListeners();
+  //     return false;
+  //   }
+  // }
 
-  Future<bool> resetPassword(String? password) async {
-    try {
-      props.setProcessing();
-      notifyListeners();
+  // Future<bool> resetPassword(String? password) async {
+  //   try {
+  //     props.setProcessing();
+  //     notifyListeners();
 
-      if (!connectivity.isConnected) {
-        throw NoInternetException();
-      }
+  //     if (!connectivity.isConnected) {
+  //       throw NoInternetException();
+  //     }
 
-      UserResponse response = await supabase.auth.updateUser(UserAttributes(
-        password: password,
-      ));
+  //     UserResponse response = await supabase.auth.updateUser(UserAttributes(
+  //       password: password,
+  //     ));
 
-      if (response.user != null) {
-        props.setSuccess();
-        notifyListeners();
-        return true;
-      } else {
-        props.setSuccess();
-        notifyListeners();
-        return false;
-      }
-    } on NoInternetException catch (error) {
-      console.internet(error, trace);
-      props.setError(currentError: error.toString());
-      notifyListeners();
-      return false;
-    } on CustomException catch (error) {
-      console.custom(error, trace);
-      props.setError(currentError: error.toString());
-      notifyListeners();
-      return false;
-    } on AuthException catch (error) {
-      console.authentication(error, trace);
-      props.setUnauthorized(currentError: error.message.toString());
-      notifyListeners();
-      return false;
-    } catch (error) {
-      console.error(error, trace);
-      props.setError(currentError: "something_went_wrong".tr);
-      notifyListeners();
-      return false;
-    }
-  }
+  //     if (response.user != null) {
+  //       props.setSuccess();
+  //       notifyListeners();
+  //       return true;
+  //     } else {
+  //       props.setSuccess();
+  //       notifyListeners();
+  //       return false;
+  //     }
+  //   } on NoInternetException catch (error) {
+  //     console.internet(error, trace);
+  //     props.setError(currentError: error.toString());
+  //     notifyListeners();
+  //     return false;
+  //   } on CustomException catch (error) {
+  //     console.custom(error, trace);
+  //     props.setError(currentError: error.toString());
+  //     notifyListeners();
+  //     return false;
+  //   } on AuthException catch (error) {
+  //     console.authentication(error, trace);
+  //     props.setUnauthorized(currentError: error.message.toString());
+  //     notifyListeners();
+  //     return false;
+  //   } catch (error) {
+  //     console.error(error, trace);
+  //     props.setError(currentError: "something_went_wrong".tr);
+  //     notifyListeners();
+  //     return false;
+  //   }
+  // }
 
-  Future<bool> onUpdateEmail(String? email) async {
-    try {
-      props.setProcessing();
-      notifyListeners();
+  // Future<bool> onUpdateEmail(String? email) async {
+  //   try {
+  //     props.setProcessing();
+  //     notifyListeners();
 
-      if (!connectivity.isConnected) {
-        throw NoInternetException();
-      }
+  //     if (!connectivity.isConnected) {
+  //       throw NoInternetException();
+  //     }
 
-      UserResponse response = await supabase.auth.updateUser(
-        UserAttributes(
-          email: email,
-        ),
-      );
-      if (response.user != null) {
-        props.setSuccess();
-        notifyListeners();
-        return true;
-      } else {
-        props.setSuccess();
-        notifyListeners();
-        return false;
-      }
-    } on NoInternetException catch (error) {
-      console.internet(error, trace);
-      props.setError(currentError: error.toString());
-      notifyListeners();
-      return false;
-    } on CustomException catch (error) {
-      console.custom(error, trace);
-      props.setError(currentError: error.toString());
-      notifyListeners();
-      return false;
-    } on AuthException catch (error) {
-      console.authentication(error, trace);
-      props.setUnauthorized(currentError: error.message.toString());
-      notifyListeners();
-      return false;
-    } catch (error) {
-      console.error(error, trace);
-      props.setError(currentError: "something_went_wrong".tr);
-      notifyListeners();
-      return false;
-    }
-  }
+  //     UserResponse response = await supabase.auth.updateUser(
+  //       UserAttributes(
+  //         email: email,
+  //       ),
+  //     );
+  //     if (response.user != null) {
+  //       props.setSuccess();
+  //       notifyListeners();
+  //       return true;
+  //     } else {
+  //       props.setSuccess();
+  //       notifyListeners();
+  //       return false;
+  //     }
+  //   } on NoInternetException catch (error) {
+  //     console.internet(error, trace);
+  //     props.setError(currentError: error.toString());
+  //     notifyListeners();
+  //     return false;
+  //   } on CustomException catch (error) {
+  //     console.custom(error, trace);
+  //     props.setError(currentError: error.toString());
+  //     notifyListeners();
+  //     return false;
+  //   } on AuthException catch (error) {
+  //     console.authentication(error, trace);
+  //     props.setUnauthorized(currentError: error.message.toString());
+  //     notifyListeners();
+  //     return false;
+  //   } catch (error) {
+  //     console.error(error, trace);
+  //     props.setError(currentError: "something_went_wrong".tr);
+  //     notifyListeners();
+  //     return false;
+  //   }
+  // }
 
-  Future<bool> onUpdatePhone(String? phone) async {
-    try {
-      props.setProcessing();
-      notifyListeners();
+  // Future<bool> onUpdatePhone(String? phone) async {
+  //   try {
+  //     props.setProcessing();
+  //     notifyListeners();
 
-      if (!connectivity.isConnected) {
-        throw NoInternetException();
-      }
+  //     if (!connectivity.isConnected) {
+  //       throw NoInternetException();
+  //     }
 
-      UserResponse response = await supabase.auth.updateUser(UserAttributes(
-        phone: phone,
-      ));
+  //     UserResponse response = await supabase.auth.updateUser(UserAttributes(
+  //       phone: phone,
+  //     ));
 
-      if (response.user != null) {
-        props.setSuccess();
-        notifyListeners();
-        return true;
-      } else {
-        props.setSuccess();
-        notifyListeners();
-        return false;
-      }
-    } on NoInternetException catch (error) {
-      console.internet(error, trace);
-      props.setError(currentError: error.toString());
-      notifyListeners();
-      return false;
-    } on CustomException catch (error) {
-      console.custom(error, trace);
-      props.setError(currentError: error.toString());
-      notifyListeners();
-      return false;
-    } on AuthException catch (error) {
-      console.authentication(error, trace);
-      props.setUnauthorized(currentError: error.message.toString());
-      notifyListeners();
-      return false;
-    } catch (error) {
-      console.error(error, trace);
-      props.setError(currentError: "something_went_wrong".tr);
-      notifyListeners();
-      return false;
-    }
-  }
+  //     if (response.user != null) {
+  //       props.setSuccess();
+  //       notifyListeners();
+  //       return true;
+  //     } else {
+  //       props.setSuccess();
+  //       notifyListeners();
+  //       return false;
+  //     }
+  //   } on NoInternetException catch (error) {
+  //     console.internet(error, trace);
+  //     props.setError(currentError: error.toString());
+  //     notifyListeners();
+  //     return false;
+  //   } on CustomException catch (error) {
+  //     console.custom(error, trace);
+  //     props.setError(currentError: error.toString());
+  //     notifyListeners();
+  //     return false;
+  //   } on AuthException catch (error) {
+  //     console.authentication(error, trace);
+  //     props.setUnauthorized(currentError: error.message.toString());
+  //     notifyListeners();
+  //     return false;
+  //   } catch (error) {
+  //     console.error(error, trace);
+  //     props.setError(currentError: "something_went_wrong".tr);
+  //     notifyListeners();
+  //     return false;
+  //   }
+  // }
 
-  Future<bool> updateUserMetadata(Object? data) async {
-    try {
-      props.setProcessing();
-      notifyListeners();
+  // Future<bool> updateUserMetadata(Object? data) async {
+  //   try {
+  //     props.setProcessing();
+  //     notifyListeners();
 
-      if (!connectivity.isConnected) {
-        throw NoInternetException();
-      }
+  //     if (!connectivity.isConnected) {
+  //       throw NoInternetException();
+  //     }
 
-      UserResponse response = await supabase.auth.updateUser(
-        UserAttributes(
-          data: data,
-        ),
-      );
+  //     UserResponse response = await supabase.auth.updateUser(
+  //       UserAttributes(
+  //         data: data,
+  //       ),
+  //     );
 
-      if (response.user != null) {
-        props.setSuccess();
-        notifyListeners();
-        return true;
-      } else {
-        props.setSuccess();
-        notifyListeners();
-        return false;
-      }
-    } on NoInternetException catch (error) {
-      console.internet(error, trace);
-      props.setError(currentError: error.toString());
-      notifyListeners();
-      return false;
-    } on CustomException catch (error) {
-      console.custom(error, trace);
-      props.setError(currentError: error.toString());
-      notifyListeners();
-      return false;
-    } on AuthException catch (error) {
-      console.authentication(error, trace);
-      props.setUnauthorized(currentError: error.message.toString());
-      notifyListeners();
-      return false;
-    } catch (error) {
-      console.error(error, trace);
-      props.setError(currentError: "something_went_wrong".tr);
-      notifyListeners();
-      return false;
-    }
-  }
+  //     if (response.user != null) {
+  //       props.setSuccess();
+  //       notifyListeners();
+  //       return true;
+  //     } else {
+  //       props.setSuccess();
+  //       notifyListeners();
+  //       return false;
+  //     }
+  //   } on NoInternetException catch (error) {
+  //     console.internet(error, trace);
+  //     props.setError(currentError: error.toString());
+  //     notifyListeners();
+  //     return false;
+  //   } on CustomException catch (error) {
+  //     console.custom(error, trace);
+  //     props.setError(currentError: error.toString());
+  //     notifyListeners();
+  //     return false;
+  //   } on AuthException catch (error) {
+  //     console.authentication(error, trace);
+  //     props.setUnauthorized(currentError: error.message.toString());
+  //     notifyListeners();
+  //     return false;
+  //   } catch (error) {
+  //     console.error(error, trace);
+  //     props.setError(currentError: "something_went_wrong".tr);
+  //     notifyListeners();
+  //     return false;
+  //   }
+  // }
 
   Future<void> signOut() async {
     await supabase.auth.signOut();

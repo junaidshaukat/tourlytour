@@ -37,72 +37,72 @@ class ProfileUpdateScreenState extends State<ProfileUpdateScreen> {
   }
 
   Future<void> onUpdateEmail() async {
-    Props props = auth.props;
-    if (!props.isProcessing) {
-      if (formKey.currentState!.validate()) {
-        bool response = await auth.onUpdateEmail(controller.text);
-        if (response && mounted) {
-          await context.read<CurrentUserProvider>().onReady();
-          NavigatorService.goBack();
-        }
-      }
-    }
+    // Props props = auth.props;
+    // if (!props.isProcessing) {
+    //   if (formKey.currentState!.validate()) {
+    //     bool response = await auth.onUpdateEmail(controller.text);
+    //     if (response && mounted) {
+    //       await context.read<CurrentUserProvider>().onReady();
+    //       NavigatorService.goBack();
+    //     }
+    //   }
+    // }
   }
 
   Future<void> onUpdatePhone() async {
-    Props props = auth.props;
-    if (!props.isProcessing) {
-      if (formKey.currentState!.validate()) {
-        bool response = await auth.onUpdatePhone(controller.text);
-        if (response && mounted) {
-          await context.read<CurrentUserProvider>().onReady();
-          NavigatorService.goBack();
-        }
-      }
-    }
+    // Props props = auth.props;
+    // if (!props.isProcessing) {
+    //   if (formKey.currentState!.validate()) {
+    //     bool response = await auth.onUpdatePhone(controller.text);
+    //     if (response && mounted) {
+    //       await context.read<CurrentUserProvider>().onReady();
+    //       NavigatorService.goBack();
+    //     }
+    //   }
+    // }
   }
 
   Future<void> onUpdateName() async {
-    Props props = auth.props;
-    if (!props.isProcessing) {
-      if (formKey.currentState!.validate()) {
-        bool response = await auth.updateUserMetadata({
-          "name": controller.text,
-          "full_name": controller.text,
-        });
-        if (response && mounted) {
-          await context.read<CurrentUserProvider>().onReady();
-          NavigatorService.goBack();
-        }
-      }
-    }
+    // Props props = auth.props;
+    // if (!props.isProcessing) {
+    //   if (formKey.currentState!.validate()) {
+    //     bool response = await auth.updateUserMetadata({
+    //       "name": controller.text,
+    //       "full_name": controller.text,
+    //     });
+    //     if (response && mounted) {
+    //       await context.read<CurrentUserProvider>().onReady();
+    //       NavigatorService.goBack();
+    //     }
+    //   }
+    // }
   }
 
   Future<void> onSendCode() async {
-    Props props = auth.props;
-    if (!props.isProcessing) {
-      if (formKey.currentState!.validate()) {
-        AuthForm body = AuthForm(
-          event: AuthEvent.update,
-          provider: field,
-          email: hintText,
-          phone: hintText,
-        );
+    // Props props = auth.props;
+    // if (!props.isProcessing) {
+    //   if (formKey.currentState!.validate()) {
+    //     AuthForm body = AuthForm(
+    //       event: AuthEvent.update,
+    //       provider: field,
+    //       email: hintText,
+    //       phone: hintText,
+    //     );
 
-        bool response = await auth.sendOTP(body);
-        if (response) {
-          NavigatorService.popAndPushNamed(
-            AppRoutes.profileVerify,
-            arguments: {
-              'body': body,
-              'field': field,
-              'hintText': hintText,
-              'verified': verified,
-            },
-          );
-        }
-      }
-    }
+    //     bool response = await auth.sendOTP(body);
+    //     if (response) {
+    //       NavigatorService.popAndPushNamed(
+    //         AppRoutes.profileVerify,
+    //         arguments: {
+    //           'body': body,
+    //           'field': field,
+    //           'hintText': hintText,
+    //           'verified': verified,
+    //         },
+    //       );
+    //     }
+    //   }
+    // }
   }
 
   Widget input({

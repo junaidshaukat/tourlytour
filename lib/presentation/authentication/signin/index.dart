@@ -33,36 +33,36 @@ class SignInScreenState extends State<SignInScreen> {
   }
 
   Future<void> onPressed() async {
-    Props props = auth.props;
-    if (!props.isProcessing) {
-      if (formKey.currentState!.validate()) {
-        AuthForm body = AuthForm(
-          provider: provider,
-          rememberMe: rememberMe,
-          email: emailController.text,
-          phone: phoneController.text,
-          password: passwordController.text,
-        );
+    // Props props = auth.props;
+    // if (!props.isProcessing) {
+    //   if (formKey.currentState!.validate()) {
+    //     AuthForm body = AuthForm(
+    //       provider: provider,
+    //       rememberMe: rememberMe,
+    //       email: emailController.text,
+    //       phone: phoneController.text,
+    //       password: passwordController.text,
+    //     );
 
-        bool response = await auth.signin(body);
+    //     bool response = await auth.signin(body);
 
-        if (response) {
-          await currentUser.put('credentials', {
-            'provider': provider,
-            'rememberMe': rememberMe,
-            'email': emailController.text,
-            'phone': phoneController.text,
-            'password': passwordController.text,
-          });
+    //     if (response) {
+    //       await currentUser.put('credentials', {
+    //         'provider': provider,
+    //         'rememberMe': rememberMe,
+    //         'email': emailController.text,
+    //         'phone': phoneController.text,
+    //         'password': passwordController.text,
+    //       });
 
-          await dependencies.inject();
+    //       await dependencies.inject();
 
-          return NavigatorService.popAndPushNamed(
-            AppRoutes.dashboard,
-          );
-        }
-      }
-    }
+    //       return NavigatorService.popAndPushNamed(
+    //         AppRoutes.dashboard,
+    //       );
+    //     }
+    //   }
+    // }
   }
 
   Widget input({

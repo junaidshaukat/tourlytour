@@ -188,6 +188,9 @@ final Map<String, String> enUs = {
   "please_sign_in_to_continue": "Please sign in to continue",
   "please_enter_your_email_or_phone_number_to_continue":
       "Please enter your email or phone number to continue.",
+  "please_enter_your_details_to_create_an_account":
+      "Please enter your details to create an account.",
+
   //
   "please_enter_your_email_or_phone":
       "Please enter your email or phone number\nto receive the code",

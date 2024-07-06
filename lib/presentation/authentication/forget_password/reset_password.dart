@@ -53,15 +53,15 @@ class ResetPasswordScreenState extends State<ResetPasswordScreen> {
   }
 
   Future<void> onPressed() async {
-    Props props = auth.props;
-    if (!props.isProcessing) {
-      if (formKey.currentState!.validate()) {
-        bool response = await auth.resetPassword(passwordController.text);
-        if (response) {
-          NavigatorService.popAndPushNamed(AppRoutes.splash);
-        }
-      }
-    }
+    // Props props = auth.props;
+    // if (!props.isProcessing) {
+    //   if (formKey.currentState!.validate()) {
+    //     bool response = await auth.resetPassword(passwordController.text);
+    //     if (response) {
+    //       NavigatorService.popAndPushNamed(AppRoutes.splash);
+    //     }
+    //   }
+    // }
   }
 
   @override

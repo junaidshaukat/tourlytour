@@ -11,6 +11,7 @@ enum Sheet {
 }
 
 class AuthenticationService with ChangeNotifier {
+  bool isSheetOpen = false;
   Sheet sheet = Sheet.initial;
   ImagePicker picker = ImagePicker();
 
@@ -22,16 +23,20 @@ class AuthenticationService with ChangeNotifier {
   final BuildContext context;
   final supabase = Supabase.instance.client;
 
-  Props props = Props(data: [], initialData: []);
-
   String? errMsg;
 
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   bool rememberMe = false;
-  bool isShowPassword = true;
+  bool obscurePassword = true;
+  bool obscureConfirmPassword = true;
+
   TextEditingController emailController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
+  TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  TextEditingController passwordConfirmController = TextEditingController();
+
+  Props props = Props(data: [], initialData: []);
 
   AuthenticationService(this.context) {
     auth = context.read<AuthenticationProvider>();
@@ -63,7 +68,14 @@ class AuthenticationService with ChangeNotifier {
   void onSignin(BuildContext context) {
     sheet = Sheet.initial;
     rememberMe = false;
-    isShowPassword = true;
+    obscurePassword = true;
+    obscureConfirmPassword = true;
+
+    emailController.clear();
+    phoneController.clear();
+    usernameController.clear();
+    passwordController.clear();
+    passwordConfirmController.clear();
 
     showBottomSheet(context);
   }
@@ -109,20 +121,24 @@ class AuthenticationService with ChangeNotifier {
       (BuildContext context) {
         return StatefulBuilder(
           builder: (context, setState) {
-            return SizedBox(
-              width: double.infinity,
-              child: SingleChildScrollView(
-                child: Form(
-                  key: formKey,
-                  child: Container(
-                    width: SizeUtils.width,
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 24.h,
+            return Consumer<AuthenticationProvider>(
+              builder: (context, provider, child) {
+                return SizedBox(
+                  width: double.infinity,
+                  child: SingleChildScrollView(
+                    child: Form(
+                      key: formKey,
+                      child: Container(
+                        width: SizeUtils.width,
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 24.h,
+                        ),
+                        child: body(setState, provider.props),
+                      ),
                     ),
-                    child: body(setState),
                   ),
-                ),
-              ),
+                );
+              },
             );
           },
         );
@@ -130,7 +146,13 @@ class AuthenticationService with ChangeNotifier {
     );
   }
 
-  Widget body(setState) {
+  dynamic body(setState, Props props) {
+    if (props.isSignedIn) {
+      Future.delayed(const Duration(milliseconds: 300), () {
+        controller.close();
+      });
+    }
+
     switch (sheet) {
       case Sheet.initial:
         return initialSheet(setState);
@@ -370,7 +392,7 @@ class AuthenticationService with ChangeNotifier {
         SizedBox(height: 12.v),
         input(
           hintText: "password".tr,
-          obscureText: isShowPassword,
+          obscureText: obscurePassword,
           controller: passwordController,
           textInputAction: TextInputAction.done,
           keyboardType: TextInputType.visiblePassword,
@@ -382,18 +404,12 @@ class AuthenticationService with ChangeNotifier {
           },
           suffix: IconButton(
             onPressed: () {
-              if (isShowPassword) {
-                setState(() {
-                  isShowPassword = false;
-                });
-              } else {
-                setState(() {
-                  isShowPassword = true;
-                });
-              }
+              setState(() {
+                obscurePassword = !obscurePassword;
+              });
             },
             icon: CustomImageView(
-              imagePath: isShowPassword == false
+              imagePath: obscurePassword == false
                   ? "eye_slash".icon.svg
                   : "eye".icon.svg,
             ),
@@ -547,7 +563,7 @@ class AuthenticationService with ChangeNotifier {
       children: [
         SizedBox(height: 12.v),
         Text(
-          "forget_password".tr,
+          "create_account".tr,
           style: theme.textTheme.headlineSmall,
         ),
         Opacity(
@@ -559,7 +575,7 @@ class AuthenticationService with ChangeNotifier {
               right: 34.h,
             ),
             child: Text(
-              "please_enter_your_email_or_phone".tr,
+              "please_enter_your_details_to_create_an_account".tr,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               textAlign: TextAlign.center,
@@ -570,7 +586,7 @@ class AuthenticationService with ChangeNotifier {
         SizedBox(height: 24.v),
         input(
           hintText: "username".tr,
-          controller: emailController,
+          controller: usernameController,
           keyboardType: TextInputType.text,
           validator: (key) {
             return Validator.username(key);
@@ -599,7 +615,7 @@ class AuthenticationService with ChangeNotifier {
         SizedBox(height: 12.v),
         input(
           hintText: "password".tr,
-          obscureText: isShowPassword,
+          obscureText: obscurePassword,
           controller: passwordController,
           textInputAction: TextInputAction.done,
           keyboardType: TextInputType.visiblePassword,
@@ -611,18 +627,12 @@ class AuthenticationService with ChangeNotifier {
           },
           suffix: IconButton(
             onPressed: () {
-              if (isShowPassword) {
-                setState(() {
-                  isShowPassword = false;
-                });
-              } else {
-                setState(() {
-                  isShowPassword = true;
-                });
-              }
+              setState(() {
+                obscurePassword = !obscurePassword;
+              });
             },
             icon: CustomImageView(
-              imagePath: isShowPassword == false
+              imagePath: obscurePassword == false
                   ? "eye_slash".icon.svg
                   : "eye".icon.svg,
             ),
@@ -630,31 +640,31 @@ class AuthenticationService with ChangeNotifier {
         ),
         SizedBox(height: 12.v),
         input(
-          obscureText: isShowPassword,
-          controller: passwordController,
           hintText: "confirm_password".tr,
+          obscureText: obscureConfirmPassword,
+          controller: passwordConfirmController,
           textInputAction: TextInputAction.done,
           keyboardType: TextInputType.visiblePassword,
           suffixConstraints: BoxConstraints(
             maxHeight: 60.v,
           ),
           validator: (key) {
-            return Validator.password(key);
+            return Validator.confirmPassword(key, passwordController.text);
           },
           suffix: IconButton(
             onPressed: () {
-              if (isShowPassword) {
+              if (obscureConfirmPassword) {
                 setState(() {
-                  isShowPassword = false;
+                  obscureConfirmPassword = false;
                 });
               } else {
                 setState(() {
-                  isShowPassword = true;
+                  obscureConfirmPassword = true;
                 });
               }
             },
             icon: CustomImageView(
-              imagePath: isShowPassword == false
+              imagePath: obscureConfirmPassword == false
                   ? "eye_slash".icon.svg
                   : "eye".icon.svg,
             ),
@@ -701,6 +711,17 @@ class AuthenticationService with ChangeNotifier {
           ],
         ),
         SizedBox(height: 12.v),
+        if (props.isProcessing)
+          CustomElevatedButton(
+            text: "",
+            height: 50.v,
+            leftIcon: CustomProgressButton(
+              lable: 'processing'.tr,
+              textStyle: CustomTextStyles.titleLargeWhite900,
+            ),
+            buttonStyle: CustomButtonStyles.fillPrimaryTL29,
+            buttonTextStyle: CustomTextStyles.titleLargeWhite900,
+          ),
         CustomElevatedButton(
           height: 50.v,
           text: "register_now".tr,
@@ -708,7 +729,14 @@ class AuthenticationService with ChangeNotifier {
           buttonTextStyle: CustomTextStyles.titleLargeWhite900,
           onPressed: () {
             setState(() {
-              sheet = Sheet.otpVerification;
+              props.setProcessing();
+            });
+
+            Future.delayed(const Duration(seconds: 5), () {
+              setState(() {
+                props.setNone();
+                sheet = Sheet.otpVerification;
+              });
             });
           },
         ),
@@ -807,7 +835,7 @@ class AuthenticationService with ChangeNotifier {
         SizedBox(height: 24.v),
         input(
           hintText: "password".tr,
-          obscureText: isShowPassword,
+          obscureText: obscurePassword,
           controller: passwordController,
           textInputAction: TextInputAction.done,
           keyboardType: TextInputType.visiblePassword,
@@ -819,18 +847,12 @@ class AuthenticationService with ChangeNotifier {
           },
           suffix: IconButton(
             onPressed: () {
-              if (isShowPassword) {
-                setState(() {
-                  isShowPassword = false;
-                });
-              } else {
-                setState(() {
-                  isShowPassword = true;
-                });
-              }
+              setState(() {
+                obscurePassword = !obscurePassword;
+              });
             },
             icon: CustomImageView(
-              imagePath: isShowPassword == false
+              imagePath: obscurePassword == false
                   ? "eye_slash".icon.svg
                   : "eye".icon.svg,
             ),
@@ -839,8 +861,8 @@ class AuthenticationService with ChangeNotifier {
         SizedBox(height: 12.v),
         input(
           hintText: "confirm_password".tr,
-          obscureText: isShowPassword,
-          controller: passwordController,
+          obscureText: obscureConfirmPassword,
+          controller: passwordConfirmController,
           textInputAction: TextInputAction.done,
           keyboardType: TextInputType.visiblePassword,
           suffixConstraints: BoxConstraints(
@@ -851,18 +873,18 @@ class AuthenticationService with ChangeNotifier {
           },
           suffix: IconButton(
             onPressed: () {
-              if (isShowPassword) {
+              if (obscureConfirmPassword) {
                 setState(() {
-                  isShowPassword = false;
+                  obscureConfirmPassword = false;
                 });
               } else {
                 setState(() {
-                  isShowPassword = true;
+                  obscureConfirmPassword = true;
                 });
               }
             },
             icon: CustomImageView(
-              imagePath: isShowPassword == false
+              imagePath: obscureConfirmPassword == false
                   ? "eye_slash".icon.svg
                   : "eye".icon.svg,
             ),
