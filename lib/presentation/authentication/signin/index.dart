@@ -258,10 +258,10 @@ class SignInScreenState extends State<SignInScreen> {
                           height: 50.v,
                           leftIcon: CustomProgressButton(
                             lable: 'processing'.tr,
-                            textStyle: CustomTextStyles.titleLargeBlack900,
+                            textStyle: CustomTextStyles.titleLargeWhite900,
                           ),
                           buttonStyle: CustomButtonStyles.fillPrimaryTL29,
-                          buttonTextStyle: CustomTextStyles.titleLargeBlack900,
+                          buttonTextStyle: CustomTextStyles.titleLargeWhite900,
                         );
                       } else {
                         if (props.isError) {
@@ -285,7 +285,7 @@ class SignInScreenState extends State<SignInScreen> {
                                 text: "login".tr,
                                 buttonStyle: CustomButtonStyles.fillPrimaryTL29,
                                 buttonTextStyle:
-                                    CustomTextStyles.titleLargeBlack900,
+                                    CustomTextStyles.titleLargeWhite900,
                                 onPressed: onPressed,
                               )
                             ],
@@ -296,7 +296,7 @@ class SignInScreenState extends State<SignInScreen> {
                           height: 50.v,
                           text: "login".tr,
                           buttonStyle: CustomButtonStyles.fillPrimaryTL29,
-                          buttonTextStyle: CustomTextStyles.titleLargeBlack900,
+                          buttonTextStyle: CustomTextStyles.titleLargeWhite900,
                           onPressed: onPressed,
                         );
                       }

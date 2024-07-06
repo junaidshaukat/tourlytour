@@ -182,6 +182,12 @@ final Map<String, String> enUs = {
   "auth_session_missing": "Auth session missing",
   "401_unauthorized": "401 Unauthorized",
   'signin': 'Sign In',
+  "sign_in_with_email": "Sign In With Email",
+  "welcome_back": "Welcome Back!",
+  "new_here": "New here?",
+  "please_sign_in_to_continue": "Please sign in to continue",
+  "please_enter_your_email_or_phone_number_to_continue":
+      "Please enter your email or phone number to continue.",
   //
   "please_enter_your_email_or_phone":
       "Please enter your email or phone number\nto receive the code",

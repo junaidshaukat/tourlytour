@@ -158,10 +158,10 @@ class ProfileUpdateScreenState extends State<ProfileUpdateScreen> {
                 height: 50.v,
                 leftIcon: CustomProgressButton(
                   lable: 'processing'.tr,
-                  textStyle: CustomTextStyles.titleLargeBlack900,
+                  textStyle: CustomTextStyles.titleLargeWhite900,
                 ),
                 buttonStyle: CustomButtonStyles.fillPrimaryTL29,
-                buttonTextStyle: CustomTextStyles.titleLargeBlack900,
+                buttonTextStyle: CustomTextStyles.titleLargeWhite900,
               );
             } else {
               if (props.isError) {
@@ -184,7 +184,7 @@ class ProfileUpdateScreenState extends State<ProfileUpdateScreen> {
                       height: 50.v,
                       text: "update".tr,
                       buttonStyle: CustomButtonStyles.fillPrimaryTL29,
-                      buttonTextStyle: CustomTextStyles.titleLargeBlack900,
+                      buttonTextStyle: CustomTextStyles.titleLargeWhite900,
                       onPressed: onUpdateName,
                     )
                   ],
@@ -195,7 +195,7 @@ class ProfileUpdateScreenState extends State<ProfileUpdateScreen> {
                 height: 50.v,
                 text: "update".tr,
                 buttonStyle: CustomButtonStyles.fillPrimaryTL29,
-                buttonTextStyle: CustomTextStyles.titleLargeBlack900,
+                buttonTextStyle: CustomTextStyles.titleLargeWhite900,
                 onPressed: onUpdateName,
               );
             }
@@ -227,10 +227,10 @@ class ProfileUpdateScreenState extends State<ProfileUpdateScreen> {
                   height: 50.v,
                   leftIcon: CustomProgressButton(
                     lable: 'processing'.tr,
-                    textStyle: CustomTextStyles.titleLargeBlack900,
+                    textStyle: CustomTextStyles.titleLargeWhite900,
                   ),
                   buttonStyle: CustomButtonStyles.fillPrimaryTL29,
-                  buttonTextStyle: CustomTextStyles.titleLargeBlack900,
+                  buttonTextStyle: CustomTextStyles.titleLargeWhite900,
                 );
               } else {
                 if (props.isError) {
@@ -253,7 +253,7 @@ class ProfileUpdateScreenState extends State<ProfileUpdateScreen> {
                         height: 50.v,
                         text: "update".tr,
                         buttonStyle: CustomButtonStyles.fillPrimaryTL29,
-                        buttonTextStyle: CustomTextStyles.titleLargeBlack900,
+                        buttonTextStyle: CustomTextStyles.titleLargeWhite900,
                         onPressed: onUpdateEmail,
                       )
                     ],
@@ -264,7 +264,7 @@ class ProfileUpdateScreenState extends State<ProfileUpdateScreen> {
                   height: 50.v,
                   text: "update".tr,
                   buttonStyle: CustomButtonStyles.fillPrimaryTL29,
-                  buttonTextStyle: CustomTextStyles.titleLargeBlack900,
+                  buttonTextStyle: CustomTextStyles.titleLargeWhite900,
                   onPressed: onUpdateEmail,
                 );
               }
@@ -295,10 +295,10 @@ class ProfileUpdateScreenState extends State<ProfileUpdateScreen> {
                 height: 50.v,
                 leftIcon: CustomProgressButton(
                   lable: 'processing'.tr,
-                  textStyle: CustomTextStyles.titleLargeBlack900,
+                  textStyle: CustomTextStyles.titleLargeWhite900,
                 ),
                 buttonStyle: CustomButtonStyles.fillPrimaryTL29,
-                buttonTextStyle: CustomTextStyles.titleLargeBlack900,
+                buttonTextStyle: CustomTextStyles.titleLargeWhite900,
               );
             } else {
               if (props.isError) {
@@ -321,7 +321,7 @@ class ProfileUpdateScreenState extends State<ProfileUpdateScreen> {
                       height: 50.v,
                       text: "send_otp".tr,
                       buttonStyle: CustomButtonStyles.fillPrimaryTL29,
-                      buttonTextStyle: CustomTextStyles.titleLargeBlack900,
+                      buttonTextStyle: CustomTextStyles.titleLargeWhite900,
                       onPressed: onSendCode,
                     )
                   ],
@@ -332,7 +332,7 @@ class ProfileUpdateScreenState extends State<ProfileUpdateScreen> {
                 height: 50.v,
                 text: "send_otp".tr,
                 buttonStyle: CustomButtonStyles.fillPrimaryTL29,
-                buttonTextStyle: CustomTextStyles.titleLargeBlack900,
+                buttonTextStyle: CustomTextStyles.titleLargeWhite900,
                 onPressed: onSendCode,
               );
             }
@@ -364,10 +364,10 @@ class ProfileUpdateScreenState extends State<ProfileUpdateScreen> {
                   height: 50.v,
                   leftIcon: CustomProgressButton(
                     lable: 'processing'.tr,
-                    textStyle: CustomTextStyles.titleLargeBlack900,
+                    textStyle: CustomTextStyles.titleLargeWhite900,
                   ),
                   buttonStyle: CustomButtonStyles.fillPrimaryTL29,
-                  buttonTextStyle: CustomTextStyles.titleLargeBlack900,
+                  buttonTextStyle: CustomTextStyles.titleLargeWhite900,
                 );
               } else {
                 if (props.isError) {
@@ -390,7 +390,7 @@ class ProfileUpdateScreenState extends State<ProfileUpdateScreen> {
                         height: 50.v,
                         text: "update".tr,
                         buttonStyle: CustomButtonStyles.fillPrimaryTL29,
-                        buttonTextStyle: CustomTextStyles.titleLargeBlack900,
+                        buttonTextStyle: CustomTextStyles.titleLargeWhite900,
                         onPressed: onUpdatePhone,
                       )
                     ],
@@ -401,7 +401,7 @@ class ProfileUpdateScreenState extends State<ProfileUpdateScreen> {
                   height: 50.v,
                   text: "update".tr,
                   buttonStyle: CustomButtonStyles.fillPrimaryTL29,
-                  buttonTextStyle: CustomTextStyles.titleLargeBlack900,
+                  buttonTextStyle: CustomTextStyles.titleLargeWhite900,
                   onPressed: onUpdatePhone,
                 );
               }
@@ -432,10 +432,10 @@ class ProfileUpdateScreenState extends State<ProfileUpdateScreen> {
                 height: 50.v,
                 leftIcon: CustomProgressButton(
                   lable: 'processing'.tr,
-                  textStyle: CustomTextStyles.titleLargeBlack900,
+                  textStyle: CustomTextStyles.titleLargeWhite900,
                 ),
                 buttonStyle: CustomButtonStyles.fillPrimaryTL29,
-                buttonTextStyle: CustomTextStyles.titleLargeBlack900,
+                buttonTextStyle: CustomTextStyles.titleLargeWhite900,
               );
             } else {
               if (props.isError) {
@@ -458,7 +458,7 @@ class ProfileUpdateScreenState extends State<ProfileUpdateScreen> {
                       height: 50.v,
                       text: "send_otp".tr,
                       buttonStyle: CustomButtonStyles.fillPrimaryTL29,
-                      buttonTextStyle: CustomTextStyles.titleLargeBlack900,
+                      buttonTextStyle: CustomTextStyles.titleLargeWhite900,
                       onPressed: onSendCode,
                     )
                   ],
@@ -469,7 +469,7 @@ class ProfileUpdateScreenState extends State<ProfileUpdateScreen> {
                 height: 50.v,
                 text: "send_otp".tr,
                 buttonStyle: CustomButtonStyles.fillPrimaryTL29,
-                buttonTextStyle: CustomTextStyles.titleLargeBlack900,
+                buttonTextStyle: CustomTextStyles.titleLargeWhite900,
                 onPressed: onSendCode,
               );
             }

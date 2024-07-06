@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '/core/app_export.dart';
 
 class AuthenticationProvider with ChangeNotifier {
+  Session? currentSession;
   final BuildContext context;
   final supabase = Supabase.instance.client;
   final String redirectTo = 'io.supabase.tourlytour://login-callback/';
@@ -22,96 +23,119 @@ class AuthenticationProvider with ChangeNotifier {
       AuthChangeEvent event = data.event;
       Session? session = data.session;
 
+      console.log(
+        {'event': data.event, 'session': session?.toJson()},
+        trace,
+      );
+
       if (event == AuthChangeEvent.initialSession) {
-        if (session != null) {
-          notifyListeners();
-        }
-      }
-
-      if (event == AuthChangeEvent.mfaChallengeVerified) {
-        if (session != null) {
-          notifyListeners();
-        }
-      }
-
-      if (event == AuthChangeEvent.passwordRecovery) {
-        if (session != null) {
-          notifyListeners();
-        }
-      }
-
-      if (event == AuthChangeEvent.signedIn) {
-        if (session != null) {
-          User user = session.user;
-          AppMetadata appMetadata = AppMetadata.fromJson(user.appMetadata);
-          UserMetadata userMetaData = UserMetadata.fromJson(user.userMetadata);
-
-          await currentUser.put('Uuid', user.id);
-          await currentUser.put('app_meta_data', user.appMetadata);
-          await currentUser.put('user_meta_data', user.userMetadata);
-
-          Users users =
-              Users.fromMetadata(currentUser.uuid, appMetadata, userMetaData);
-          bool exist = await currentUser.find(currentUser.uuid);
-          if (exist) {
-            await currentUser.update(currentUser.uuid, users);
-          } else {
-            await currentUser.create(currentUser.uuid, users);
-          }
-
-          if (appMetadata.isFacebook || appMetadata.isGoogle) {
-            NavigatorService.popAndPushNamed(AppRoutes.splash);
-          }
-
-          notifyListeners();
-        }
-      }
-
-      if (event == AuthChangeEvent.signedOut) {
-        bool signedOut = await currentUser.signedOut();
-        if (signedOut) {
-          NavigatorService.popAndPushNamed(AppRoutes.splash);
-          notifyListeners();
-        }
-      }
-
-      if (event == AuthChangeEvent.tokenRefreshed) {
-        if (session != null) {
-          notifyListeners();
-        }
-      }
-
-      if (event == AuthChangeEvent.userDeleted) {
-        await currentUser.signedOut();
-        NavigatorService.popAndPushNamed(AppRoutes.splash);
+        currentSession = session;
+        props.setInitialSession(currentData: data);
         notifyListeners();
       }
 
-      if (event == AuthChangeEvent.userUpdated) {
-        if (session != null) {
-          User user = session.user;
-          AppMetadata appMetadata = AppMetadata.fromJson(user.appMetadata);
-          UserMetadata userMetaData = UserMetadata.fromJson(user.userMetadata);
-
-          await currentUser.put('Uuid', user.id);
-          await currentUser.put('app_meta_data', user.appMetadata);
-          await currentUser.put('user_meta_data', user.userMetadata);
-
-          Users users =
-              Users.fromMetadata(currentUser.uuid, appMetadata, userMetaData);
-
-          bool exist = await currentUser.find(currentUser.uuid);
-          if (exist) {
-            await currentUser.update(currentUser.uuid, users);
-          } else {
-            await currentUser.create(currentUser.uuid, users);
-          }
-
-          await currentUser.onReady();
-
-          notifyListeners();
-        }
+      if (event == AuthChangeEvent.signedIn) {
+        currentSession = session;
+        props.setSignedIn(currentData: data);
+        notifyListeners();
       }
+
+      if (event == AuthChangeEvent.signedOut) {
+        currentSession = session;
+        props.setSignedOut(currentData: data);
+        notifyListeners();
+      }
+
+      // if (event == AuthChangeEvent.initialSession) {
+      //   if (session != null) {
+      //     notifyListeners();
+      //   }
+      // }
+
+      // if (event == AuthChangeEvent.mfaChallengeVerified) {
+      //   if (session != null) {
+      //     notifyListeners();
+      //   }
+      // }
+
+      // if (event == AuthChangeEvent.passwordRecovery) {
+      //   if (session != null) {
+      //     notifyListeners();
+      //   }
+      // }
+
+      // if (event == AuthChangeEvent.signedIn) {
+      //   if (session != null) {
+      //     User user = session.user;
+      //     AppMetadata appMetadata = AppMetadata.fromJson(user.appMetadata);
+      //     UserMetadata userMetaData = UserMetadata.fromJson(user.userMetadata);
+
+      //     await currentUser.put('Uuid', user.id);
+      //     await currentUser.put('app_meta_data', user.appMetadata);
+      //     await currentUser.put('user_meta_data', user.userMetadata);
+
+      //     Users users =
+      //         Users.fromMetadata(currentUser.uuid, appMetadata, userMetaData);
+      //     bool exist = await currentUser.find(currentUser.uuid);
+      //     if (exist) {
+      //       await currentUser.update(currentUser.uuid, users);
+      //     } else {
+      //       await currentUser.create(currentUser.uuid, users);
+      //     }
+
+      //     if (appMetadata.isFacebook || appMetadata.isGoogle) {
+      //       NavigatorService.popAndPushNamed(AppRoutes.splash);
+      //     }
+
+      //     notifyListeners();
+      //   }
+      // }
+
+      // if (event == AuthChangeEvent.signedOut) {
+      //   bool signedOut = await currentUser.signedOut();
+      //   if (signedOut) {
+      //     NavigatorService.popAndPushNamed(AppRoutes.splash);
+      //     notifyListeners();
+      //   }
+      // }
+
+      // if (event == AuthChangeEvent.tokenRefreshed) {
+      //   if (session != null) {
+      //     notifyListeners();
+      //   }
+      // }
+
+      // if (event == AuthChangeEvent.userDeleted) {
+      //   await currentUser.signedOut();
+      //   NavigatorService.popAndPushNamed(AppRoutes.splash);
+      //   notifyListeners();
+      // }
+
+      // if (event == AuthChangeEvent.userUpdated) {
+      //   if (session != null) {
+      //     User user = session.user;
+      //     AppMetadata appMetadata = AppMetadata.fromJson(user.appMetadata);
+      //     UserMetadata userMetaData = UserMetadata.fromJson(user.userMetadata);
+
+      //     await currentUser.put('Uuid', user.id);
+      //     await currentUser.put('app_meta_data', user.appMetadata);
+      //     await currentUser.put('user_meta_data', user.userMetadata);
+
+      //     Users users =
+      //         Users.fromMetadata(currentUser.uuid, appMetadata, userMetaData);
+
+      //     bool exist = await currentUser.find(currentUser.uuid);
+      //     if (exist) {
+      //       await currentUser.update(currentUser.uuid, users);
+      //     } else {
+      //       await currentUser.create(currentUser.uuid, users);
+      //     }
+
+      //     await currentUser.onReady();
+
+      //     notifyListeners();
+      //   }
+      // }
     });
   }
 
@@ -138,8 +162,7 @@ class AuthenticationProvider with ChangeNotifier {
 
   bool get isAuthorized {
     try {
-      if (currentUser.id < 1) return false;
-
+      if (currentSession == null || currentUser.id < 1) return false;
       return true;
     } catch (e) {
       return false;

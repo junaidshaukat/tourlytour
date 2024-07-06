@@ -484,7 +484,7 @@ class PackageSelectionScreenState extends State<PackageSelectionScreen> {
                         right: 16.h,
                       ),
                       buttonStyle: CustomButtonStyles.fillPrimaryTL29,
-                      buttonTextStyle: CustomTextStyles.titleLargeBlack900,
+                      buttonTextStyle: CustomTextStyles.titleLargeWhite900,
                       onPressed: onContinue,
                     )
                   ],

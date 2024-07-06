@@ -126,6 +126,39 @@ class Props {
     data = currentData ?? initialData;
   }
 
+  bool get isInitialSession => state == 9 ? true : false;
+  void setInitialSession({
+    int currentState = 9,
+    String? currentError,
+    Object? currentData,
+  }) {
+    state = currentState;
+    error = currentError;
+    data = currentData ?? initialData;
+  }
+
+  bool get isSignedIn => state == 10 ? true : false;
+  void setSignedIn({
+    int currentState = 10,
+    String? currentError,
+    Object? currentData,
+  }) {
+    state = currentState;
+    error = currentError;
+    data = currentData ?? initialData;
+  }
+
+  bool get isSignedOut => state == 11 ? true : false;
+  void setSignedOut({
+    int currentState = 11,
+    String? currentError,
+    Object? currentData,
+  }) {
+    state = currentState;
+    error = currentError;
+    data = currentData ?? initialData;
+  }
+
   void clear(Object? object) {
     state = -1;
     error = null;

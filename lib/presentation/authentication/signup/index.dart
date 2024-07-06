@@ -346,10 +346,10 @@ class SignUpScreenState extends State<SignUpScreen> {
                           height: 50.v,
                           leftIcon: CustomProgressButton(
                             lable: 'processing'.tr,
-                            textStyle: CustomTextStyles.titleLargeBlack900,
+                            textStyle: CustomTextStyles.titleLargeWhite900,
                           ),
                           buttonStyle: CustomButtonStyles.fillPrimaryTL29,
-                          buttonTextStyle: CustomTextStyles.titleLargeBlack900,
+                          buttonTextStyle: CustomTextStyles.titleLargeWhite900,
                         );
                       } else {
                         if (props.isError) {
@@ -373,7 +373,7 @@ class SignUpScreenState extends State<SignUpScreen> {
                                 text: "register_now".tr,
                                 buttonStyle: CustomButtonStyles.fillPrimaryTL29,
                                 buttonTextStyle:
-                                    CustomTextStyles.titleLargeBlack900,
+                                    CustomTextStyles.titleLargeWhite900,
                                 onPressed: onPressed,
                               )
                             ],
@@ -384,7 +384,7 @@ class SignUpScreenState extends State<SignUpScreen> {
                           height: 50.v,
                           text: "register_now".tr,
                           buttonStyle: CustomButtonStyles.fillPrimaryTL29,
-                          buttonTextStyle: CustomTextStyles.titleLargeBlack900,
+                          buttonTextStyle: CustomTextStyles.titleLargeWhite900,
                           onPressed: onPressed,
                         );
                       }

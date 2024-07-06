@@ -187,10 +187,10 @@ class OtpVerificationScreenState extends State<OtpVerificationScreen> {
                         height: 50.v,
                         leftIcon: CustomProgressButton(
                           lable: 'processing'.tr,
-                          textStyle: CustomTextStyles.titleLargeBlack900,
+                          textStyle: CustomTextStyles.titleLargeWhite900,
                         ),
                         buttonStyle: CustomButtonStyles.fillPrimaryTL29,
-                        buttonTextStyle: CustomTextStyles.titleLargeBlack900,
+                        buttonTextStyle: CustomTextStyles.titleLargeWhite900,
                       );
                     } else {
                       if (props.isError) {
@@ -214,7 +214,7 @@ class OtpVerificationScreenState extends State<OtpVerificationScreen> {
                               text: "submit_code".tr,
                               buttonStyle: CustomButtonStyles.fillPrimaryTL29,
                               buttonTextStyle:
-                                  CustomTextStyles.titleLargeBlack900,
+                                  CustomTextStyles.titleLargeWhite900,
                               onPressed: onPressed,
                             )
                           ],
@@ -225,7 +225,7 @@ class OtpVerificationScreenState extends State<OtpVerificationScreen> {
                         height: 50.v,
                         text: "submit_code".tr,
                         buttonStyle: CustomButtonStyles.fillPrimaryTL29,
-                        buttonTextStyle: CustomTextStyles.titleLargeBlack900,
+                        buttonTextStyle: CustomTextStyles.titleLargeWhite900,
                         onPressed: onPressed,
                       );
                     }

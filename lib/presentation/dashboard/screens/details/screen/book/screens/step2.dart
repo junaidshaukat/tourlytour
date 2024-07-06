@@ -590,11 +590,11 @@ class OtherInformationScreenState extends State<OtherInformationScreen> {
                               ),
                               leftIcon: CustomProgressButton(
                                 lable: 'processing'.tr,
-                                textStyle: CustomTextStyles.titleLargeBlack900,
+                                textStyle: CustomTextStyles.titleLargeWhite900,
                               ),
                               buttonStyle: CustomButtonStyles.fillPrimaryTL29,
                               buttonTextStyle:
-                                  CustomTextStyles.titleLargeBlack900,
+                                  CustomTextStyles.titleLargeWhite900,
                             );
                           } else {
                             if (props.isError) {
@@ -624,7 +624,7 @@ class OtherInformationScreenState extends State<OtherInformationScreen> {
                                     buttonStyle:
                                         CustomButtonStyles.fillPrimaryTL29,
                                     buttonTextStyle:
-                                        CustomTextStyles.titleLargeBlack900,
+                                        CustomTextStyles.titleLargeWhite900,
                                     onPressed: onContinue,
                                   )
                                 ],
@@ -640,7 +640,7 @@ class OtherInformationScreenState extends State<OtherInformationScreen> {
                               ),
                               buttonStyle: CustomButtonStyles.fillPrimaryTL29,
                               buttonTextStyle:
-                                  CustomTextStyles.titleLargeBlack900,
+                                  CustomTextStyles.titleLargeWhite900,
                               onPressed: onContinue,
                             );
                           }

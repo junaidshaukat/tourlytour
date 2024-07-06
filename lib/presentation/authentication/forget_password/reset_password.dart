@@ -209,10 +209,10 @@ class ResetPasswordScreenState extends State<ResetPasswordScreen> {
                           height: 50.v,
                           leftIcon: CustomProgressButton(
                             lable: 'processing'.tr,
-                            textStyle: CustomTextStyles.titleLargeBlack900,
+                            textStyle: CustomTextStyles.titleLargeWhite900,
                           ),
                           buttonStyle: CustomButtonStyles.fillPrimaryTL29,
-                          buttonTextStyle: CustomTextStyles.titleLargeBlack900,
+                          buttonTextStyle: CustomTextStyles.titleLargeWhite900,
                         );
                       } else {
                         if (props.isError) {
@@ -236,7 +236,7 @@ class ResetPasswordScreenState extends State<ResetPasswordScreen> {
                                 text: "reset_password".tr,
                                 buttonStyle: CustomButtonStyles.fillPrimaryTL29,
                                 buttonTextStyle:
-                                    CustomTextStyles.titleLargeBlack900,
+                                    CustomTextStyles.titleLargeWhite900,
                                 onPressed: onPressed,
                               )
                             ],
@@ -247,7 +247,7 @@ class ResetPasswordScreenState extends State<ResetPasswordScreen> {
                           height: 50.v,
                           text: "reset_password".tr,
                           buttonStyle: CustomButtonStyles.fillPrimaryTL29,
-                          buttonTextStyle: CustomTextStyles.titleLargeBlack900,
+                          buttonTextStyle: CustomTextStyles.titleLargeWhite900,
                           onPressed: onPressed,
                         );
                       }

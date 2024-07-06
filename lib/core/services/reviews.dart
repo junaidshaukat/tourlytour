@@ -558,7 +558,7 @@ class ReviewService with ChangeNotifier {
                                 ),
                                 buttonStyle: CustomButtonStyles.fillPrimaryTL29,
                                 buttonTextStyle:
-                                    CustomTextStyles.titleLargeBlack900,
+                                    CustomTextStyles.titleLargeWhite900,
                               );
                             } else {
                               if (props.isError) {
