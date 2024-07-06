@@ -49,7 +49,8 @@ class CurrentUserProvider with ChangeNotifier {
   String get loginProvider => box.get('LoginProvider', defaultValue: '');
   String get mobileNumber => box.get('MobileNumber', defaultValue: '');
   String get password => box.get('Password', defaultValue: '');
-  String get avatar => box.get('Avatar', defaultValue: 'profile'.image.png);
+  String get avatar =>
+      box.get('ProfilePhotoUrl', defaultValue: 'profile'.image.png);
 
   dynamic get credentials => box.get('credentials', defaultValue: {});
   dynamic get appMetaData => box.get('app_meta_data', defaultValue: {});
@@ -304,5 +305,10 @@ class CurrentUserProvider with ChangeNotifier {
       props.setError(currentError: "something_went_wrong".tr);
       notifyListeners();
     }
+  }
+
+  Future<void> clearAll() async {
+    await box.clear();
+    await box.put('onboarding', false);
   }
 }

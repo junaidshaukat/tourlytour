@@ -42,6 +42,7 @@ void main() async {
           ChangeNotifierProvider(create: (c) => OrdersProvider(c)),
           ChangeNotifierProvider(create: (c) => BookingProvider(c)),
           ChangeNotifierProvider(create: (c) => ProductsProvider(c)),
+          ChangeNotifierProvider(create: (c) => DiscoverProvider(c)),
           ChangeNotifierProvider(create: (c) => FavouritesProvider(c)),
           ChangeNotifierProvider(create: (c) => OrderGuestsProvider(c)),
           ChangeNotifierProvider(create: (c) => ProductPriceProvider(c)),

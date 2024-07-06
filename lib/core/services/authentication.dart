@@ -14,9 +14,11 @@ class AuthenticationService with ChangeNotifier {
   bool isSheetOpen = false;
   Sheet sheet = Sheet.initial;
   ImagePicker picker = ImagePicker();
+  Session? session;
 
   late AuthenticationProvider auth;
   late CurrentUserProvider currentUser;
+  late DependenciesProvider dependencies;
   late ConnectivityProvider connectivity;
   late PersistentBottomSheetController controller;
 
@@ -26,6 +28,7 @@ class AuthenticationService with ChangeNotifier {
   String? errMsg;
 
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  bool agree = false;
   bool rememberMe = false;
   bool obscurePassword = true;
   bool obscureConfirmPassword = true;
@@ -42,6 +45,7 @@ class AuthenticationService with ChangeNotifier {
     auth = context.read<AuthenticationProvider>();
     currentUser = context.read<CurrentUserProvider>();
     connectivity = context.read<ConnectivityProvider>();
+    dependencies = context.read<DependenciesProvider>();
   }
 
   String get trace {
@@ -65,19 +69,43 @@ class AuthenticationService with ChangeNotifier {
     }
   }
 
-  void onSignin(BuildContext context) {
-    sheet = Sheet.initial;
-    rememberMe = false;
-    obscurePassword = true;
-    obscureConfirmPassword = true;
+  Future<void> onRegisterNow() async {
+    Props props = auth.props;
+    if (!props.isProcessing) {
+      if (formKey.currentState!.validate()) {
+        await auth.signupWithEmail(
+          email: emailController.text,
+          phone: phoneController.text,
+          password: passwordController.text,
+          data: {
+            'full_name': usernameController.text,
+          },
+        );
+      }
+    }
+  }
 
-    emailController.clear();
-    phoneController.clear();
-    usernameController.clear();
-    passwordController.clear();
-    passwordConfirmController.clear();
+  void onSignin() {
+    session = supabase.auth.currentSession;
+    if (session == null) {
+      auth.setNone();
 
-    showBottomSheet(context);
+      sheet = Sheet.initial;
+
+      errMsg = null;
+      agree = false;
+      rememberMe = false;
+      obscurePassword = true;
+      obscureConfirmPassword = true;
+
+      emailController.clear();
+      phoneController.clear();
+      usernameController.clear();
+      passwordController.clear();
+      passwordConfirmController.clear();
+
+      showBottomSheet();
+    }
   }
 
   Widget input({
@@ -109,8 +137,8 @@ class AuthenticationService with ChangeNotifier {
     );
   }
 
-  void showBottomSheet(BuildContext context) {
-    controller = Scaffold.of(context).showBottomSheet(
+  void showBottomSheet() {
+    controller = scaffoldKey.currentState!.showBottomSheet(
       enableDrag: true,
       backgroundColor: appTheme.amber100,
       shape: RoundedRectangleBorder(
@@ -147,8 +175,16 @@ class AuthenticationService with ChangeNotifier {
   }
 
   dynamic body(setState, Props props) {
+    if (props.isSignedOut) {
+      Future.delayed(const Duration(milliseconds: 300), () async {
+        await dependencies.inject();
+        controller.close();
+      });
+    }
+
     if (props.isSignedIn) {
-      Future.delayed(const Duration(milliseconds: 300), () {
+      Future.delayed(const Duration(milliseconds: 300), () async {
+        await dependencies.inject();
         controller.close();
       });
     }
@@ -583,7 +619,7 @@ class AuthenticationService with ChangeNotifier {
             ),
           ),
         ),
-        SizedBox(height: 24.v),
+        SizedBox(height: 18.v),
         input(
           hintText: "username".tr,
           controller: usernameController,
@@ -592,10 +628,10 @@ class AuthenticationService with ChangeNotifier {
             return Validator.username(key);
           },
         ),
-        SizedBox(height: 12.v),
+        SizedBox(height: 8.v),
         input(
-          controller: emailController,
           hintText: "email".tr,
+          controller: emailController,
           keyboardType: TextInputType.emailAddress,
           validator: (key) {
             return Validator.email(key);
@@ -612,7 +648,7 @@ class AuthenticationService with ChangeNotifier {
             ),
           ),
         ),
-        SizedBox(height: 12.v),
+        SizedBox(height: 8.v),
         input(
           hintText: "password".tr,
           obscureText: obscurePassword,
@@ -638,7 +674,7 @@ class AuthenticationService with ChangeNotifier {
             ),
           ),
         ),
-        SizedBox(height: 12.v),
+        SizedBox(height: 8.v),
         input(
           hintText: "confirm_password".tr,
           obscureText: obscureConfirmPassword,
@@ -670,77 +706,122 @@ class AuthenticationService with ChangeNotifier {
             ),
           ),
         ),
-        SizedBox(height: 12.v),
-        Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(bottom: 1.v),
-                  child: CustomCheckboxButton(
-                    text: "i_read_and_agree".tr,
-                    value: false,
-                    onChange: (value) {
-                      setState(() {});
-                    },
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () {},
-                  child: Text(
-                    "terms_condition".tr,
-                    style: CustomTextStyles.bodyMediumJaldiBlue500.copyWith(
-                      decoration: TextDecoration.underline,
-                    ),
-                  ),
-                )
-              ],
-            ),
-            // Text(
-            //   field.errorText ?? '',
-            //   style: TextStyle(
-            //     fontSize: 8.fSize,
-            //     fontFamily: 'Inter',
-            //     fontWeight: FontWeight.w400,
-            //     color: Theme.of(context).colorScheme.error,
-            //   ),
-            // )
-          ],
-        ),
-        SizedBox(height: 12.v),
-        if (props.isProcessing)
-          CustomElevatedButton(
-            text: "",
-            height: 50.v,
-            leftIcon: CustomProgressButton(
-              lable: 'processing'.tr,
-              textStyle: CustomTextStyles.titleLargeWhite900,
-            ),
-            buttonStyle: CustomButtonStyles.fillPrimaryTL29,
-            buttonTextStyle: CustomTextStyles.titleLargeWhite900,
+        SizedBox(height: 8.v),
+        Padding(
+          padding: EdgeInsets.only(
+            left: 5.h,
+            right: 3.h,
           ),
-        CustomElevatedButton(
-          height: 50.v,
-          text: "register_now".tr,
-          buttonStyle: CustomButtonStyles.fillPrimaryTL29,
-          buttonTextStyle: CustomTextStyles.titleLargeWhite900,
-          onPressed: () {
-            setState(() {
-              props.setProcessing();
-            });
+          child: FormField<bool>(
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            validator: (value) {
+              if (!agree) {
+                return 'accept_terms'.tr;
+              } else {
+                return null;
+              }
+            },
+            builder: (FormFieldState<bool> field) {
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(bottom: 1.v),
+                        child: CustomCheckboxButton(
+                          text: "i_read_and_agree".tr,
+                          value: agree,
+                          onChange: (value) {
+                            setState(() {
+                              agree = value;
+                              field.didChange(value);
+                            });
+                          },
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () {},
+                        child: Text(
+                          "terms_condition".tr,
+                          style:
+                              CustomTextStyles.bodyMediumJaldiBlue500.copyWith(
+                            decoration: TextDecoration.underline,
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                  Text(
+                    field.errorText ?? '',
+                    style: TextStyle(
+                      fontSize: 8.fSize,
+                      fontFamily: 'Inter',
+                      fontWeight: FontWeight.w400,
+                      color: Theme.of(context).colorScheme.error,
+                    ),
+                  )
+                ],
+              );
+            },
+          ),
+        ),
+        SizedBox(height: 8.v),
+        Consumer<AuthenticationProvider>(
+          builder: (BuildContext context, provider, Widget? child) {
+            Props props = provider.props;
+            if (props.isProcessing) {
+              return CustomElevatedButton(
+                text: "",
+                height: 50.v,
+                leftIcon: CustomProgressButton(
+                  lable: 'processing'.tr,
+                  textStyle: CustomTextStyles.titleLargeWhite900,
+                ),
+                buttonStyle: CustomButtonStyles.fillPrimaryTL29,
+                buttonTextStyle: CustomTextStyles.titleLargeWhite900,
+              );
+            } else {
+              if (props.isUnauthorized) {
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      props.error ?? '',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 12.fSize,
+                        fontFamily: 'Inter',
+                        fontWeight: FontWeight.w400,
+                        color: Theme.of(context).colorScheme.error,
+                      ),
+                    ),
+                    SizedBox(height: 6.v),
+                    CustomElevatedButton(
+                      height: 50.v,
+                      text: "register_now".tr,
+                      buttonStyle: CustomButtonStyles.fillPrimaryTL29,
+                      buttonTextStyle: CustomTextStyles.titleLargeWhite900,
+                      onPressed: onRegisterNow,
+                    )
+                  ],
+                );
+              }
 
-            Future.delayed(const Duration(seconds: 5), () {
-              setState(() {
-                props.setNone();
-                sheet = Sheet.otpVerification;
-              });
-            });
+              return CustomElevatedButton(
+                height: 50.v,
+                text: "register_now".tr,
+                buttonStyle: CustomButtonStyles.fillPrimaryTL29,
+                buttonTextStyle: CustomTextStyles.titleLargeWhite900,
+                onPressed: onRegisterNow,
+              );
+            }
           },
         ),
-        SizedBox(height: 12.v),
+        SizedBox(height: 4.v),
       ],
     );
   }

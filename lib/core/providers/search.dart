@@ -19,6 +19,7 @@ class SearchProvider extends ChangeNotifier {
     props.setSuccess();
     notifyListeners();
   }
+
   String get trace {
     final stackTrace = StackTrace.current;
     final frames = stackTrace.toString().split('\n');
@@ -44,6 +45,7 @@ class SearchProvider extends ChangeNotifier {
     try {
       props.setProcessing();
       notifyListeners();
+
       if (!connectivity.isConnected) {
         throw NoInternetException();
       }

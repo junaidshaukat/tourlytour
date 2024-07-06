@@ -283,7 +283,7 @@ class SignUpScreenState extends State<SignUpScreen> {
                       autovalidateMode: AutovalidateMode.onUserInteraction,
                       validator: (value) {
                         if (!readme) {
-                          return 'you_need_to_accept_terms'.tr;
+                          return 'accept_terms'.tr;
                         } else {
                           return null;
                         }

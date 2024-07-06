@@ -37,7 +37,7 @@ class TourDetailsScreenState extends State<TourDetailsScreen> {
   void onPressed(String action) {
     review.fetch(
       context,
-      id: tour.order.id,
+      id: tour.orders.id,
       seconds: 0,
       action: action,
       arguments: tour.reviews,
@@ -114,7 +114,7 @@ class TourDetailsScreenState extends State<TourDetailsScreen> {
               }
 
               tour = data.firstWhere(
-                (e) => e.order.id == tour.order.id,
+                (e) => e.orders.id == tour.orders.id,
                 orElse: () => tour,
               );
 
@@ -145,7 +145,7 @@ class TourDetailsScreenState extends State<TourDetailsScreen> {
                             ),
                           ),
                           Text(
-                            tour.order.orderNumber ?? '',
+                            tour.orders.orderNumber ?? '',
                             style: CustomTextStyles.bodyLargeJaldiGray90001,
                           ),
                           const Divider(),
@@ -165,7 +165,7 @@ class TourDetailsScreenState extends State<TourDetailsScreen> {
                               SizedBox(width: 16.h),
                               Expanded(
                                 child: Text(
-                                  "${tour.order.date?.format('EEE, dd MMM yyyy')}",
+                                  "${tour.orders.date?.format('EEE, dd MMM yyyy')}",
                                   style: CustomTextStyles
                                       .bodyLargeJaldiGray90001
                                       .copyWith(
@@ -191,7 +191,7 @@ class TourDetailsScreenState extends State<TourDetailsScreen> {
                               SizedBox(width: 16.h),
                               Expanded(
                                 child: Text(
-                                  "${tour.order.date?.format('EEE, dd MMM yyyy')}",
+                                  "${tour.orders.date?.format('EEE, dd MMM yyyy')}",
                                   style: CustomTextStyles
                                       .bodyLargeJaldiGray90001
                                       .copyWith(
@@ -368,7 +368,7 @@ class TourDetailsScreenState extends State<TourDetailsScreen> {
                                 ),
                                 TextSpan(
                                   text:
-                                      "${tour.order.date?.format('EEE, dd MMM yyyy')}",
+                                      "${tour.orders.date?.format('EEE, dd MMM yyyy')}",
                                   style: CustomTextStyles.bodyMediumBlack900
                                       .copyWith(
                                     fontSize: 12.fSize,

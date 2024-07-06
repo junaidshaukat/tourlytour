@@ -1,7 +1,7 @@
 import '/core/app_export.dart';
 
 class TourHistory {
-  final Orders order;
+  final Orders orders;
   final Products products;
   final Contacts contacts;
   final List<OrderGuests> guests;
@@ -9,7 +9,7 @@ class TourHistory {
   final List<ProductItineraries> itineraries;
 
   TourHistory({
-    required this.order,
+    required this.orders,
     required this.guests,
     required this.reviews,
     required this.contacts,
@@ -19,7 +19,7 @@ class TourHistory {
 
   factory TourHistory.fromJson(Map<String, dynamic> json) {
     return TourHistory(
-      order: Orders.fromJson(json['order'] ?? {}),
+      orders: Orders.fromJson(json['orders'] ?? {}),
       guests: (json['guests'] as List<dynamic>?)
               ?.map((e) => OrderGuests.fromJson(e))
               .toList() ??
@@ -36,8 +36,8 @@ class TourHistory {
 
   Map<String, dynamic> toJson({List<String> skip = const []}) {
     final Map<String, dynamic> data = {};
-    if (!skip.contains('order')) {
-      data['order'] = order.toJson(skip: skip);
+    if (!skip.contains('orders')) {
+      data['orders'] = orders.toJson(skip: skip);
     }
 
     if (!skip.contains('products')) {

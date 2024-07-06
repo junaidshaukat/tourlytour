@@ -14,6 +14,7 @@ class ProductPriceProvider with ChangeNotifier {
     auth = context.read<AuthenticationProvider>();
     connectivity = context.read<ConnectivityProvider>();
   }
+
   String get trace {
     final stackTrace = StackTrace.current;
     final frames = stackTrace.toString().split('\n');
@@ -45,10 +46,6 @@ class ProductPriceProvider with ChangeNotifier {
       notifyListeners();
       if (!connectivity.isConnected) {
         throw NoInternetException();
-      }
-
-      if (!auth.isAuthorized) {
-        throw UnauthorizedException();
       }
 
       final response = await supabase

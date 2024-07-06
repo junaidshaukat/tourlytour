@@ -53,7 +53,7 @@ class ToursProvider with ChangeNotifier {
         'user_id': currentUser.id,
       });
 
-      if (response.isNotEmpty) {
+      if (response != null) {
         props.setSuccess(currentData: []);
         List<TourHistory> list = [];
         for (var data in response) {

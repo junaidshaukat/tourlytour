@@ -54,7 +54,7 @@ class FavouritesProvider with ChangeNotifier {
         'user_id': currentUser.id,
       });
 
-      if (response.isEmpty) {
+      if (response == null) {
         props.setSuccess(currentData: []);
         notifyListeners();
       } else {

@@ -46,10 +46,6 @@ class ProductItinerariesProvider with ChangeNotifier {
         throw NoInternetException();
       }
 
-      if (!auth.isAuthorized) {
-        throw UnauthorizedException();
-      }
-
       final response = await supabase
           .from('ProductItineraries')
           .select()

@@ -11,6 +11,8 @@ class AuthenticationProvider with ChangeNotifier {
 
   late ConnectivityProvider connectivity;
   late CurrentUserProvider currentUser;
+  late DependenciesProvider dependencies;
+
   late String bucket;
 
   Props props = Props(data: [], initialData: []);
@@ -25,18 +27,34 @@ class AuthenticationProvider with ChangeNotifier {
 
       if (event == AuthChangeEvent.initialSession) {
         currentSession = session;
+        final response = await supabase.rpc('signed_in', params: {
+          'data': session.getParams(),
+        });
+
+        if (response != null) {
+          await currentUser.putAll(response);
+        }
+
         props.setInitialSession(currentData: data);
         notifyListeners();
       }
 
       if (event == AuthChangeEvent.signedIn) {
         currentSession = session;
+        final response = await supabase.rpc('signed_in', params: {
+          'data': session.getParams(),
+        });
+
+        if (response != null) {
+          await currentUser.putAll(response);
+        }
         props.setSignedIn(currentData: data);
         notifyListeners();
       }
 
       if (event == AuthChangeEvent.signedOut) {
         currentSession = session;
+        await currentUser.clearAll();
         props.setSignedOut(currentData: data);
         notifyListeners();
       }
@@ -185,11 +203,54 @@ class AuthenticationProvider with ChangeNotifier {
         captchaToken: captchaToken,
       );
 
-      if (response.session != null) {
-        return response;
-      } else {
-        throw CustomException();
+      return response;
+    } on NoInternetException catch (error) {
+      console.internet(error, trace);
+      props.setError(currentError: error.toString());
+      notifyListeners();
+      rethrow;
+    } on AuthException catch (error) {
+      console.authentication(error, trace);
+      props.setUnauthorized(currentError: error.message.toString());
+      notifyListeners();
+      rethrow;
+    } on CustomException catch (error) {
+      console.custom(error, trace);
+      props.setError(currentError: error.toString());
+      notifyListeners();
+      rethrow;
+    } catch (error) {
+      console.error(error, trace);
+      props.setError(currentError: "something_went_wrong".tr);
+      notifyListeners();
+      rethrow;
+    }
+  }
+
+  Future<AuthResponse> signupWithEmail({
+    String? email,
+    String? phone,
+    required String password,
+    Map<String, dynamic>? data,
+  }) async {
+    try {
+      props.setProcessing();
+      notifyListeners();
+
+      if (!connectivity.isConnected) {
+        throw NoInternetException();
       }
+
+      AuthResponse response = await supabase.auth.signUp(
+        data: data,
+        email: email,
+        password: password,
+      );
+
+      props.setNone();
+      notifyListeners();
+
+      return response;
     } on NoInternetException catch (error) {
       console.internet(error, trace);
       props.setError(currentError: error.toString());
@@ -778,7 +839,13 @@ class AuthenticationProvider with ChangeNotifier {
   //   }
   // }
 
-  Future<void> signOut() async {
-    await supabase.auth.signOut();
+  Future<bool> signOut() async {
+    return await supabase.auth.signOut().then((res) {
+      return true;
+    });
+  }
+
+  void setNone() {
+    props.setNone();
   }
 }

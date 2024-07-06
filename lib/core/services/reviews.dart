@@ -220,7 +220,8 @@ class ReviewService with ChangeNotifier {
       seamlessExperience = arguments.seamlessExperience ?? 1;
 
       description = arguments.description;
-      descriptionController.text = arguments.description ?? 'enter_review';
+      descriptionController.text =
+          arguments.description ?? 'enter_your_review'.tr;
 
       for (var e in arguments.photos) {
         photos.add(e);

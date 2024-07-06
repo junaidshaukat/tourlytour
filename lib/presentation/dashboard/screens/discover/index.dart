@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import '/core/app_export.dart';
 
-class FeaturedPackgesScreen extends StatefulWidget {
-  const FeaturedPackgesScreen({super.key});
+class DiscoverPackgesScreen extends StatefulWidget {
+  const DiscoverPackgesScreen({super.key});
 
   @override
-  FeaturedPackgesScreenState createState() => FeaturedPackgesScreenState();
+  DiscoverPackgesScreenState createState() => DiscoverPackgesScreenState();
 }
 
-class FeaturedPackgesScreenState extends State<FeaturedPackgesScreen> {
+class DiscoverPackgesScreenState extends State<DiscoverPackgesScreen> {
   bool preloader = true;
 
   @override
@@ -45,7 +45,7 @@ class FeaturedPackgesScreenState extends State<FeaturedPackgesScreen> {
           title: Padding(
             padding: EdgeInsets.only(left: 16.h),
             child: AppbarTitle(
-              text: "featured_packges".tr,
+              text: "discover_packges".tr,
             ),
           ),
           actions: [
@@ -70,7 +70,7 @@ class FeaturedPackgesScreenState extends State<FeaturedPackgesScreen> {
             ),
           ],
         ),
-        body: Consumer<ProductsProvider>(
+        body: Consumer<DiscoverProvider>(
           builder: (context, provider, child) {
             Props props = provider.props;
             if (props.isNone || props.isLoading) {

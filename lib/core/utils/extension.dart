@@ -1,5 +1,27 @@
 import '/core/app_export.dart';
 
+extension AuthSession on Session? {
+  Map<String, dynamic> getParams() {
+    if (this == null) {
+      return {};
+    } else {
+      return {
+        "isVerified": true,
+        "password": '',
+        "uuid": this!.user.id,
+        'email': this!.user.email,
+        "mobileNumber": this!.user.phone,
+        "name": this!.user.userMetadata?['full_name'],
+        "loginProvider": this!.user.appMetadata['provider'],
+        "providerKey": this!.user.userMetadata?['provider_id'],
+        "providerDisplayName": this!.user.userMetadata?['name'] ??
+            this!.user.userMetadata?['full_name'],
+        "profilePhotoUrl": this!.user.userMetadata?['avatar_url'],
+      };
+    }
+  }
+}
+
 extension Assets on String {
   /// assets/fonts
   String get font {

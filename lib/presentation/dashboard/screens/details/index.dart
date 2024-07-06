@@ -24,12 +24,14 @@ class ProductDetailsScreenState extends State<ProductDetailsScreen>
   late Products product;
 
   late ProductsDetailsProvider productsDetails;
+  late AuthenticationProvider auth;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       productsDetails = context.read<ProductsDetailsProvider>();
+      auth = context.read<AuthenticationProvider>();
 
       videos = context.read<ProductVideosProvider>();
       photos = context.read<ProductPhotosProvider>();
@@ -55,20 +57,13 @@ class ProductDetailsScreenState extends State<ProductDetailsScreen>
     product = ModalRoute.of(context)!.settings.arguments as Products;
   }
 
-  void onPressed() {
-    NavigatorService.push(
-      context,
-      const PackageSelectionScreen(),
-      arguments: product,
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Preloader(
       safeArea: false,
       preloader: preloader,
       child: Scaffold(
+        key: scaffoldKey,
         body: Stack(
           children: [
             Positioned(
@@ -294,7 +289,17 @@ class ProductDetailsScreenState extends State<ProductDetailsScreen>
                   left: 8.h,
                   top: 2.v,
                 ),
-                onPressed: onPressed,
+                onPressed: () {
+                  if (auth.isAuthorized) {
+                    NavigatorService.push(
+                      context,
+                      const PackageSelectionScreen(),
+                      arguments: product,
+                    );
+                  } else {
+                    context.read<AuthenticationService>().onSignin();
+                  }
+                },
                 alignment: Alignment.topLeft,
               ),
             ),

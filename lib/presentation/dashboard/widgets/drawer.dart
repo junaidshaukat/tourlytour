@@ -180,7 +180,13 @@ class CustomDrawer extends StatelessWidget {
         tab(
           title: 'discover'.tr,
           icon: 'discover'.icon.svg,
-          onPressed: () {},
+          onPressed: () {
+            NavigatorService.goBack();
+            NavigatorService.push(
+              context,
+              const DiscoverPackgesScreen(),
+            );
+          },
         ),
         tab(
           title: 'tours'.tr,
@@ -239,8 +245,10 @@ class CustomDrawer extends StatelessWidget {
           divider: false,
           title: 'sign_up'.tr,
           icon: 'sign_up'.icon.svg,
-          onPressed: () async {
-            await context.read<AuthenticationProvider>().signOut();
+          onPressed: () {
+            context.read<AuthenticationProvider>().signOut().then((res) async {
+              await context.read<DependenciesProvider>().inject();
+            });
           },
         ),
       ],

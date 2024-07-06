@@ -3,6 +3,7 @@ export 'booking.dart';
 export 'connectivity.dart';
 export 'current_user.dart';
 export 'dependencies.dart';
+export 'discover.dart';
 export 'favourites.dart';
 export 'order_guests.dart';
 export 'orders.dart';

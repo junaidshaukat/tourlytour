@@ -9,6 +9,8 @@ class DependenciesProvider with ChangeNotifier {
   late CurrentUserProvider currentUser;
   late ProductsProvider products;
   late FavouritesProvider favourites;
+  late ToursProvider tours;
+  late DiscoverProvider discover;
 
   DependenciesProvider(this.context) {
     connectivity = context.read<ConnectivityProvider>();
@@ -16,7 +18,10 @@ class DependenciesProvider with ChangeNotifier {
     currentUser = context.read<CurrentUserProvider>();
     products = context.read<ProductsProvider>();
     favourites = context.read<FavouritesProvider>();
+    tours = context.read<ToursProvider>();
+    discover = context.read<DiscoverProvider>();
   }
+
   String get trace {
     final stackTrace = StackTrace.current;
     final frames = stackTrace.toString().split('\n');
@@ -47,6 +52,8 @@ class DependenciesProvider with ChangeNotifier {
       await currentUser.onReady();
       await products.onReady();
       await favourites.onReady();
+      await tours.onReady();
+      await discover.onReady();
 
       return true;
     } on NoInternetException catch (error) {

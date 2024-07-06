@@ -21,7 +21,7 @@ final Map<String, String> enUs = {
 
   ///signup
   "create_account": "Create Account",
-  "you_need_to_accept_terms": "You need to accept terms & condition.",
+  "accept_terms": "Please agree to the Terms & Conditions to proceed.",
   "i_read_and_agree": "I read and agree to ",
   "terms_condition": "Terms & condition ",
 
@@ -119,6 +119,7 @@ final Map<String, String> enUs = {
   "where": "Where",
   "completed": "Completed",
   "date": "Date",
+  "discover_packges": "Discover Packges",
   "tour_details": "Tour Details",
   "enter_your_review": "Enter your review",
   "view_booking_details": "View Booking Details",

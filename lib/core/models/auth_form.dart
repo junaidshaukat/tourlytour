@@ -72,10 +72,10 @@ class AuthForm {
 }
 
 class AuthProvider {
-  static String get email => "email";
-  static String get facebook => "facebook";
-  static String get google => "google";
-  static String get phone => "phone";
+  static String get email => "Email";
+  static String get facebook => "Facebook";
+  static String get google => "Google";
+  static String get phone => "Phone";
 }
 
 class AuthEvent {

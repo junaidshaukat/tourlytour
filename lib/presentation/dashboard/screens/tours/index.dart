@@ -40,6 +40,7 @@ class ToursScreenState extends State<ToursScreen> {
     return Preloader(
       preloader: preloader,
       child: Scaffold(
+        key: scaffoldKey,
         appBar: CustomAppBar(
           centerTitle: false,
           title: Padding(
@@ -131,9 +132,7 @@ class ToursScreenState extends State<ToursScreen> {
                         buttonWidth: 100.h,
                         message: props.error,
                         onPressed: () {
-                          context
-                              .read<AuthenticationService>()
-                              .onSignin(context);
+                          context.read<AuthenticationService>().onSignin();
                         },
                       ),
                     ),
@@ -224,7 +223,7 @@ class ToursScreenState extends State<ToursScreen> {
                                             children: <TextSpan>[
                                               TextSpan(
                                                 text:
-                                                    ': ${tour.order.date?.format('dd-MMM-yyyy')} ',
+                                                    ': ${tour.orders.date?.format('dd-MMM-yyyy')} ',
                                                 style: CustomTextStyles
                                                     .poppinsGray600
                                                     .copyWith(
@@ -241,7 +240,7 @@ class ToursScreenState extends State<ToursScreen> {
                                               ),
                                               TextSpan(
                                                 text:
-                                                    ': ${tour.order.totalNumberOfGuest}',
+                                                    ': ${tour.orders.totalNumberOfGuest}',
                                                 style: CustomTextStyles
                                                     .poppinsGray600
                                                     .copyWith(
@@ -256,7 +255,7 @@ class ToursScreenState extends State<ToursScreen> {
                                       SizedBox(
                                         width: double.maxFinite,
                                         child: Text(
-                                          '${tour.order.status}',
+                                          '${tour.orders.status}',
                                           maxLines: 2,
                                           overflow: TextOverflow.ellipsis,
                                           style: CustomTextStyles
