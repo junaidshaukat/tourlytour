@@ -45,7 +45,7 @@ class DependenciesProvider with ChangeNotifier {
     }
   }
 
-  Future<bool> inject() async {
+  Future<bool> onReady() async {
     try {
       if (!connectivity.isConnected) {
         throw NoInternetException();

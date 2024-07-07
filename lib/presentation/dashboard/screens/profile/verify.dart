@@ -15,7 +15,6 @@ class ProfileVerifyScreenState extends State<ProfileVerifyScreen> {
   TextEditingController controller = TextEditingController();
 
   dynamic arguments;
-  late AuthForm body;
   String? field;
   String? hintText;
   bool verified = false;
@@ -26,7 +25,6 @@ class ProfileVerifyScreenState extends State<ProfileVerifyScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       auth = context.read<AuthenticationProvider>();
       arguments = ModalRoute.of(context)!.settings.arguments;
-      body = arguments['body'] as AuthForm;
       field = arguments['field'] as String?;
       hintText = arguments['hintText'] as String?;
       verified = arguments['verified'] as bool;

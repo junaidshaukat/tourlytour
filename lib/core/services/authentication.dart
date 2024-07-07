@@ -260,14 +260,14 @@ class AuthenticationService with ChangeNotifier {
   dynamic body(setState, Props props) {
     if (props.isSignedOut) {
       Future.delayed(const Duration(milliseconds: 300), () async {
-        await dependencies.inject();
+        await dependencies.onReady();
         controller.close();
       });
     }
 
     if (props.isSignedIn) {
       Future.delayed(const Duration(milliseconds: 300), () async {
-        await dependencies.inject();
+        await dependencies.onReady();
         controller.close();
       });
     }

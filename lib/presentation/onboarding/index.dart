@@ -26,6 +26,14 @@ class OnboardingScreenState extends State<OnboardingScreen> {
     });
   }
 
+  void onGuestMode() {
+    context.read<CurrentUserProvider>().setOnboarding(false).then((res) {
+      NavigatorService.pushNamedAndRemoveUntil(
+        AppRoutes.dashboard,
+      );
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -99,6 +107,8 @@ class OnboardingScreenState extends State<OnboardingScreen> {
                     imagePath: "onboarding@6".image.png,
                     text: "let_s_get_start".tr,
                     onPressed: onContinue,
+                    secondaryText: "guest_mode".tr,
+                    onSecondaryPressed: onGuestMode,
                   ),
                 ],
               ),
@@ -115,8 +125,10 @@ class Onboarding extends StatelessWidget {
   final String heading;
   final String subheading;
   final String text;
+  final String? secondaryText;
   final int activeIndex;
   final void Function() onPressed;
+  final void Function()? onSecondaryPressed;
 
   const Onboarding({
     super.key,
@@ -125,6 +137,8 @@ class Onboarding extends StatelessWidget {
     required this.text,
     required this.imagePath,
     required this.onPressed,
+    this.secondaryText,
+    this.onSecondaryPressed,
     this.activeIndex = 0,
   });
 
@@ -158,14 +172,38 @@ class Onboarding extends StatelessWidget {
             style: CustomTextStyles.bodySmallBlack900,
           ),
         ),
-        SizedBox(height: 12.v),
-        CustomElevatedButton(
-          width: 200.h,
-          text: text,
-          buttonTextStyle: CustomTextStyles.labelLargeInterBlack900,
-          onPressed: onPressed,
-          alignment: Alignment.center,
-        ),
+        if (secondaryText == null) ...[
+          SizedBox(height: 12.v),
+          CustomElevatedButton(
+            width: 200.h,
+            text: text,
+            buttonTextStyle: CustomTextStyles.labelLargeInterBlack900,
+            onPressed: onPressed,
+            alignment: Alignment.center,
+          ),
+        ],
+        if (secondaryText != null) ...[
+          SizedBox(height: 12.v),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              CustomElevatedButton(
+                width: 144.h,
+                text: secondaryText!,
+                buttonTextStyle: CustomTextStyles.labelLargeInterBlack900,
+                onPressed: onSecondaryPressed!,
+                alignment: Alignment.center,
+              ),
+              CustomElevatedButton(
+                width: 144.h,
+                text: text,
+                buttonTextStyle: CustomTextStyles.labelLargeInterBlack900,
+                onPressed: onPressed,
+                alignment: Alignment.center,
+              ),
+            ],
+          ),
+        ],
         SizedBox(height: 24.v),
         Align(
           alignment: Alignment.center,
@@ -184,7 +222,7 @@ class Onboarding extends StatelessWidget {
               ),
             ),
           ),
-        )
+        ),
       ],
     );
   }

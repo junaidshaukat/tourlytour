@@ -13,7 +13,6 @@ class ForgetPasswordScreen extends StatefulWidget {
 class ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
   bool preloader = true;
   late AuthenticationProvider auth;
-  String provider = AuthProvider.email;
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   TextEditingController emailController = TextEditingController();
@@ -148,38 +147,22 @@ class ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                   ),
                   SizedBox(height: 35.v),
                   input(
-                    controller: provider == AuthProvider.email
-                        ? emailController
-                        : phoneController,
-                    hintText: provider == AuthProvider.email
-                        ? "email".tr
-                        : "phone_number".tr,
-                    keyboardType: provider == AuthProvider.email
-                        ? TextInputType.emailAddress
-                        : TextInputType.phone,
+                    controller: emailController,
+                    hintText: "email".tr,
+                    keyboardType: TextInputType.emailAddress,
                     validator: (key) {
-                      return provider == AuthProvider.email
-                          ? Validator.email(key)
-                          : Validator.phone(key);
+                      return Validator.email(key);
                     },
                     suffixConstraints: BoxConstraints(
                       maxHeight: 60.v,
                     ),
                     suffix: IconButton(
                       onPressed: () {
-                        setState(() {
-                          if (provider == AuthProvider.email) {
-                            provider = AuthProvider.phone;
-                          } else {
-                            provider = AuthProvider.email;
-                          }
-                        });
+                        setState(() {});
                       },
                       icon: CustomImageView(
                         size: 22.adaptSize,
-                        imagePath: provider == AuthProvider.email
-                            ? "phone".icon.svg
-                            : "email".icon.svg,
+                        imagePath: "email".icon.svg,
                       ),
                     ),
                   ),

@@ -17,8 +17,6 @@ class SignInScreenState extends State<SignInScreen> {
   late CurrentUserProvider currentUser;
   late DependenciesProvider dependencies;
 
-  String provider = AuthProvider.email;
-
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   TextEditingController emailController = TextEditingController();
@@ -136,37 +134,21 @@ class SignInScreenState extends State<SignInScreen> {
                   ),
                   SizedBox(height: 27.v),
                   input(
-                    controller: provider == AuthProvider.email
-                        ? emailController
-                        : phoneController,
-                    hintText: provider == AuthProvider.email
-                        ? "email".tr
-                        : "phone_number".tr,
-                    keyboardType: provider == AuthProvider.email
-                        ? TextInputType.emailAddress
-                        : TextInputType.phone,
+                    controller: emailController,
+                    hintText: "email".tr,
+                    keyboardType: TextInputType.emailAddress,
                     validator: (key) {
-                      return provider == AuthProvider.email
-                          ? Validator.email(key)
-                          : Validator.phone(key);
+                      return Validator.email(key);
                     },
                     suffixConstraints: BoxConstraints(
                       maxHeight: 60.v,
                     ),
                     suffix: IconButton(
                       onPressed: () {
-                        setState(() {
-                          if (provider == AuthProvider.email) {
-                            provider = AuthProvider.phone;
-                          } else {
-                            provider = AuthProvider.email;
-                          }
-                        });
+                        setState(() {});
                       },
                       icon: CustomImageView(
-                        imagePath: provider == AuthProvider.email
-                            ? "phone".icon.svg
-                            : "email".icon.svg,
+                        imagePath: "email".icon.svg,
                       ),
                     ),
                   ),

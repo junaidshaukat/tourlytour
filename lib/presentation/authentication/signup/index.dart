@@ -11,7 +11,6 @@ class SignUpScreen extends StatefulWidget {
 class SignUpScreenState extends State<SignUpScreen> {
   bool preloader = true;
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  String provider = AuthProvider.email;
   bool readme = false;
   bool isShowPassword = true;
   bool isShowConfirmPassword = true;
@@ -178,37 +177,21 @@ class SignUpScreenState extends State<SignUpScreen> {
                   ),
                   SizedBox(height: 12.v),
                   input(
-                    controller: provider == AuthProvider.email
-                        ? emailController
-                        : phoneController,
-                    hintText: provider == AuthProvider.email
-                        ? "email".tr
-                        : "phone_number".tr,
-                    keyboardType: provider == AuthProvider.email
-                        ? TextInputType.emailAddress
-                        : TextInputType.phone,
+                    controller: emailController,
+                    hintText: "email".tr,
+                    keyboardType: TextInputType.emailAddress,
                     validator: (key) {
-                      return provider == AuthProvider.email
-                          ? Validator.email(key)
-                          : Validator.phone(key);
+                      return Validator.email(key);
                     },
                     suffixConstraints: BoxConstraints(
                       maxHeight: 60.v,
                     ),
                     suffix: IconButton(
                       onPressed: () {
-                        setState(() {
-                          if (provider == AuthProvider.email) {
-                            provider = AuthProvider.phone;
-                          } else {
-                            provider = AuthProvider.email;
-                          }
-                        });
+                        setState(() {});
                       },
                       icon: CustomImageView(
-                        imagePath: provider == AuthProvider.email
-                            ? "phone".icon.svg
-                            : "email".icon.svg,
+                        imagePath: "email".icon.svg,
                       ),
                     ),
                   ),

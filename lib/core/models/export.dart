@@ -1,5 +1,4 @@
 export 'additional_information.dart';
-export 'auth_form.dart';
 export 'booking.dart';
 export 'contacts.dart';
 export 'favourites.dart';

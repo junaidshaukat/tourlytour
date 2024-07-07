@@ -30,6 +30,8 @@ class SplashScreenState extends State<SplashScreen> {
   Future onReady() async {
     try {
       await currentUser.onReady();
+      await dependencies.onReady();
+
       Credentials credentials = Credentials.fromJson(currentUser.credentials);
       AppMetadata appMetadata = AppMetadata.fromJson(currentUser.appMetaData);
 
@@ -38,8 +40,6 @@ class SplashScreenState extends State<SplashScreen> {
           AppRoutes.onboarding,
         );
       } else {
-        await dependencies.inject();
-
         if (currentUser.uuid != "") {
           if (appMetadata.isGoogle) {
             return NavigatorService.pushNamedAndRemoveUntil(
