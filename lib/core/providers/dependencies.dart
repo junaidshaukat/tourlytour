@@ -11,6 +11,7 @@ class DependenciesProvider with ChangeNotifier {
   late FavouritesProvider favourites;
   late ToursProvider tours;
   late DiscoverProvider discover;
+  late ProfileProvider profile;
 
   DependenciesProvider(this.context) {
     connectivity = context.read<ConnectivityProvider>();
@@ -20,6 +21,7 @@ class DependenciesProvider with ChangeNotifier {
     favourites = context.read<FavouritesProvider>();
     tours = context.read<ToursProvider>();
     discover = context.read<DiscoverProvider>();
+    profile = context.read<ProfileProvider>();
   }
 
   String get trace {
@@ -50,6 +52,7 @@ class DependenciesProvider with ChangeNotifier {
       }
 
       await currentUser.onReady();
+      await profile.onReady();
       await products.onReady();
       await favourites.onReady();
       await tours.onReady();

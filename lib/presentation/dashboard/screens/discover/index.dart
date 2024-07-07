@@ -39,7 +39,6 @@ class DiscoverPackgesScreenState extends State<DiscoverPackgesScreen> {
     return Preloader(
       preloader: preloader,
       child: Scaffold(
-        backgroundColor: appTheme.blue50,
         appBar: CustomAppBar(
           centerTitle: false,
           title: Padding(

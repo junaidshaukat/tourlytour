@@ -15,6 +15,7 @@ class CurrentUserProvider with ChangeNotifier {
   CurrentUserProvider(this.context) {
     connectivity = context.read<ConnectivityProvider>();
   }
+
   String get trace {
     final stackTrace = StackTrace.current;
     final frames = stackTrace.toString().split('\n');

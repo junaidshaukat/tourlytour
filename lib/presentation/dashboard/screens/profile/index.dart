@@ -60,6 +60,7 @@ class ProfileScreenState extends State<ProfileScreen> {
     return Preloader(
       preloader: preloader,
       child: Scaffold(
+        key: scaffoldKey,
         resizeToAvoidBottomInset: false,
         appBar: CustomAppBar(
           centerTitle: false,
@@ -93,133 +94,126 @@ class ProfileScreenState extends State<ProfileScreen> {
         ),
         body: SingleChildScrollView(
           padding: EdgeInsets.symmetric(horizontal: 16.h),
-          child: Column(
-            children: [
-              Consumer<CurrentUserProvider>(
-                builder: (BuildContext context, provider, Widget? child) {
-                  Props props = provider.props;
+          child: Consumer<ProfileProvider>(
+            builder: (BuildContext context, provider, Widget? child) {
+              Props props = provider.props;
+              if (props.isNone || props.isProcessing) {
+                return SizedBox(
+                  height: 300.v,
+                  child: const Center(
+                    child: Loading(),
+                  ),
+                );
+              } else if (props.isUnauthorized) {
+                return SizedBox(
+                  height: 300.v,
+                  child: Center(
+                    child: Unauthorized(
+                      width: 200.h,
+                      buttonWidth: 100.h,
+                      message: props.error,
+                      onPressed: () {
+                        context.read<AuthenticationService>().onSignin();
+                      },
+                    ),
+                  ),
+                );
+              } else if (props.isError) {
+                return SizedBox(
+                  height: 300.v,
+                  child: Center(
+                    child: TryAgain(
+                      imagePath: "refresh".icon.svg,
+                      onRefresh: provider.onRefresh,
+                    ),
+                  ),
+                );
+              } else {
+                UserProfile? user = props.data as UserProfile?;
 
-                  return Container(
-                    height: 150.adaptSize,
-                    width: 150.adaptSize,
-                    decoration: BoxDecoration(
-                      color: appTheme.gray500,
-                      shape: BoxShape.circle,
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Container(
+                      height: 150.adaptSize,
+                      width: 150.adaptSize,
+                      decoration: BoxDecoration(
+                        color: appTheme.gray500,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Stack(
+                        alignment: Alignment.bottomRight,
+                        children: [
+                          CircleAvatar(
+                            radius: 150.adaptSize,
+                            backgroundColor: appTheme.gray500,
+                            child: CustomImageView(
+                              fit: BoxFit.cover,
+                              width: 150.adaptSize,
+                              height: 150.adaptSize,
+                              imagePath: user?.profilePhotoUrl,
+                              placeHolder: 'profile'.image.png,
+                              radius: BorderRadius.circular(100.h),
+                            ),
+                          ),
+                          if (props.isUploading)
+                            const Positioned(
+                              child: Align(
+                                alignment: Alignment.center,
+                                child: CircularProgressIndicator(),
+                              ),
+                            ),
+                          Positioned(
+                            bottom: 0.v,
+                            right: 0.h,
+                            child: IconButton(
+                              icon: CustomImageView(
+                                imagePath: "edit".icon.svg,
+                              ),
+                              onPressed: () async {
+                                if (!props.isProcessing) {
+                                  Pickers.image().then((file) async {
+                                    if (file != null) {
+                                      // await provider.uploadProfile(
+                                      //   file,
+                                      // );
+                                    }
+                                  });
+                                }
+                              },
+                              style: IconButton.styleFrom(
+                                backgroundColor: appTheme.yellow800,
+                                minimumSize: Size(40.adaptSize, 40.adaptSize),
+                                maximumSize: Size(40.adaptSize, 40.adaptSize),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                    child: Stack(
-                      alignment: Alignment.bottomRight,
-                      children: [
-                        CircleAvatar(
-                          radius: 150.adaptSize,
-                          backgroundColor: appTheme.gray500,
-                          child: CustomImageView(
-                            fit: BoxFit.cover,
-                            width: 150.adaptSize,
-                            height: 150.adaptSize,
-                            imagePath: provider.avatar,
-                            placeHolder: 'profile'.image.png,
-                            radius: BorderRadius.circular(100.h),
-                          ),
-                        ),
-                        if (props.isUploading)
-                          const Positioned(
-                            child: Align(
-                              alignment: Alignment.center,
-                              child: CircularProgressIndicator(),
-                            ),
-                          ),
-                        Positioned(
-                          bottom: 0.v,
-                          right: 0.h,
-                          child: IconButton(
-                            icon: CustomImageView(
-                              imagePath: "edit".icon.svg,
-                            ),
-                            onPressed: () async {
-                              if (!props.isProcessing) {
-                                Pickers.image().then((file) async {
-                                  if (file != null) {
-                                    await provider.uploadProfile(
-                                      file,
-                                    );
-                                  }
-                                });
-                              }
-                            },
-                            style: IconButton.styleFrom(
-                              backgroundColor: appTheme.yellow800,
-                              minimumSize: Size(40.adaptSize, 40.adaptSize),
-                              maximumSize: Size(40.adaptSize, 40.adaptSize),
-                            ),
-                          ),
-                        ),
-                      ],
+                    SizedBox(height: 38.v),
+                    input(
+                      label: "name".tr,
+                      hintText: user?.name ?? '',
+                      onPressed: () {},
                     ),
-                  );
-                },
-              ),
-              SizedBox(height: 24.v),
-              Consumer<CurrentUserProvider>(
-                builder: (BuildContext context, provider, Widget? child) {
-                  return input(
-                    label: "name".tr,
-                    hintText: provider.name,
-                    onPressed: () {
-                      NavigatorService.push(
-                        context,
-                        const ProfileUpdateScreen(),
-                        arguments: {
-                          'field': 'name',
-                          'verified': true,
-                          'hintText': provider.name,
-                        },
-                      );
-                    },
-                  );
-                },
-              ),
-              SizedBox(height: 8.v),
-              Consumer<CurrentUserProvider>(
-                builder: (BuildContext context, provider, Widget? child) {
-                  return input(
-                    label: "phone_number".tr,
-                    hintText: provider.mobileNumber,
-                    onPressed: () {
-                      NavigatorService.push(
-                        context,
-                        const ProfileUpdateScreen(),
-                        arguments: {
-                          'field': 'phone',
-                          'verified': false,
-                          'hintText': provider.mobileNumber,
-                        },
-                      );
-                    },
-                  );
-                },
-              ),
-              SizedBox(height: 14.v),
-              Consumer<CurrentUserProvider>(
-                builder: (BuildContext context, provider, Widget? child) {
-                  return input(
-                    label: "email".tr,
-                    hintText: provider.email,
-                    onPressed: () {
-                      NavigatorService.push(
-                        context,
-                        const ProfileUpdateScreen(),
-                        arguments: {
-                          'field': 'email',
-                          'verified': false,
-                          'hintText': provider.email,
-                        },
-                      );
-                    },
-                  );
-                },
-              ),
-              SizedBox(height: 5.v)
-            ],
+                    SizedBox(height: 18.v),
+                    input(
+                      label: "email".tr,
+                      hintText: user?.email ?? '',
+                      onPressed: () {},
+                    ),
+                    SizedBox(height: 18.v),
+                    input(
+                      label: "phone_number".tr,
+                      hintText: user?.mobileNumber ?? '',
+                      onPressed: () {},
+                    ),
+                  ],
+                );
+              }
+            },
           ),
         ),
       ),
