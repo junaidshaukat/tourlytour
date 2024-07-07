@@ -9,6 +9,7 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class SignUpScreenState extends State<SignUpScreen> {
+  bool preloader = true;
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   String provider = AuthProvider.email;
   bool readme = false;
@@ -25,7 +26,14 @@ class SignUpScreenState extends State<SignUpScreen> {
   @override
   void initState() {
     super.initState();
-    auth = context.read<AuthenticationProvider>();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      auth = context.read<AuthenticationProvider>();
+
+      setState(() {
+        preloader = false;
+      });
+    });
   }
 
   Widget input({
@@ -58,34 +66,31 @@ class SignUpScreenState extends State<SignUpScreen> {
   }
 
   Future<void> onPressed() async {
-    // Props props = auth.props;
-    // if (!props.isProcessing) {
-    //   if (formKey.currentState!.validate()) {
-    //     AuthForm body = AuthForm(
-    //       provider: provider,
-    //       event: AuthEvent.signup,
-    //       email: emailController.text,
-    //       phone: phoneController.text,
-    //       name: usernameController.text,
-    //       password: passwordController.text,
-    //       passwordConfirm: passwordConfirmController.text,
-    //     );
-    //     bool response = await auth.signup(body);
-
-    //     if (response && mounted) {
-    //       NavigatorService.push(
-    //         context,
-    //         const OtpVerificationScreen(),
-    //         arguments: body,
-    //       );
-    //     }
-    //   }
-    // }
+    Props props = auth.props;
+    if (!props.isProcessing) {
+      if (formKey.currentState!.validate()) {
+        auth.signupWithEmail(
+          email: emailController.text,
+          phone: phoneController.text,
+          password: passwordController.text,
+          data: {
+            'full_name': usernameController.text,
+          },
+        ).then((response) {
+          NavigatorService.push(
+            context,
+            const OtpVerificationScreen(),
+            arguments: {'event': Event.signup, 'email': emailController.text},
+          );
+        });
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
+    return Preloader(
+      preloader: preloader,
       child: Scaffold(
         appBar: CustomAppBar(
           centerTitle: false,
@@ -353,7 +358,7 @@ class SignUpScreenState extends State<SignUpScreen> {
                           buttonTextStyle: CustomTextStyles.titleLargeWhite900,
                         );
                       } else {
-                        if (props.isError) {
+                        if (props.isError || props.isAuthException) {
                           return Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,

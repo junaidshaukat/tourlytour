@@ -187,11 +187,6 @@ class AuthenticationService with ChangeNotifier {
       passwordController.clear();
       passwordConfirmController.clear();
 
-      emailController.text = 'junaidshaukat123@gmail.com';
-      usernameController.text = 'Junaid Shaukat';
-      passwordController.text = 'Junaidshaukat123@';
-      passwordConfirmController.text = 'Junaidshaukat123@';
-
       showBottomSheet();
     }
   }

@@ -9,70 +9,83 @@ class OtpVerificationScreen extends StatefulWidget {
 }
 
 class OtpVerificationScreenState extends State<OtpVerificationScreen> {
+  bool preloader = true;
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  TextEditingController otpController = TextEditingController();
+  TextEditingController tokenController = TextEditingController();
 
   late AuthenticationProvider auth;
-  late AuthForm body;
+  late Map<String, dynamic> body;
 
   @override
   void initState() {
     super.initState();
-    auth = context.read<AuthenticationProvider>();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      auth = context.read<AuthenticationProvider>();
+
+      setState(() {
+        preloader = false;
+      });
+    });
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    body = ModalRoute.of(context)!.settings.arguments as AuthForm;
+    body = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
   }
 
   Future<void> onPressed() async {
-    // Props props = auth.props;
-    // if (!props.isProcessing) {
-    //   if (formKey.currentState!.validate()) {
-    //     if (body.event == AuthEvent.signup) {
-    //       bool response = await auth.verifyOtp(
-    //         body: body,
-    //         token: otpController.text,
-    //       );
-    //       if (response) {
-    //         NavigatorService.popAndPushNamed(AppRoutes.splash);
-    //       }
-    //     }
+    Props props = auth.props;
+    if (!props.isProcessing) {
+      if (formKey.currentState!.validate()) {
+        if (body['event'] == Event.signup) {
+          auth
+              .verifyOTP(
+            email: body['email'],
+            token: tokenController.text,
+            type: OtpType.signup,
+          )
+              .then((response) {
+            NavigatorService.pushNamedAndRemoveUntil(
+              AppRoutes.signin,
+            );
+          });
+        }
 
-    //     if (body.event == AuthEvent.forgetPassword) {
-    //       bool response = await auth.verifyOtp(
-    //         body: body,
-    //         token: otpController.text,
-    //       );
-
-    //       if (response && mounted) {
-    //         NavigatorService.push(
-    //           context,
-    //           const ResetPasswordScreen(),
-    //         );
-    //       }
-    //     }
-    //   }
-    // }
+        if (body['event'] == Event.recovery) {
+          auth
+              .verifyOTP(
+            email: body['email'],
+            token: tokenController.text,
+            type: OtpType.recovery,
+          )
+              .then((response) {
+            NavigatorService.push(
+              context,
+              const ResetPasswordScreen(),
+            );
+          });
+        }
+      }
+    }
   }
 
-  Future<void> onSendOTP() async {
-    // Props props = auth.props;
-    // if (!props.isProcessing) {
-    //   if (body.event == AuthEvent.signup) {
-    //     await auth.sendOTP(body);
-    //   }
-    //   if (body.event == AuthEvent.forgetPassword) {
-    //     await auth.sendOTP(body);
-    //   }
-    // }
+  void onReSendOTP() {
+    Props props = auth.props;
+    if (!props.isProcessing) {
+      if (body['event'] == Event.signup) {
+        auth.resend(email: body['email']).then((response) {});
+      }
+      if (body['event'] == Event.recovery) {
+        auth.send(email: body['email']).then((response) {});
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
+    return Preloader(
+      preloader: preloader,
       child: Scaffold(
         appBar: CustomAppBar(
           centerTitle: false,
@@ -124,9 +137,9 @@ class OtpVerificationScreenState extends State<OtpVerificationScreen> {
                 CustomPinCodeTextField(
                   length: 6,
                   context: context,
-                  controller: otpController,
+                  controller: tokenController,
                   onChanged: (value) {
-                    otpController.text = value;
+                    tokenController.text = value;
                   },
                   validator: (key) {
                     return Validator.otp(key);
@@ -147,7 +160,7 @@ class OtpVerificationScreenState extends State<OtpVerificationScreen> {
                         (BuildContext context, provider, Widget? child) {
                       Props props = provider.props;
 
-                      if (props.isSending) {
+                      if (props.isSending || props.isResending) {
                         return Padding(
                           padding: EdgeInsets.only(bottom: 4.v),
                           child: SizedBox(
@@ -163,7 +176,7 @@ class OtpVerificationScreenState extends State<OtpVerificationScreen> {
                       }
 
                       return GestureDetector(
-                        onTap: onSendOTP,
+                        onTap: onReSendOTP,
                         child: Padding(
                           padding: EdgeInsets.only(bottom: 4.v),
                           child: Text(
@@ -194,7 +207,7 @@ class OtpVerificationScreenState extends State<OtpVerificationScreen> {
                         buttonTextStyle: CustomTextStyles.titleLargeWhite900,
                       );
                     } else {
-                      if (props.isError) {
+                      if (props.isError || props.isAuthException) {
                         return Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,

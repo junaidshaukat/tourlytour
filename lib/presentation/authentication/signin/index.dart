@@ -9,6 +9,7 @@ class SignInScreen extends StatefulWidget {
 }
 
 class SignInScreenState extends State<SignInScreen> {
+  bool preloader = true;
   bool rememberMe = false;
   bool isShowPassword = true;
 
@@ -27,42 +28,31 @@ class SignInScreenState extends State<SignInScreen> {
   @override
   void initState() {
     super.initState();
-    auth = context.read<AuthenticationProvider>();
-    currentUser = context.read<CurrentUserProvider>();
-    dependencies = context.read<DependenciesProvider>();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      auth = context.read<AuthenticationProvider>();
+      currentUser = context.read<CurrentUserProvider>();
+      dependencies = context.read<DependenciesProvider>();
+
+      setState(() {
+        preloader = false;
+      });
+    });
   }
 
   Future<void> onPressed() async {
-    // Props props = auth.props;
-    // if (!props.isProcessing) {
-    //   if (formKey.currentState!.validate()) {
-    //     AuthForm body = AuthForm(
-    //       provider: provider,
-    //       rememberMe: rememberMe,
-    //       email: emailController.text,
-    //       phone: phoneController.text,
-    //       password: passwordController.text,
-    //     );
-
-    //     bool response = await auth.signin(body);
-
-    //     if (response) {
-    //       await currentUser.put('credentials', {
-    //         'provider': provider,
-    //         'rememberMe': rememberMe,
-    //         'email': emailController.text,
-    //         'phone': phoneController.text,
-    //         'password': passwordController.text,
-    //       });
-
-    //       await dependencies.inject();
-
-    //       return NavigatorService.popAndPushNamed(
-    //         AppRoutes.dashboard,
-    //       );
-    //     }
-    //   }
-    // }
+    Props props = auth.props;
+    if (!props.isProcessing) {
+      if (formKey.currentState!.validate()) {
+        auth
+            .signinWithEmail(
+                email: emailController.text, password: passwordController.text)
+            .then((response) {
+          NavigatorService.pushNamedAndRemoveUntil(
+            AppRoutes.splash,
+          );
+        });
+      }
+    }
   }
 
   Widget input({
@@ -96,7 +86,8 @@ class SignInScreenState extends State<SignInScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
+    return Preloader(
+      preloader: preloader,
       child: Scaffold(
         body: SingleChildScrollView(
           padding: EdgeInsets.only(
@@ -264,7 +255,7 @@ class SignInScreenState extends State<SignInScreen> {
                           buttonTextStyle: CustomTextStyles.titleLargeWhite900,
                         );
                       } else {
-                        if (props.isError) {
+                        if (props.isError || props.isAuthException) {
                           return Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,

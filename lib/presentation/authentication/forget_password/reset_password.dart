@@ -9,6 +9,7 @@ class ResetPasswordScreen extends StatefulWidget {
 }
 
 class ResetPasswordScreenState extends State<ResetPasswordScreen> {
+  bool preloader = true;
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   bool isShowPassword = true;
   bool isShowConfirmPassword = true;
@@ -20,7 +21,13 @@ class ResetPasswordScreenState extends State<ResetPasswordScreen> {
   @override
   void initState() {
     super.initState();
-    auth = context.read<AuthenticationProvider>();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      auth = context.read<AuthenticationProvider>();
+
+      setState(() {
+        preloader = false;
+      });
+    });
   }
 
   Widget input({
@@ -53,20 +60,20 @@ class ResetPasswordScreenState extends State<ResetPasswordScreen> {
   }
 
   Future<void> onPressed() async {
-    // Props props = auth.props;
-    // if (!props.isProcessing) {
-    //   if (formKey.currentState!.validate()) {
-    //     bool response = await auth.resetPassword(passwordController.text);
-    //     if (response) {
-    //       NavigatorService.popAndPushNamed(AppRoutes.splash);
-    //     }
-    //   }
-    // }
+    Props props = auth.props;
+    if (!props.isProcessing) {
+      if (formKey.currentState!.validate()) {
+        auth.resetPassword(password: passwordController.text).then((response) {
+          NavigatorService.pushNamedAndRemoveUntil(AppRoutes.signin);
+        });
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
+    return Preloader(
+      preloader: preloader,
       child: Scaffold(
         appBar: CustomAppBar(
           centerTitle: false,
@@ -216,7 +223,7 @@ class ResetPasswordScreenState extends State<ResetPasswordScreen> {
                           buttonTextStyle: CustomTextStyles.titleLargeWhite900,
                         );
                       } else {
-                        if (props.isError) {
+                        if (props.isError || props.isAuthException) {
                           return Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,

@@ -11,6 +11,7 @@ class ForgetPasswordScreen extends StatefulWidget {
 }
 
 class ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
+  bool preloader = true;
   late AuthenticationProvider auth;
   String provider = AuthProvider.email;
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
@@ -21,7 +22,13 @@ class ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
   @override
   void initState() {
     super.initState();
-    auth = context.read<AuthenticationProvider>();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      auth = context.read<AuthenticationProvider>();
+
+      setState(() {
+        preloader = false;
+      });
+    });
   }
 
   Widget input({
@@ -53,29 +60,25 @@ class ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
     );
   }
 
-  Future<void> onPressed() async {
-    // Props props = auth.props;
-    // if (!props.isProcessing) {
-    //   if (formKey.currentState!.validate()) {
-    //     AuthForm body = AuthForm(
-    //       provider: provider,
-    //       event: AuthEvent.forgetPassword,
-    //       email: emailController.text,
-    //       phone: phoneController.text,
-    //     );
-
-    //     bool response = await auth.forgetPassword(body);
-    //     if (response && mounted) {
-    //       NavigatorService.push(context, const OtpVerificationScreen(),
-    //           arguments: body);
-    //     }
-    //   }
-    // }
+  void onPressed() {
+    Props props = auth.props;
+    if (!props.isProcessing) {
+      if (formKey.currentState!.validate()) {
+        auth.send(email: emailController.text).then((response) {
+          NavigatorService.push(
+            context,
+            const OtpVerificationScreen(),
+            arguments: {'event': Event.recovery, 'email': emailController.text},
+          );
+        });
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
+    return Preloader(
+      preloader: preloader,
       child: Scaffold(
         appBar: CustomAppBar(
           centerTitle: false,
@@ -175,7 +178,7 @@ class ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                       icon: CustomImageView(
                         size: 22.adaptSize,
                         imagePath: provider == AuthProvider.email
-                            ? "phone"
+                            ? "phone".icon.svg
                             : "email".icon.svg,
                       ),
                     ),
@@ -184,7 +187,7 @@ class ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                   Consumer<AuthenticationProvider>(
                     builder: (BuildContext context, provider, Widget? child) {
                       Props props = provider.props;
-                      if (props.isProcessing) {
+                      if (props.isSending) {
                         return CustomElevatedButton(
                           text: "",
                           height: 50.v,
@@ -196,7 +199,7 @@ class ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                           buttonTextStyle: CustomTextStyles.titleLargeWhite900,
                         );
                       } else {
-                        if (props.isError) {
+                        if (props.isError || props.isAuthException) {
                           return Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,

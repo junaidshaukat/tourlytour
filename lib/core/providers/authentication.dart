@@ -95,6 +95,20 @@ class AuthenticationProvider with ChangeNotifier {
     }
   }
 
+  Future<void> signinWithGoogle() async {
+    await supabase.auth.signInWithOAuth(
+      OAuthProvider.google,
+      redirectTo: redirectTo,
+    );
+  }
+
+  Future<void> signinWithFacebook() async {
+    await supabase.auth.signInWithOAuth(
+      OAuthProvider.facebook,
+      redirectTo: redirectTo,
+    );
+  }
+
   Future<AuthResponse> signinWithEmail({
     String? email,
     String? phone,
@@ -370,20 +384,6 @@ class AuthenticationProvider with ChangeNotifier {
       notifyListeners();
       rethrow;
     }
-  }
-
-  Future<void> signinWithGoogle() async {
-    await supabase.auth.signInWithOAuth(
-      OAuthProvider.google,
-      redirectTo: redirectTo,
-    );
-  }
-
-  Future<void> signinWithFacebook() async {
-    await supabase.auth.signInWithOAuth(
-      OAuthProvider.facebook,
-      redirectTo: redirectTo,
-    );
   }
 
   Future<bool> signOut() {

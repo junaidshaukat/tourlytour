@@ -18,11 +18,12 @@ class OnboardingScreenState extends State<OnboardingScreen> {
     super.initState();
   }
 
-  Future<void> onContinue() async {
-    await context.read<CurrentUserProvider>().setOnboarding(false);
-    NavigatorService.pushNamed(
-      AppRoutes.splash,
-    );
+  void onContinue() {
+    context.read<CurrentUserProvider>().setOnboarding(false).then((res) {
+      NavigatorService.pushNamedAndRemoveUntil(
+        AppRoutes.signin,
+      );
+    });
   }
 
   @override

@@ -34,7 +34,7 @@ class SplashScreenState extends State<SplashScreen> {
       AppMetadata appMetadata = AppMetadata.fromJson(currentUser.appMetaData);
 
       if (currentUser.onboarding) {
-        return NavigatorService.popAndPushNamed(
+        return NavigatorService.pushNamedAndRemoveUntil(
           AppRoutes.onboarding,
         );
       } else {
@@ -42,31 +42,31 @@ class SplashScreenState extends State<SplashScreen> {
 
         if (currentUser.uuid != "") {
           if (appMetadata.isGoogle) {
-            return NavigatorService.popAndPushNamed(
+            return NavigatorService.pushNamedAndRemoveUntil(
               AppRoutes.dashboard,
             );
           }
 
           if (appMetadata.isFacebook) {
-            return NavigatorService.popAndPushNamed(
+            return NavigatorService.pushNamedAndRemoveUntil(
               AppRoutes.dashboard,
             );
           }
 
           if (appMetadata.isEmail || appMetadata.isPhone) {
             if (credentials.rememberMe == true) {
-              return NavigatorService.popAndPushNamed(
+              return NavigatorService.pushNamedAndRemoveUntil(
                 AppRoutes.dashboard,
               );
             }
 
-            return NavigatorService.popAndPushNamed(
+            return NavigatorService.pushNamedAndRemoveUntil(
               AppRoutes.dashboard,
             );
           }
         }
 
-        return NavigatorService.popAndPushNamed(
+        return NavigatorService.pushNamedAndRemoveUntil(
           AppRoutes.dashboard,
         );
       }
