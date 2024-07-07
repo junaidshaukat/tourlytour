@@ -61,7 +61,6 @@ class ProfileScreenState extends State<ProfileScreen> {
       preloader: preloader,
       child: Scaffold(
         key: scaffoldKey,
-        resizeToAvoidBottomInset: false,
         appBar: CustomAppBar(
           centerTitle: false,
           title: Padding(

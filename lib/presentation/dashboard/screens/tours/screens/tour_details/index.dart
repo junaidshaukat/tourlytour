@@ -22,8 +22,6 @@ class TourDetailsScreenState extends State<TourDetailsScreen> {
       tours = context.read<ToursProvider>();
       review = context.read<ReviewService>();
 
-      console.log(id);
-
       await tours.getTourDetails(id);
 
       setState(() {

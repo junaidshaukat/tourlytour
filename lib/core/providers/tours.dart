@@ -103,8 +103,6 @@ class ToursProvider with ChangeNotifier {
         'user_id': currentUser.id,
       });
 
-      console.log(response, trace);
-
       if (response != null) {
         propsSingleTour.setSuccess(currentData: TourHistory.fromJson(response));
         notifyListeners();

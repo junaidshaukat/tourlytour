@@ -33,6 +33,7 @@ class AuthenticationService with ChangeNotifier {
   bool obscurePassword = true;
   bool obscureConfirmPassword = true;
 
+  TextEditingController tokenController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
   TextEditingController usernameController = TextEditingController();
@@ -69,18 +70,54 @@ class AuthenticationService with ChangeNotifier {
     }
   }
 
-  Future<void> onRegisterNow() async {
+  void onRegisterNow({Function(AuthResponse)? callback}) {
     Props props = auth.props;
     if (!props.isProcessing) {
       if (formKey.currentState!.validate()) {
-        await auth.signupWithEmail(
+        auth.signupWithEmail(
           email: emailController.text,
           phone: phoneController.text,
           password: passwordController.text,
           data: {
             'full_name': usernameController.text,
           },
-        );
+        ).then((response) {
+          if (callback != null) callback(response);
+        });
+      }
+    }
+  }
+
+  void onReSendOTP({Function(AuthResponse)? callback}) {
+    Props props = auth.props;
+    if (!props.isProcessing) {
+      if (formKey.currentState!.validate()) {
+        auth.signupWithEmail(
+          email: emailController.text,
+          phone: phoneController.text,
+          password: passwordController.text,
+          data: {
+            'full_name': usernameController.text,
+          },
+        ).then((response) {
+          if (callback != null) callback(response);
+        });
+      }
+    }
+  }
+
+  void onVeifyOTP({Function(AuthResponse)? callback}) {
+    Props props = auth.props;
+    if (!props.isProcessing) {
+      if (formKey.currentState!.validate()) {
+        auth
+            .verifyOTP(
+          email: emailController.text,
+          token: tokenController.text,
+        )
+            .then((response) {
+          if (callback != null) callback(response);
+        });
       }
     }
   }
@@ -98,11 +135,17 @@ class AuthenticationService with ChangeNotifier {
       obscurePassword = true;
       obscureConfirmPassword = true;
 
+      tokenController.clear();
       emailController.clear();
       phoneController.clear();
       usernameController.clear();
       passwordController.clear();
       passwordConfirmController.clear();
+
+      emailController.text = 'junaidshaukat123@gmail.com';
+      usernameController.text = 'Junaid Shaukat';
+      passwordController.text = 'Junaidshaukat123@';
+      passwordConfirmController.text = 'Junaidshaukat123@';
 
       showBottomSheet();
     }
@@ -805,7 +848,13 @@ class AuthenticationService with ChangeNotifier {
                       text: "register_now".tr,
                       buttonStyle: CustomButtonStyles.fillPrimaryTL29,
                       buttonTextStyle: CustomTextStyles.titleLargeWhite900,
-                      onPressed: onRegisterNow,
+                      onPressed: () {
+                        onRegisterNow(callback: (response) {
+                          setState(() {
+                            sheet = Sheet.otpVerification;
+                          });
+                        });
+                      },
                     )
                   ],
                 );
@@ -816,7 +865,13 @@ class AuthenticationService with ChangeNotifier {
                 text: "register_now".tr,
                 buttonStyle: CustomButtonStyles.fillPrimaryTL29,
                 buttonTextStyle: CustomTextStyles.titleLargeWhite900,
-                onPressed: onRegisterNow,
+                onPressed: () {
+                  onRegisterNow(callback: (response) {
+                    setState(() {
+                      sheet = Sheet.otpVerification;
+                    });
+                  });
+                },
               );
             }
           },
@@ -1046,6 +1101,7 @@ class AuthenticationService with ChangeNotifier {
         CustomPinCodeTextField(
           length: 6,
           context: context,
+          controller: tokenController,
           onChanged: (value) {},
           validator: (key) {
             return Validator.otp(key);
@@ -1081,7 +1137,9 @@ class AuthenticationService with ChangeNotifier {
               }
 
               return GestureDetector(
-                onTap: () {},
+                onTap: () {
+                  onReSendOTP(callback: (res) {});
+                },
                 child: Padding(
                   padding: EdgeInsets.only(bottom: 4.v),
                   child: Text(
@@ -1132,7 +1190,9 @@ class AuthenticationService with ChangeNotifier {
                       text: "submit_code".tr,
                       buttonStyle: CustomButtonStyles.fillPrimaryTL29,
                       buttonTextStyle: CustomTextStyles.titleLargeWhite900,
-                      onPressed: () {},
+                      onPressed: () {
+                        onVeifyOTP(callback: (res) {});
+                      },
                     )
                   ],
                 );
@@ -1143,7 +1203,9 @@ class AuthenticationService with ChangeNotifier {
                 text: "submit_code".tr,
                 buttonStyle: CustomButtonStyles.fillPrimaryTL29,
                 buttonTextStyle: CustomTextStyles.titleLargeWhite900,
-                onPressed: () {},
+                onPressed: () {
+                  onVeifyOTP(callback: (res) {});
+                },
               );
             }
           },

@@ -1,24 +1,151 @@
 import '/core/app_export.dart';
 
-extension AuthSession on Session? {
-  Map<String, dynamic> getParams() {
-    if (this == null) {
-      return {};
-    } else {
-      return {
-        "isVerified": true,
-        "password": '',
-        "uuid": this!.user.id,
-        'email': this!.user.email,
-        "mobileNumber": this!.user.phone,
-        "name": this!.user.userMetadata?['full_name'],
-        "loginProvider": this!.user.appMetadata['provider'],
-        "providerKey": this!.user.userMetadata?['provider_id'],
-        "providerDisplayName": this!.user.userMetadata?['name'] ??
-            this!.user.userMetadata?['full_name'],
-        "profilePhotoUrl": this!.user.userMetadata?['avatar_url'],
-      };
+extension UserX on User {
+  String get uuid {
+    return id;
+  }
+
+  String get name {
+    Map<String, dynamic> data = userMetadata ?? {};
+
+    if (data.containsKey('full_name')) {
+      String fullName = data['full_name'];
+      if (fullName.isNotEmpty) {
+        return fullName;
+      }
     }
+
+    if (data.containsKey('name')) {
+      String name = data['name'];
+      if (name.isNotEmpty) {
+        return name;
+      }
+    }
+
+    return '';
+  }
+
+  String get emails {
+    Map<String, dynamic> data = userMetadata ?? {};
+
+    if (email != null) {
+      if (email!.isNotEmpty) return email!;
+    }
+
+    if (data.containsKey('email')) {
+      String email = data['email'];
+      if (email.isNotEmpty) {
+        return email;
+      }
+    }
+
+    return '';
+  }
+
+  String get password {
+    return '';
+  }
+
+  bool get isVerified {
+    return true;
+  }
+
+  String get providerKey {
+    Map<String, dynamic> data = userMetadata ?? {};
+
+    if (data.containsKey('provider_id')) {
+      String providerId = data['provider_id'];
+      if (providerId.isNotEmpty) {
+        return providerId;
+      }
+    }
+
+    if (data.containsKey('sub')) {
+      String sub = data['sub'];
+      if (sub.isNotEmpty) {
+        return sub;
+      }
+    }
+
+    return '';
+  }
+
+  String get mobileNumber {
+    if (phone != null && phone!.isNotEmpty) {
+      return phone!;
+    }
+
+    return '';
+  }
+
+  String get loginProvider {
+    Map<String, dynamic> data = appMetadata;
+
+    if (data.containsKey('provider')) {
+      String provider = data['provider'];
+      if (provider.isNotEmpty) {
+        return provider;
+      }
+    }
+
+    return '';
+  }
+
+  String get profilePhotoUrl {
+    Map<String, dynamic> data = userMetadata ?? {};
+
+    if (data.containsKey('picture')) {
+      String pictureUrl = data['picture'];
+      if (pictureUrl.isNotEmpty) {
+        return pictureUrl;
+      }
+    }
+
+    if (data.containsKey('avatar_url')) {
+      String avatarUrl = data['avatar_url'];
+      if (avatarUrl.isNotEmpty) {
+        return avatarUrl;
+      }
+    }
+
+    return '';
+  }
+
+  String get providerDisplayName {
+    Map<String, dynamic> data = userMetadata ?? {};
+
+    if (data.containsKey('name')) {
+      String name = data['name'];
+      if (name.isNotEmpty) {
+        return name;
+      }
+    }
+
+    if (data.containsKey('full_name')) {
+      String fullName = data['full_name'];
+      if (fullName.isNotEmpty) {
+        return fullName;
+      }
+    }
+
+    return '';
+  }
+}
+
+extension AuthSession on Session {
+  Map<String, dynamic> getParams() {
+    return {
+      "uuid": user.uuid,
+      "name": user.name,
+      'email': user.emails,
+      "password": user.password,
+      "isVerified": user.isVerified,
+      "providerKey": user.providerKey,
+      "mobileNumber": user.mobileNumber,
+      "loginProvider": user.loginProvider,
+      "profilePhotoUrl": user.profilePhotoUrl,
+      "providerDisplayName": user.providerDisplayName,
+    };
   }
 }
 
