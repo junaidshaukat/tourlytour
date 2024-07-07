@@ -1080,7 +1080,8 @@ class TourDetailsScreenState extends State<TourDetailsScreen> {
                           ],
                         ),
                       ),
-                    if (tour.reviews.id == null)
+                    if (tour.reviews.id == null &&
+                        tour.orders.status == "COMPLETED")
                       CustomElevatedButton(
                         text: "share_your_opinion".tr,
                         onPressed: () {
