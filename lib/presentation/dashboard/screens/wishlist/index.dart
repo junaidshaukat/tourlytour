@@ -69,7 +69,7 @@ class FavouriteScreenState extends State<FavouriteScreen> {
                     child: Loading(),
                   ),
                 );
-              } else if (props.isUnauthorized) {
+              } else if (props.isAuthException) {
                 return SizedBox(
                   height: 300.v,
                   child: Center(

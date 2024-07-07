@@ -77,7 +77,7 @@ class ProductPriceProvider with ChangeNotifier {
       return ProductPrice();
     } on AuthException catch (error) {
       console.authentication(error, trace);
-      props.setUnauthorized(currentError: error.message.toString());
+      props.setAuthException(currentError: error.message.toString());
       notifyListeners();
       return ProductPrice();
     } catch (error) {

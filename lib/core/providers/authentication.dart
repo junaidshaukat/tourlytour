@@ -111,10 +111,11 @@ class AuthenticationProvider with ChangeNotifier {
 
       AuthResponse response = await supabase.auth.signInWithPassword(
         email: email,
-        phone: phone,
         password: password,
         captchaToken: captchaToken,
       );
+
+      console.log(response, trace);
 
       return response;
     } on NoInternetException catch (error) {
@@ -124,7 +125,7 @@ class AuthenticationProvider with ChangeNotifier {
       rethrow;
     } on AuthException catch (error) {
       console.authentication(error, trace);
-      props.setUnauthorized(currentError: error.message.toString());
+      props.setAuthException(currentError: error.message.toString());
       notifyListeners();
       rethrow;
     } on CustomException catch (error) {
@@ -171,7 +172,7 @@ class AuthenticationProvider with ChangeNotifier {
       rethrow;
     } on AuthException catch (error) {
       console.authentication(error, trace);
-      props.setUnauthorized(currentError: error.message.toString());
+      props.setAuthException(currentError: error.message.toString());
       notifyListeners();
       rethrow;
     } on CustomException catch (error) {
@@ -221,7 +222,141 @@ class AuthenticationProvider with ChangeNotifier {
       rethrow;
     } on AuthException catch (error) {
       console.authentication(error, trace);
-      props.setUnauthorized(currentError: error.message.toString());
+      props.setAuthException(currentError: error.message.toString());
+      notifyListeners();
+      rethrow;
+    } on CustomException catch (error) {
+      console.custom(error, trace);
+      props.setError(currentError: error.toString());
+      notifyListeners();
+      rethrow;
+    } catch (error) {
+      console.error(error, trace);
+      props.setError(currentError: "something_went_wrong".tr);
+      notifyListeners();
+      rethrow;
+    }
+  }
+
+  Future<ResendResponse> resend({
+    String? email,
+    String? phone,
+    OtpType type = OtpType.signup,
+    String? emailRedirectTo,
+    String? captchaToken,
+  }) async {
+    try {
+      props.setResending();
+      notifyListeners();
+
+      if (!connectivity.isConnected) {
+        throw NoInternetException();
+      }
+
+      ResendResponse response = await supabase.auth.resend(
+        email: email,
+        type: type,
+      );
+      props.setNone();
+      notifyListeners();
+
+      return response;
+    } on NoInternetException catch (error) {
+      console.internet(error, trace);
+      props.setError(currentError: error.toString());
+      notifyListeners();
+      rethrow;
+    } on AuthException catch (error) {
+      console.authentication(error, trace);
+      props.setAuthException(currentError: error.message.toString());
+      notifyListeners();
+      rethrow;
+    } on CustomException catch (error) {
+      console.custom(error, trace);
+      props.setError(currentError: error.toString());
+      notifyListeners();
+      rethrow;
+    } catch (error) {
+      console.error(error, trace);
+      props.setError(currentError: "something_went_wrong".tr);
+      notifyListeners();
+      rethrow;
+    }
+  }
+
+  Future<bool> send({
+    String? email,
+    String? phone,
+    OtpType type = OtpType.signup,
+    String? emailRedirectTo,
+    String? captchaToken,
+  }) async {
+    try {
+      props.setSending();
+      notifyListeners();
+
+      if (!connectivity.isConnected) {
+        throw NoInternetException();
+      }
+
+      await supabase.auth.resetPasswordForEmail(
+        email!,
+      );
+
+      props.setNone();
+      notifyListeners();
+
+      return true;
+    } on NoInternetException catch (error) {
+      console.internet(error, trace);
+      props.setError(currentError: error.toString());
+      notifyListeners();
+      rethrow;
+    } on AuthException catch (error) {
+      console.authentication(error, trace);
+      props.setAuthException(currentError: error.message.toString());
+      notifyListeners();
+      rethrow;
+    } on CustomException catch (error) {
+      console.custom(error, trace);
+      props.setError(currentError: error.toString());
+      notifyListeners();
+      rethrow;
+    } catch (error) {
+      console.error(error, trace);
+      props.setError(currentError: "something_went_wrong".tr);
+      notifyListeners();
+      rethrow;
+    }
+  }
+
+  Future<UserResponse> resetPassword({String? password}) async {
+    try {
+      props.setProcessing();
+      notifyListeners();
+
+      if (!connectivity.isConnected) {
+        throw NoInternetException();
+      }
+
+      UserResponse response = await supabase.auth.updateUser(
+        UserAttributes(
+          password: password!,
+        ),
+      );
+
+      props.setNone();
+      notifyListeners();
+
+      return response;
+    } on NoInternetException catch (error) {
+      console.internet(error, trace);
+      props.setError(currentError: error.toString());
+      notifyListeners();
+      rethrow;
+    } on AuthException catch (error) {
+      console.authentication(error, trace);
+      props.setAuthException(currentError: error.message.toString());
       notifyListeners();
       rethrow;
     } on CustomException catch (error) {

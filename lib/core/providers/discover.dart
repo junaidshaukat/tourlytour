@@ -68,7 +68,7 @@ class DiscoverProvider with ChangeNotifier {
       notifyListeners();
     } on AuthException catch (error) {
       console.authentication(error, trace);
-      props.setUnauthorized(currentError: error.message.toString());
+      props.setAuthException(currentError: error.message.toString());
       notifyListeners();
     } catch (error) {
       console.error(error, trace);

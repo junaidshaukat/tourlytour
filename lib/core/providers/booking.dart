@@ -140,7 +140,7 @@ class BookingProvider with ChangeNotifier {
       rethrow;
     } on AuthException catch (error) {
       console.authentication(error, trace);
-      props.setUnauthorized(currentError: error.message.toString());
+      props.setAuthException(currentError: error.message.toString());
       notifyListeners();
       rethrow;
     } catch (error) {

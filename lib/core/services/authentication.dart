@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '/core/app_export.dart';
 
 enum Sheet {
+  none,
   initial,
   forgetPassword,
   signInWithEmail,
@@ -10,9 +11,14 @@ enum Sheet {
   resetPassword
 }
 
+enum Event { none, signup, recovery }
+
 class AuthenticationService with ChangeNotifier {
   bool isSheetOpen = false;
   Sheet sheet = Sheet.initial;
+  Sheet prevScreen = Sheet.none;
+  Event event = Event.none;
+
   ImagePicker picker = ImagePicker();
   Session? session;
 
@@ -70,6 +76,22 @@ class AuthenticationService with ChangeNotifier {
     }
   }
 
+  void onSignIn({Function(AuthResponse)? callback}) {
+    Props props = auth.props;
+    if (!props.isProcessing) {
+      if (formKey.currentState!.validate()) {
+        auth
+            .signinWithEmail(
+          email: emailController.text,
+          password: passwordController.text,
+        )
+            .then((response) {
+          if (callback != null) callback(response);
+        });
+      }
+    }
+  }
+
   void onRegisterNow({Function(AuthResponse)? callback}) {
     Props props = auth.props;
     if (!props.isProcessing) {
@@ -88,18 +110,17 @@ class AuthenticationService with ChangeNotifier {
     }
   }
 
-  void onReSendOTP({Function(AuthResponse)? callback}) {
+  void onSendOTP({Function(dynamic)? callback}) {
     Props props = auth.props;
     if (!props.isProcessing) {
-      if (formKey.currentState!.validate()) {
-        auth.signupWithEmail(
-          email: emailController.text,
-          phone: phoneController.text,
-          password: passwordController.text,
-          data: {
-            'full_name': usernameController.text,
-          },
-        ).then((response) {
+      if (event == Event.signup) {
+        auth.resend(email: emailController.text).then((response) {
+          if (callback != null) callback(response);
+        });
+      }
+
+      if (event == Event.recovery) {
+        auth.send(email: emailController.text).then((response) {
           if (callback != null) callback(response);
         });
       }
@@ -109,13 +130,37 @@ class AuthenticationService with ChangeNotifier {
   void onVeifyOTP({Function(AuthResponse)? callback}) {
     Props props = auth.props;
     if (!props.isProcessing) {
-      if (formKey.currentState!.validate()) {
+      if (event == Event.signup) {
         auth
             .verifyOTP(
           email: emailController.text,
           token: tokenController.text,
+          type: OtpType.signup,
         )
             .then((response) {
+          if (callback != null) callback(response);
+        });
+      }
+
+      if (event == Event.recovery) {
+        auth
+            .verifyOTP(
+          email: emailController.text,
+          token: tokenController.text,
+          type: OtpType.recovery,
+        )
+            .then((response) {
+          if (callback != null) callback(response);
+        });
+      }
+    }
+  }
+
+  void onResetPassword({Function(UserResponse)? callback}) {
+    Props props = auth.props;
+    if (!props.isProcessing) {
+      if (formKey.currentState!.validate()) {
+        auth.resetPassword(password: passwordController.text).then((response) {
           if (callback != null) callback(response);
         });
       }
@@ -250,14 +295,40 @@ class AuthenticationService with ChangeNotifier {
     }
   }
 
-  Widget initialSheet(StateSetter setState) {
+  Widget sheetHeader({
+    bool backward = false,
+    String title = '',
+    String description = '',
+    void Function()? onBack,
+  }) {
     return Column(
-      mainAxisSize: MainAxisSize.min,
       children: [
-        SizedBox(height: 12.v),
-        Text(
-          "welcome_back".tr,
-          style: theme.textTheme.headlineSmall,
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            if (backward)
+              InkWell(
+                onTap: onBack,
+                child: CustomImageView(
+                  size: 24.adaptSize,
+                  imagePath: "back_square".icon.svg,
+                ),
+              ),
+            if (!backward) const SizedBox(),
+            Text(
+              title,
+              style: theme.textTheme.headlineSmall,
+            ),
+            InkWell(
+              onTap: () {
+                controller.close();
+              },
+              child: CustomImageView(
+                size: 24.adaptSize,
+                imagePath: "close_square".icon.svg,
+              ),
+            ),
+          ],
         ),
         Opacity(
           opacity: 0.8,
@@ -266,12 +337,26 @@ class AuthenticationService with ChangeNotifier {
               horizontal: 30.h,
             ),
             child: Text(
+              description,
               textAlign: TextAlign.center,
-              "please_sign_in_to_continue".tr,
-              overflow: TextOverflow.ellipsis,
+              overflow: TextOverflow.clip,
               style: CustomTextStyles.bodyLargeJaldiGray90001,
             ),
           ),
+        ),
+      ],
+    );
+  }
+
+  Widget initialSheet(StateSetter setState) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        SizedBox(height: 12.v),
+        sheetHeader(
+          backward: false,
+          title: "welcome_back".tr,
+          description: "please_sign_in_to_continue".tr,
         ),
         SizedBox(height: 18.v),
         CustomElevatedButton(
@@ -281,6 +366,7 @@ class AuthenticationService with ChangeNotifier {
           buttonTextStyle: CustomTextStyles.titleLargeWhite900,
           onPressed: () {
             setState(() {
+              prevScreen = Sheet.initial;
               sheet = Sheet.signInWithEmail;
             });
           },
@@ -405,6 +491,7 @@ class AuthenticationService with ChangeNotifier {
             GestureDetector(
               onTap: () {
                 setState(() {
+                  prevScreen = Sheet.initial;
                   sheet = Sheet.signup;
                 });
               },
@@ -427,26 +514,16 @@ class AuthenticationService with ChangeNotifier {
     return Column(
       children: [
         SizedBox(height: 12.v),
-        Text(
-          "welcome_back".tr,
-          style: theme.textTheme.headlineSmall,
-        ),
-        Opacity(
-          opacity: 0.5,
-          child: Container(
-            width: 255.h,
-            margin: EdgeInsets.only(
-              left: 30.h,
-              right: 34.h,
-            ),
-            child: Text(
-              "please_enter_your_email_or_phone_number_to_continue".tr,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              textAlign: TextAlign.center,
-              style: CustomTextStyles.bodyLargeJaldiGray90001,
-            ),
-          ),
+        sheetHeader(
+          title: "welcome_back".tr,
+          description: "please_enter_your_email_or_phone_number_to_continue".tr,
+          onBack: () async {
+            if (prevScreen == Sheet.initial) {
+              setState(() {
+                sheet = Sheet.initial;
+              });
+            }
+          },
         ),
         SizedBox(height: 18.v),
         input(
@@ -518,6 +595,7 @@ class AuthenticationService with ChangeNotifier {
               GestureDetector(
                 onTap: () {
                   setState(() {
+                    prevScreen = Sheet.signInWithEmail;
                     sheet = Sheet.forgetPassword;
                   });
                 },
@@ -532,13 +610,60 @@ class AuthenticationService with ChangeNotifier {
           ),
         ),
         SizedBox(height: 12.v),
-        CustomElevatedButton(
-          height: 50.v,
-          text: "signin".tr,
-          buttonStyle: CustomButtonStyles.fillPrimaryTL29,
-          buttonTextStyle: CustomTextStyles.titleLargeWhite900,
-          onPressed: () {
-            setState(() {});
+        Consumer<AuthenticationProvider>(
+          builder: (BuildContext context, provider, Widget? child) {
+            Props props = provider.props;
+            if (props.isProcessing) {
+              return CustomElevatedButton(
+                text: "",
+                height: 50.v,
+                leftIcon: CustomProgressButton(
+                  lable: 'processing'.tr,
+                  textStyle: CustomTextStyles.titleLargeWhite900,
+                ),
+                buttonStyle: CustomButtonStyles.fillPrimaryTL29,
+                buttonTextStyle: CustomTextStyles.titleLargeWhite900,
+              );
+            } else {
+              if (props.isError || props.isAuthException) {
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      props.error ?? '',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 12.fSize,
+                        fontFamily: 'Inter',
+                        fontWeight: FontWeight.w400,
+                        color: Theme.of(context).colorScheme.error,
+                      ),
+                    ),
+                    SizedBox(height: 6.v),
+                    CustomElevatedButton(
+                      height: 50.v,
+                      text: "signin".tr,
+                      buttonStyle: CustomButtonStyles.fillPrimaryTL29,
+                      buttonTextStyle: CustomTextStyles.titleLargeWhite900,
+                      onPressed: () {
+                        onSignIn(callback: (res) {});
+                      },
+                    )
+                  ],
+                );
+              }
+
+              return CustomElevatedButton(
+                height: 50.v,
+                text: "signin".tr,
+                buttonStyle: CustomButtonStyles.fillPrimaryTL29,
+                buttonTextStyle: CustomTextStyles.titleLargeWhite900,
+                onPressed: () {
+                  onSignIn(callback: (res) {});
+                },
+              );
+            }
           },
         ),
         SizedBox(height: 12.v),
@@ -619,6 +744,7 @@ class AuthenticationService with ChangeNotifier {
             GestureDetector(
               onTap: () {
                 setState(() {
+                  prevScreen = Sheet.signInWithEmail;
                   sheet = Sheet.signup;
                 });
               },
@@ -641,26 +767,9 @@ class AuthenticationService with ChangeNotifier {
     return Column(
       children: [
         SizedBox(height: 12.v),
-        Text(
-          "create_account".tr,
-          style: theme.textTheme.headlineSmall,
-        ),
-        Opacity(
-          opacity: 0.5,
-          child: Container(
-            width: 255.h,
-            margin: EdgeInsets.only(
-              left: 30.h,
-              right: 34.h,
-            ),
-            child: Text(
-              "please_enter_your_details_to_create_an_account".tr,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              textAlign: TextAlign.center,
-              style: CustomTextStyles.bodyLargeJaldiGray90001,
-            ),
-          ),
+        sheetHeader(
+          title: "create_account".tr,
+          description: "please_enter_your_details_to_create_an_account".tr,
         ),
         SizedBox(height: 18.v),
         input(
@@ -827,7 +936,7 @@ class AuthenticationService with ChangeNotifier {
                 buttonTextStyle: CustomTextStyles.titleLargeWhite900,
               );
             } else {
-              if (props.isUnauthorized) {
+              if (props.isAuthException) {
                 return Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -849,8 +958,10 @@ class AuthenticationService with ChangeNotifier {
                       buttonStyle: CustomButtonStyles.fillPrimaryTL29,
                       buttonTextStyle: CustomTextStyles.titleLargeWhite900,
                       onPressed: () {
+                        event = Event.signup;
                         onRegisterNow(callback: (response) {
                           setState(() {
+                            prevScreen = Sheet.signup;
                             sheet = Sheet.otpVerification;
                           });
                         });
@@ -866,8 +977,10 @@ class AuthenticationService with ChangeNotifier {
                 buttonStyle: CustomButtonStyles.fillPrimaryTL29,
                 buttonTextStyle: CustomTextStyles.titleLargeWhite900,
                 onPressed: () {
+                  event = Event.signup;
                   onRegisterNow(callback: (response) {
                     setState(() {
+                      prevScreen = Sheet.signup;
                       sheet = Sheet.otpVerification;
                     });
                   });
@@ -876,7 +989,7 @@ class AuthenticationService with ChangeNotifier {
             }
           },
         ),
-        SizedBox(height: 4.v),
+        SizedBox(height: 12.v),
       ],
     );
   }
@@ -885,28 +998,11 @@ class AuthenticationService with ChangeNotifier {
     return Column(
       children: [
         SizedBox(height: 12.v),
-        Text(
-          "forget_password".tr,
-          style: theme.textTheme.headlineSmall,
+        sheetHeader(
+          title: "forget_password".tr,
+          description: "please_enter_your_email_or_phone".tr,
         ),
-        Opacity(
-          opacity: 0.5,
-          child: Container(
-            width: 255.h,
-            margin: EdgeInsets.only(
-              left: 30.h,
-              right: 34.h,
-            ),
-            child: Text(
-              "please_enter_your_email_or_phone".tr,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              textAlign: TextAlign.center,
-              style: CustomTextStyles.bodyLargeJaldiGray90001,
-            ),
-          ),
-        ),
-        SizedBox(height: 24.v),
+        SizedBox(height: 18.v),
         input(
           controller: emailController,
           hintText: "email".tr,
@@ -927,15 +1023,72 @@ class AuthenticationService with ChangeNotifier {
           ),
         ),
         SizedBox(height: 24.v),
-        CustomElevatedButton(
-          height: 50.v,
-          text: "send_code".tr,
-          buttonStyle: CustomButtonStyles.fillPrimaryTL29,
-          buttonTextStyle: CustomTextStyles.titleLargeWhite900,
-          onPressed: () {
-            setState(() {
-              sheet = Sheet.resetPassword;
-            });
+        Consumer<AuthenticationProvider>(
+          builder: (BuildContext context, provider, Widget? child) {
+            Props props = provider.props;
+            if (props.isSending) {
+              return CustomElevatedButton(
+                text: "",
+                height: 50.v,
+                leftIcon: CustomProgressButton(
+                  lable: 'processing'.tr,
+                  textStyle: CustomTextStyles.titleLargeWhite900,
+                ),
+                buttonStyle: CustomButtonStyles.fillPrimaryTL29,
+                buttonTextStyle: CustomTextStyles.titleLargeWhite900,
+              );
+            } else {
+              if (props.isError || props.isAuthException) {
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      props.error ?? '',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 12.fSize,
+                        fontFamily: 'Inter',
+                        fontWeight: FontWeight.w400,
+                        color: Theme.of(context).colorScheme.error,
+                      ),
+                    ),
+                    SizedBox(height: 6.v),
+                    CustomElevatedButton(
+                      height: 50.v,
+                      text: "send_code".tr,
+                      buttonStyle: CustomButtonStyles.fillPrimaryTL29,
+                      buttonTextStyle: CustomTextStyles.titleLargeWhite900,
+                      onPressed: () {
+                        event = Event.recovery;
+                        onSendOTP(callback: (res) {
+                          setState(() {
+                            prevScreen = Sheet.forgetPassword;
+                            sheet = Sheet.otpVerification;
+                          });
+                        });
+                      },
+                    )
+                  ],
+                );
+              }
+
+              return CustomElevatedButton(
+                height: 50.v,
+                text: "send_code".tr,
+                buttonStyle: CustomButtonStyles.fillPrimaryTL29,
+                buttonTextStyle: CustomTextStyles.titleLargeWhite900,
+                onPressed: () {
+                  event = Event.recovery;
+                  onSendOTP(callback: (res) {
+                    setState(() {
+                      prevScreen = Sheet.forgetPassword;
+                      sheet = Sheet.otpVerification;
+                    });
+                  });
+                },
+              );
+            }
           },
         ),
         SizedBox(height: 12.v),
@@ -947,28 +1100,11 @@ class AuthenticationService with ChangeNotifier {
     return Column(
       children: [
         SizedBox(height: 12.v),
-        Text(
-          "reset_password".tr,
-          style: theme.textTheme.headlineSmall,
+        sheetHeader(
+          title: "reset_password".tr,
+          description: "please_enter_your_new_password".tr,
         ),
-        Opacity(
-          opacity: 0.5,
-          child: Container(
-            width: 255.h,
-            margin: EdgeInsets.only(
-              left: 30.h,
-              right: 34.h,
-            ),
-            child: Text(
-              "please_enter_your_new_password".tr,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              textAlign: TextAlign.center,
-              style: CustomTextStyles.bodyLargeJaldiGray90001,
-            ),
-          ),
-        ),
-        SizedBox(height: 24.v),
+        SizedBox(height: 18.v),
         input(
           hintText: "password".tr,
           obscureText: obscurePassword,
@@ -1027,55 +1163,70 @@ class AuthenticationService with ChangeNotifier {
           ),
         ),
         SizedBox(height: 12.v),
-        Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(bottom: 1.v),
-                  child: CustomCheckboxButton(
-                    text: "i_read_and_agree".tr,
-                    value: false,
-                    onChange: (value) {
-                      setState(() {});
-                    },
-                  ),
+        Consumer<AuthenticationProvider>(
+          builder: (BuildContext context, provider, Widget? child) {
+            Props props = provider.props;
+            if (props.isProcessing) {
+              return CustomElevatedButton(
+                text: "",
+                height: 50.v,
+                leftIcon: CustomProgressButton(
+                  lable: 'processing'.tr,
+                  textStyle: CustomTextStyles.titleLargeWhite900,
                 ),
-                GestureDetector(
-                  onTap: () {},
-                  child: Text(
-                    "terms_condition".tr,
-                    style: CustomTextStyles.bodyMediumJaldiBlue500.copyWith(
-                      decoration: TextDecoration.underline,
+                buttonStyle: CustomButtonStyles.fillPrimaryTL29,
+                buttonTextStyle: CustomTextStyles.titleLargeWhite900,
+              );
+            } else {
+              if (props.isError || props.isAuthException) {
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      props.error ?? '',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 12.fSize,
+                        fontFamily: 'Inter',
+                        fontWeight: FontWeight.w400,
+                        color: Theme.of(context).colorScheme.error,
+                      ),
                     ),
-                  ),
-                )
-              ],
-            ),
-            // Text(
-            //   field.errorText ?? '',
-            //   style: TextStyle(
-            //     fontSize: 8.fSize,
-            //     fontFamily: 'Inter',
-            //     fontWeight: FontWeight.w400,
-            //     color: Theme.of(context).colorScheme.error,
-            //   ),
-            // )
-          ],
-        ),
-        SizedBox(height: 12.v),
-        CustomElevatedButton(
-          height: 50.v,
-          text: "reset_password".tr,
-          buttonStyle: CustomButtonStyles.fillPrimaryTL29,
-          buttonTextStyle: CustomTextStyles.titleLargeWhite900,
-          onPressed: () {
-            setState(() {
-              sheet = Sheet.otpVerification;
-            });
+                    SizedBox(height: 6.v),
+                    CustomElevatedButton(
+                      height: 50.v,
+                      text: "reset_password".tr,
+                      buttonStyle: CustomButtonStyles.fillPrimaryTL29,
+                      buttonTextStyle: CustomTextStyles.titleLargeWhite900,
+                      onPressed: () {
+                        onResetPassword(callback: (res) {
+                          setState(() {
+                            prevScreen = Sheet.initial;
+                            sheet = Sheet.signInWithEmail;
+                          });
+                        });
+                      },
+                    )
+                  ],
+                );
+              }
+
+              return CustomElevatedButton(
+                height: 50.v,
+                text: "reset_password".tr,
+                buttonStyle: CustomButtonStyles.fillPrimaryTL29,
+                buttonTextStyle: CustomTextStyles.titleLargeWhite900,
+                onPressed: () {
+                  onResetPassword(callback: (res) {
+                    setState(() {
+                      prevScreen = Sheet.initial;
+                      sheet = Sheet.signInWithEmail;
+                    });
+                  });
+                },
+              );
+            }
           },
         ),
         SizedBox(height: 12.v),
@@ -1087,17 +1238,11 @@ class AuthenticationService with ChangeNotifier {
     return Column(
       children: [
         SizedBox(height: 12.v),
-        Text(
-          "enter_otp".tr,
-          style: theme.textTheme.headlineSmall,
+        sheetHeader(
+          title: "enter_otp".tr,
+          description: "we_will_send_you".tr,
         ),
-        SizedBox(height: 1.v),
-        Text(
-          "we_will_send_you".tr,
-          textAlign: TextAlign.center,
-          style: CustomTextStyles.bodyLargeJaldiGray90001,
-        ),
-        SizedBox(height: 12.v),
+        SizedBox(height: 18.v),
         CustomPinCodeTextField(
           length: 6,
           context: context,
@@ -1122,7 +1267,7 @@ class AuthenticationService with ChangeNotifier {
                 builder: (BuildContext context, provider, Widget? child) {
               Props props = provider.props;
 
-              if (props.isSending) {
+              if (props.isResending || props.isSending) {
                 return Padding(
                   padding: EdgeInsets.only(bottom: 4.v),
                   child: SizedBox(
@@ -1138,7 +1283,7 @@ class AuthenticationService with ChangeNotifier {
 
               return GestureDetector(
                 onTap: () {
-                  onReSendOTP(callback: (res) {});
+                  onSendOTP(callback: (res) {});
                 },
                 child: Padding(
                   padding: EdgeInsets.only(bottom: 4.v),
@@ -1169,7 +1314,7 @@ class AuthenticationService with ChangeNotifier {
                 buttonTextStyle: CustomTextStyles.titleLargeWhite900,
               );
             } else {
-              if (props.isError) {
+              if (props.isError || props.isAuthException) {
                 return Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -1191,7 +1336,14 @@ class AuthenticationService with ChangeNotifier {
                       buttonStyle: CustomButtonStyles.fillPrimaryTL29,
                       buttonTextStyle: CustomTextStyles.titleLargeWhite900,
                       onPressed: () {
-                        onVeifyOTP(callback: (res) {});
+                        onVeifyOTP(callback: (res) {
+                          if (event == Event.recovery) {
+                            setState(() {
+                              prevScreen = Sheet.otpVerification;
+                              sheet = Sheet.resetPassword;
+                            });
+                          }
+                        });
                       },
                     )
                   ],
@@ -1204,7 +1356,14 @@ class AuthenticationService with ChangeNotifier {
                 buttonStyle: CustomButtonStyles.fillPrimaryTL29,
                 buttonTextStyle: CustomTextStyles.titleLargeWhite900,
                 onPressed: () {
-                  onVeifyOTP(callback: (res) {});
+                  onVeifyOTP(callback: (res) {
+                    if (event == Event.recovery) {
+                      setState(() {
+                        prevScreen = Sheet.otpVerification;
+                        sheet = Sheet.resetPassword;
+                      });
+                    }
+                  });
                 },
               );
             }

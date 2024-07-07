@@ -115,8 +115,8 @@ class Props {
     data = currentData ?? initialData;
   }
 
-  bool get isUnauthorized => state == 8 ? true : false;
-  void setUnauthorized({
+  bool get isAuthException => state == 8 ? true : false;
+  void setAuthException({
     int currentState = 8,
     String? currentError,
     Object? currentData,
