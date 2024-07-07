@@ -251,6 +251,7 @@ class PackageSelectionScreenState extends State<PackageSelectionScreen> {
                 ),
                 child: IconButton(
                   icon: CustomImageView(
+                    size: 34.adaptSize,
                     imagePath: "arrow_back".icon.svg,
                   ),
                   onPressed: () {

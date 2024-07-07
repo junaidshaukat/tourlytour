@@ -17,3 +17,5 @@ export 'reviews_pending.dart';
 export 'tours.dart';
 export 'unavailable_product_dates.dart';
 export 'users.dart';
+export 'inclusions.dart';
+export 'additional_information.dart';

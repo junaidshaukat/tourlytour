@@ -243,11 +243,13 @@ class CustomDrawer extends StatelessWidget {
         ),
         tab(
           divider: false,
-          title: 'sign_up'.tr,
+          title: 'log_out'.tr,
           icon: 'sign_up'.icon.svg,
           onPressed: () {
-            context.read<AuthenticationProvider>().signOut().then((res) async {
-              await context.read<DependenciesProvider>().inject();
+            context.read<AuthenticationProvider>().signOut().then((res) {
+              context.read<DependenciesProvider>().inject().then((res) {
+                NavigatorService.goBack();
+              });
             });
           },
         ),

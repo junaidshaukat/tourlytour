@@ -64,6 +64,7 @@ class ConfirmationScreenState extends State<ConfirmationScreen> {
                 ),
                 child: IconButton(
                   icon: CustomImageView(
+                    size: 34.adaptSize,
                     imagePath: "arrow_back".icon.svg,
                   ),
                   onPressed: () {
@@ -407,10 +408,141 @@ class ConfirmationScreenState extends State<ConfirmationScreen> {
                                       imagePath: itineraries.iconUrl,
                                     ),
                                     SizedBox(width: 6.h),
-                                    Text('${itineraries.title}')
+                                    Expanded(
+                                      child: Text('${itineraries.title}'),
+                                    )
                                   ],
                                 );
                               }),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 16.v),
+                    Container(
+                      width: double.maxFinite,
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 8.h, vertical: 8.v),
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: appTheme.gray500,
+                          width: 1.0,
+                        ),
+                        borderRadius:
+                            BorderRadius.circular(10.0), // Border radius
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              CustomImageView(
+                                imagePath: 'guest'.icon.svg,
+                              ),
+                              SizedBox(width: 4.h),
+                              Text(
+                                'whats_included'.tr,
+                                style: CustomTextStyles.bodyMediumBlack900
+                                    .copyWith(
+                                  fontSize: 12.fSize,
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 6.v),
+                          Wrap(
+                            children: List.generate(
+                              request.inclusions!.length,
+                              (index) {
+                                ProductInclusion inclusions =
+                                    request.inclusions![index];
+                                return Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    CustomImageView(
+                                        imagePath: inclusions.isIncluded
+                                            .toString()
+                                            .icon
+                                            .svg),
+                                    SizedBox(width: 4.h),
+                                    Text(
+                                      inclusions.label,
+                                      style: CustomTextStyles
+                                          .titleSmallOnErrorContainerSemiBold
+                                          .copyWith(
+                                        fontSize: 12.fSize,
+                                      ),
+                                    ),
+                                    SizedBox(width: 8.h),
+                                  ],
+                                );
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 16.v),
+                    Container(
+                      width: double.maxFinite,
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 8.h, vertical: 8.v),
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: appTheme.gray500,
+                          width: 1.0,
+                        ),
+                        borderRadius:
+                            BorderRadius.circular(10.0), // Border radius
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              CustomImageView(
+                                imagePath: 'guest'.icon.svg,
+                              ),
+                              SizedBox(width: 4.h),
+                              Text(
+                                'whats_you_need_to_know'.tr,
+                                style: CustomTextStyles.bodyMediumBlack900
+                                    .copyWith(
+                                  fontSize: 12.fSize,
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 6.v),
+                          Wrap(
+                            children: List.generate(
+                              request.additional!.length,
+                              (index) {
+                                ProductAdditionalInformation additional =
+                                    request.additional![index];
+                                return Row(
+                                  children: [
+                                    CustomImageView(
+                                      imagePath: 'guest'.icon.svg,
+                                    ),
+                                    SizedBox(width: 8.h),
+                                    Expanded(
+                                      child: Text(
+                                        additional.label,
+                                        style: CustomTextStyles
+                                            .titleSmallOnErrorContainerSemiBold
+                                            .copyWith(
+                                          fontSize: 12.fSize,
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(width: 8.h),
+                                  ],
+                                );
+                              },
                             ),
                           ),
                         ],

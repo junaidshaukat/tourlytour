@@ -174,6 +174,8 @@ class OrdersDetails {
   Contacts? contacts;
   List<OrderGuests>? guests;
   List<ProductItineraries>? itineraries;
+  List<ProductInclusion>? inclusions;
+  List<ProductAdditionalInformation>? additional;
 
   OrdersDetails({
     this.orders,
@@ -181,6 +183,8 @@ class OrdersDetails {
     this.contacts,
     this.guests,
     this.itineraries,
+    this.inclusions,
+    this.additional,
   });
 
   factory OrdersDetails.fromJson(Map<String, dynamic> json) {
@@ -198,6 +202,16 @@ class OrdersDetails {
           ? List<ProductItineraries>.from(
               json["itineraries"].map((x) => ProductItineraries.fromJson(x)))
           : null,
+      inclusions: json["inclusions"] != null
+          ? (json['inclusions'] as List<dynamic>?)
+              ?.map((e) => ProductInclusion.fromJson(e))
+              .toList()
+          : [],
+      additional: json["additional"] != null
+          ? (json['additional'] as List<dynamic>?)
+              ?.map((e) => ProductAdditionalInformation.fromJson(e))
+              .toList()
+          : [],
     );
   }
 
@@ -222,6 +236,14 @@ class OrdersDetails {
 
     if (!skip.contains('itineraries') && itineraries != null) {
       data['itineraries'] = itineraries!.map((v) => v.toJson()).toList();
+    }
+
+    if (!skip.contains('inclusions') && inclusions != null) {
+      data['inclusions'] = inclusions!.map((v) => v.toJson()).toList();
+    }
+
+    if (!skip.contains('additional') && additional != null) {
+      data['additional'] = additional!.map((v) => v.toJson()).toList();
     }
 
     return data;

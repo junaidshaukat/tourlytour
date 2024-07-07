@@ -106,6 +106,7 @@ class SignUpScreenState extends State<SignUpScreen> {
                 ),
                 child: IconButton(
                   icon: CustomImageView(
+                    size: 34.adaptSize,
                     imagePath: "arrow_back".icon.svg,
                   ),
                   onPressed: () {

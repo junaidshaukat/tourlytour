@@ -7,6 +7,8 @@ class TourHistory {
   final List<OrderGuests> guests;
   final ProductReviews reviews;
   final List<ProductItineraries> itineraries;
+  final List<ProductInclusion> inclusions;
+  final List<ProductAdditionalInformation> additional;
 
   TourHistory({
     required this.orders,
@@ -15,6 +17,8 @@ class TourHistory {
     required this.contacts,
     required this.products,
     required this.itineraries,
+    required this.inclusions,
+    required this.additional,
   });
 
   factory TourHistory.fromJson(Map<String, dynamic> json) {
@@ -29,6 +33,14 @@ class TourHistory {
       reviews: ProductReviews.fromJson(json['reviews'] ?? {}),
       itineraries: (json['itineraries'] as List<dynamic>?)
               ?.map((e) => ProductItineraries.fromJson(e))
+              .toList() ??
+          [],
+      inclusions: (json['inclusions'] as List<dynamic>?)
+              ?.map((e) => ProductInclusion.fromJson(e))
+              .toList() ??
+          [],
+      additional: (json['additional'] as List<dynamic>?)
+              ?.map((e) => ProductAdditionalInformation.fromJson(e))
               .toList() ??
           [],
     );
@@ -59,6 +71,14 @@ class TourHistory {
     if (!skip.contains('itineraries')) {
       data['itineraries'] =
           itineraries.map((e) => e.toJson(skip: skip)).toList();
+    }
+
+    if (!skip.contains('inclusions')) {
+      data['inclusions'] = inclusions.map((e) => e.toJson(skip: skip)).toList();
+    }
+
+    if (!skip.contains('additional')) {
+      data['additional'] = additional.map((e) => e.toJson(skip: skip)).toList();
     }
 
     return data;

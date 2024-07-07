@@ -10,7 +10,7 @@ class TourDetailsScreen extends StatefulWidget {
 
 class TourDetailsScreenState extends State<TourDetailsScreen> {
   bool preloader = true;
-  late TourHistory tour;
+  late num? id;
   late ReviewService review;
   late ReviewsPending item;
   late ToursProvider tours;
@@ -18,9 +18,13 @@ class TourDetailsScreenState extends State<TourDetailsScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       tours = context.read<ToursProvider>();
       review = context.read<ReviewService>();
+
+      console.log(id);
+
+      await tours.getTourDetails(id);
 
       setState(() {
         preloader = false;
@@ -31,10 +35,10 @@ class TourDetailsScreenState extends State<TourDetailsScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    tour = ModalRoute.of(context)!.settings.arguments as TourHistory;
+    id = ModalRoute.of(context)!.settings.arguments as num?;
   }
 
-  void onPressed(String action) {
+  void onPressed(TourHistory tour, String action) {
     review.fetch(
       context,
       id: tour.orders.id,
@@ -72,6 +76,7 @@ class TourDetailsScreenState extends State<TourDetailsScreen> {
                 ),
                 child: IconButton(
                   icon: CustomImageView(
+                    size: 34.adaptSize,
                     imagePath: "arrow_back".icon.svg,
                   ),
                   onPressed: () {
@@ -84,7 +89,7 @@ class TourDetailsScreenState extends State<TourDetailsScreen> {
         ),
         body: Consumer<ToursProvider>(
           builder: (context, provider, child) {
-            Props props = provider.props;
+            Props props = provider.propsSingleTour;
             if (props.isProcessing) {
               return SizedBox(
                 height: 135.v,
@@ -103,8 +108,9 @@ class TourDetailsScreenState extends State<TourDetailsScreen> {
                 ),
               );
             } else {
-              List data = props.data as List;
-              if (data.isEmpty) {
+              var data = props.data;
+
+              if (data == null) {
                 return SizedBox(
                   height: 300.v,
                   child: const Center(
@@ -113,10 +119,7 @@ class TourDetailsScreenState extends State<TourDetailsScreen> {
                 );
               }
 
-              tour = data.firstWhere(
-                (e) => e.orders.id == tour.orders.id,
-                orElse: () => tour,
-              );
+              TourHistory tour = data as TourHistory;
 
               return SingleChildScrollView(
                 padding: EdgeInsets.symmetric(horizontal: 8.h, vertical: 8.v),
@@ -423,10 +426,141 @@ class TourDetailsScreenState extends State<TourDetailsScreen> {
                                       imagePath: itineraries.iconUrl,
                                     ),
                                     SizedBox(width: 6.h),
-                                    Text('${itineraries.title}')
+                                    Expanded(
+                                      child: Text('${itineraries.title}'),
+                                    )
                                   ],
                                 );
                               }),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 16.v),
+                    Container(
+                      width: double.maxFinite,
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 8.h, vertical: 8.v),
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: appTheme.gray500,
+                          width: 1.0,
+                        ),
+                        borderRadius:
+                            BorderRadius.circular(10.0), // Border radius
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              CustomImageView(
+                                imagePath: 'guest'.icon.svg,
+                              ),
+                              SizedBox(width: 4.h),
+                              Text(
+                                'whats_included'.tr,
+                                style: CustomTextStyles.bodyMediumBlack900
+                                    .copyWith(
+                                  fontSize: 12.fSize,
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 6.v),
+                          Wrap(
+                            children: List.generate(
+                              tour.inclusions.length,
+                              (index) {
+                                ProductInclusion inclusions =
+                                    tour.inclusions[index];
+                                return Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    CustomImageView(
+                                        imagePath: inclusions.isIncluded
+                                            .toString()
+                                            .icon
+                                            .svg),
+                                    SizedBox(width: 4.h),
+                                    Text(
+                                      inclusions.label,
+                                      style: CustomTextStyles
+                                          .titleSmallOnErrorContainerSemiBold
+                                          .copyWith(
+                                        fontSize: 12.fSize,
+                                      ),
+                                    ),
+                                    SizedBox(width: 8.h),
+                                  ],
+                                );
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 16.v),
+                    Container(
+                      width: double.maxFinite,
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 8.h, vertical: 8.v),
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: appTheme.gray500,
+                          width: 1.0,
+                        ),
+                        borderRadius:
+                            BorderRadius.circular(10.0), // Border radius
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              CustomImageView(
+                                imagePath: 'guest'.icon.svg,
+                              ),
+                              SizedBox(width: 4.h),
+                              Text(
+                                'whats_you_need_to_know'.tr,
+                                style: CustomTextStyles.bodyMediumBlack900
+                                    .copyWith(
+                                  fontSize: 12.fSize,
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 6.v),
+                          Wrap(
+                            children: List.generate(
+                              tour.additional.length,
+                              (index) {
+                                ProductAdditionalInformation additional =
+                                    tour.additional[index];
+                                return Row(
+                                  children: [
+                                    CustomImageView(
+                                      imagePath: 'guest'.icon.svg,
+                                    ),
+                                    SizedBox(width: 8.h),
+                                    Expanded(
+                                      child: Text(
+                                        additional.label,
+                                        style: CustomTextStyles
+                                            .titleSmallOnErrorContainerSemiBold
+                                            .copyWith(
+                                          fontSize: 12.fSize,
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(width: 8.h),
+                                  ],
+                                );
+                              },
                             ),
                           ),
                         ],
@@ -862,7 +996,7 @@ class TourDetailsScreenState extends State<TourDetailsScreen> {
                                 const Spacer(),
                                 IconButton(
                                   onPressed: () {
-                                    onPressed('update');
+                                    onPressed(tour, 'update');
                                   },
                                   icon: const Icon(
                                     Icons.edit,
@@ -950,7 +1084,7 @@ class TourDetailsScreenState extends State<TourDetailsScreen> {
                       CustomElevatedButton(
                         text: "share_your_opinion".tr,
                         onPressed: () {
-                          onPressed('create');
+                          onPressed(tour, 'create');
                         },
                       ),
                   ],

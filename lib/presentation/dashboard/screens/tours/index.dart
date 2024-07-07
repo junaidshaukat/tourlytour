@@ -27,11 +27,11 @@ class ToursScreenState extends State<ToursScreen> {
     });
   }
 
-  void onTap(TourHistory tour) {
+  void onTap(num? id) {
     NavigatorService.push(
       context,
       const TourDetailsScreen(),
-      arguments: tour,
+      arguments: id,
     );
   }
 
@@ -174,7 +174,7 @@ class ToursScreenState extends State<ToursScreen> {
                           ),
                           child: InkWell(
                             onTap: () {
-                              onTap(tour);
+                              onTap(tour.orders.id);
                             },
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.start,
@@ -264,7 +264,7 @@ class ToursScreenState extends State<ToursScreen> {
                                       ),
                                       GestureDetector(
                                         onTap: () {
-                                          onTap(tour);
+                                          onTap(tour.orders.id);
                                         },
                                         child: Text(
                                           'view_details'.tr,

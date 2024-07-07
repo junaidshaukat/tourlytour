@@ -27,12 +27,14 @@ class AuthenticationProvider with ChangeNotifier {
 
       if (event == AuthChangeEvent.initialSession) {
         currentSession = session;
-        final response = await supabase.rpc('signed_in', params: {
-          'data': session.getParams(),
-        });
+        if (session != null) {
+          final response = await supabase.rpc('signed_in', params: {
+            'data': session.getParams(),
+          });
 
-        if (response != null) {
-          await currentUser.putAll(response);
+          if (response != null) {
+            await currentUser.putAll(response);
+          }
         }
 
         props.setInitialSession(currentData: data);

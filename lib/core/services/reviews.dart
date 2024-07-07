@@ -87,6 +87,7 @@ class ReviewService with ChangeNotifier {
         props.setSuccess();
         notifyListeners();
         await tours.onReady();
+        await tours.getTourDetails(item.order.id);
         NavigatorService.goBack();
       } else {
         throw CustomException("");
@@ -136,6 +137,7 @@ class ReviewService with ChangeNotifier {
         props.setSuccess();
         notifyListeners();
         await tours.onReady();
+        await tours.getTourDetails(item.order.id);
         NavigatorService.goBack();
       } else {
         throw CustomException("");

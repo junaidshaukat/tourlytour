@@ -5,6 +5,7 @@ class ToursProvider with ChangeNotifier {
   final BuildContext context;
   final supabase = Supabase.instance.client;
   Props props = Props(data: [], initialData: []);
+  Props propsSingleTour = Props(data: [], initialData: {});
 
   late AuthenticationProvider auth;
   late CurrentUserProvider currentUser;
@@ -80,6 +81,52 @@ class ToursProvider with ChangeNotifier {
     } catch (error) {
       console.error(error, trace);
       props.setError(currentError: "something_went_wrong".tr);
+      notifyListeners();
+    }
+  }
+
+  Future<void> getTourDetails(num? id) async {
+    try {
+      propsSingleTour.setProcessing();
+      notifyListeners();
+
+      if (!connectivity.isConnected) {
+        throw NoInternetException();
+      }
+
+      if (!auth.isAuthorized) {
+        throw UnauthorizedException();
+      }
+
+      var response = await supabase.rpc('tour_details', params: {
+        'order_id': id,
+        'user_id': currentUser.id,
+      });
+
+      console.log(response, trace);
+
+      if (response != null) {
+        propsSingleTour.setSuccess(currentData: TourHistory.fromJson(response));
+        notifyListeners();
+      } else {
+        propsSingleTour.setSuccess(currentData: []);
+        notifyListeners();
+      }
+    } on NoInternetException catch (error) {
+      console.internet(error, trace);
+      propsSingleTour.setError(currentError: error.toString());
+      notifyListeners();
+    } on AuthException catch (error) {
+      console.authentication(error, trace);
+      propsSingleTour.setUnauthorized(currentError: error.message.toString());
+      notifyListeners();
+    } on CustomException catch (error) {
+      console.custom(error, trace);
+      propsSingleTour.setError(currentError: error.toString());
+      notifyListeners();
+    } catch (error) {
+      console.error(error, trace);
+      propsSingleTour.setError(currentError: "something_went_wrong".tr);
       notifyListeners();
     }
   }
