@@ -3,12 +3,14 @@ class ProductAdditionalInformation {
   String icon;
   String label;
   int productId;
+  String mobileIcon;
 
   ProductAdditionalInformation({
     required this.id,
     required this.icon,
     required this.label,
     required this.productId,
+    required this.mobileIcon,
   });
 
   factory ProductAdditionalInformation.fromJson(Map<String, dynamic> json) {
@@ -17,6 +19,7 @@ class ProductAdditionalInformation {
       icon: json['Icon'],
       label: json['Label'],
       productId: json['ProductId'],
+      mobileIcon: json['MobileIcon'],
     );
   }
 
@@ -37,6 +40,10 @@ class ProductAdditionalInformation {
 
     if (!skip.contains('productId')) {
       data['ProductId'] = productId;
+    }
+
+    if (!skip.contains('mobileIcon')) {
+      data['MobileIcon'] = mobileIcon;
     }
 
     return data;

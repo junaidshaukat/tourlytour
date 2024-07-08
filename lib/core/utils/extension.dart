@@ -150,6 +150,25 @@ extension AuthSession on Session {
 }
 
 extension Assets on String {
+  /// - assets/fontawesome/
+  String get fa {
+    if (contains("fa-brands")) {
+      return '${Environment.bucket}/icons/brands/${split(' ').last.replaceFirst('fa-', '').replaceAll('-', '_').svg}';
+    } else if (contains("fa-duotone")) {
+      return '${Environment.bucket}/icons/duotone/${split(' ').last.replaceFirst('fa-', '').replaceAll('-', '_').svg}';
+    } else if (contains("fa-light")) {
+      return '${Environment.bucket}/icons/light/${split(' ').last.replaceFirst('fa-', '').replaceAll('-', '_').svg}';
+    } else if (contains("fa-regular")) {
+      return '${Environment.bucket}/icons/regular/${split(' ').last.replaceFirst('fa-', '').replaceAll('-', '_').svg}';
+    } else if (contains("fa-solid")) {
+      return '${Environment.bucket}/icons/solid/${split(' ').last.replaceFirst('fa-', '').replaceAll('-', '_').svg}';
+    } else if (contains("fa-thin")) {
+      return '${Environment.bucket}/icons/thin/${split(' ').last.replaceFirst('fa-', '').replaceAll('-', '_').svg}';
+    } else {
+      return '${Environment.bucket}/$this';
+    }
+  }
+
   /// assets/fonts
   String get font {
     return 'assets/fonts/$this';

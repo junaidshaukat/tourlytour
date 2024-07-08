@@ -39,7 +39,6 @@ class FeaturedPackgesScreenState extends State<FeaturedPackgesScreen> {
     return Preloader(
       preloader: preloader,
       child: Scaffold(
-        backgroundColor: appTheme.blue50,
         appBar: CustomAppBar(
           centerTitle: false,
           title: Padding(

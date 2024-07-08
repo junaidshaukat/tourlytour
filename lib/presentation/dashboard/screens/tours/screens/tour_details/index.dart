@@ -520,7 +520,7 @@ class TourDetailsScreenState extends State<TourDetailsScreen> {
                           Row(
                             children: [
                               CustomImageView(
-                                imagePath: 'guest'.icon.svg,
+                                imagePath: 'bullhorn'.icon.svg,
                               ),
                               SizedBox(width: 4.h),
                               Text(
@@ -534,15 +534,18 @@ class TourDetailsScreenState extends State<TourDetailsScreen> {
                           ),
                           SizedBox(height: 6.v),
                           Wrap(
+                            runSpacing: 2.v,
                             children: List.generate(
                               tour.additional.length,
                               (index) {
                                 ProductAdditionalInformation additional =
                                     tour.additional[index];
                                 return Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     CustomImageView(
-                                      imagePath: 'guest'.icon.svg,
+                                      size: 20.adaptSize,
+                                      imagePath: additional.mobileIcon.fa,
                                     ),
                                     SizedBox(width: 8.h),
                                     Expanded(

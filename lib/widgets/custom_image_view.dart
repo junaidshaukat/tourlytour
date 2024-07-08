@@ -10,7 +10,9 @@ extension ImageTypeExtension on String? {
       if (this!.replaceAll(RegExp(r'\s+'), '').isEmpty) {
         return ImageType.empty;
       } else if (this!.startsWith('http') || this!.startsWith('https')) {
-        return ImageType.network;
+        return this!.endsWith('.svg')
+            ? ImageType.networkSvg
+            : ImageType.network;
       } else if (this!.endsWith('.svg')) {
         return ImageType.svg;
       } else if (this!.startsWith('file://')) {
@@ -22,7 +24,7 @@ extension ImageTypeExtension on String? {
   }
 }
 
-enum ImageType { svg, png, network, file, unknown, empty }
+enum ImageType { svg, png, network, file, networkSvg, unknown, empty }
 
 class CustomImageView extends StatelessWidget {
   const CustomImageView({
@@ -45,21 +47,13 @@ class CustomImageView extends StatelessWidget {
   final String placeHolder;
   final double? size;
   final double? height;
-
   final double? width;
-
   final Color? color;
-
   final BoxFit? fit;
-
   final Alignment? alignment;
-
   final VoidCallback? onTap;
-
   final EdgeInsetsGeometry? margin;
-
   final BorderRadius? radius;
-
   final BoxBorder? border;
 
   @override
@@ -79,7 +73,6 @@ class CustomImageView extends StatelessWidget {
     );
   }
 
-  ///build the image with border radius
   _buildCircleImage() {
     if (radius != null) {
       return ClipRRect(
@@ -91,7 +84,6 @@ class CustomImageView extends StatelessWidget {
     }
   }
 
-  ///build the image with border and border radius style
   _buildImageWithBorder() {
     if (border != null) {
       return Container(
@@ -106,7 +98,7 @@ class CustomImageView extends StatelessWidget {
     }
   }
 
-  ColorFilter? get colorFilter {
+  ColorFilter? get _colorFilter {
     return color != null
         ? ColorFilter.mode(
             color ?? Colors.transparent,
@@ -117,8 +109,8 @@ class CustomImageView extends StatelessWidget {
 
   Widget _frameBuilder(context, child, frame, was) {
     return SizedBox(
-      width: width ?? 100,
-      height: height ?? 100,
+      width: width ?? size ?? 100,
+      height: height ?? size ?? 100,
       child: LinearProgressIndicator(
         color: Colors.grey.shade200,
         backgroundColor: Colors.grey.shade100,
@@ -128,8 +120,8 @@ class CustomImageView extends StatelessWidget {
 
   Widget _placeholder(context, url) {
     return SizedBox(
-      width: width ?? 100,
-      height: height ?? 100,
+      width: width ?? size ?? 100,
+      height: height ?? size ?? 100,
       child: LinearProgressIndicator(
         color: Colors.grey.shade200,
         backgroundColor: Colors.grey.shade100,
@@ -153,17 +145,17 @@ class CustomImageView extends StatelessWidget {
           height: height ?? size ?? 20.adaptSize,
           child: SvgPicture.asset(
             src,
+            colorFilter: _colorFilter,
+            fit: fit ?? BoxFit.contain,
             width: width ?? size ?? 20.adaptSize,
             height: height ?? size ?? 20.adaptSize,
-            colorFilter: colorFilter,
-            fit: fit ?? BoxFit.contain,
             placeholderBuilder: (context) {
               return SvgPicture.asset(
-                width: width ?? size ?? 20.adaptSize,
-                height: height ?? size ?? 20.adaptSize,
-                colorFilter: colorFilter,
+                colorFilter: _colorFilter,
                 fit: fit ?? BoxFit.contain,
                 "assets/icons/image_not_found.svg",
+                width: width ?? size ?? 20.adaptSize,
+                height: height ?? size ?? 20.adaptSize,
               );
             },
           ),
@@ -191,16 +183,16 @@ class CustomImageView extends StatelessWidget {
       case ImageType.network:
         return CachedNetworkImage(
           fit: fit,
-          width: width,
           color: color,
           imageUrl: src,
-          height: height,
+          width: width ?? size,
+          height: height ?? size,
           placeholder: _placeholder,
           errorWidget: (context, url, error) {
             return Image.asset(
-              width: width,
               color: color,
-              height: height,
+              width: width ?? size,
+              height: height ?? size,
               fit: fit ?? BoxFit.cover,
               frameBuilder: _frameBuilder,
               errorBuilder: _errorBuilder,
@@ -208,28 +200,45 @@ class CustomImageView extends StatelessWidget {
             );
           },
         );
+      case ImageType.networkSvg:
+        return SvgPicture.network(
+          src,
+          colorFilter: _colorFilter,
+          fit: fit ?? BoxFit.contain,
+          width: width ?? size ?? 20.adaptSize,
+          height: height ?? size ?? 20.adaptSize,
+          placeholderBuilder: (context) {
+            return SvgPicture.asset(
+              colorFilter: _colorFilter,
+              fit: fit ?? BoxFit.contain,
+              "assets/icons/image_not_found.svg",
+              width: width ?? size ?? 20.adaptSize,
+              height: height ?? size ?? 20.adaptSize,
+            );
+          },
+        );
       case ImageType.empty:
         return Image.asset(
-          "assets/images/image_not_found.png",
-          width: width,
           color: color,
-          height: height,
+          width: width ?? size,
+          height: height ?? size,
           fit: fit ?? BoxFit.cover,
+          "assets/images/image_not_found.png",
         );
       case ImageType.png:
       default:
         return Image.asset(
           src,
-          width: width,
           color: color,
-          height: height,
+          width: width ?? size,
+          height: height ?? size,
           fit: fit ?? BoxFit.cover,
           frameBuilder: _frameBuilder,
           errorBuilder: (context, url, error) {
             return Image.asset(
-              width: width,
               color: color,
-              height: height,
+              width: width ?? size,
+              height: height ?? size,
               fit: fit ?? BoxFit.cover,
               frameBuilder: _frameBuilder,
               errorBuilder: _errorBuilder,
@@ -248,47 +257,56 @@ class CustomImageView extends StatelessWidget {
           height: height ?? size ?? 20.adaptSize,
           child: SvgPicture.asset(
             imagePath!,
+            colorFilter: _colorFilter,
+            fit: fit ?? BoxFit.contain,
             width: width ?? size ?? 20.adaptSize,
             height: height ?? size ?? 20.adaptSize,
-            colorFilter: colorFilter,
-            fit: fit ?? BoxFit.contain,
             placeholderBuilder: _placeholderBuilder,
           ),
         );
       case ImageType.file:
         return Image.file(
-          width: width,
           color: color,
-          height: height,
           File(imagePath!),
+          width: width ?? size,
+          height: height ?? size,
           fit: fit ?? BoxFit.cover,
           errorBuilder: _errorBuilder,
         );
       case ImageType.network:
         return CachedNetworkImage(
           fit: fit,
-          width: width,
           color: color,
-          height: height,
           imageUrl: imagePath!,
+          width: width ?? size,
+          height: height ?? size,
           placeholder: _placeholder,
           errorWidget: _errorBuilder,
         );
+      case ImageType.networkSvg:
+        return SvgPicture.network(
+          imagePath!,
+          colorFilter: _colorFilter,
+          fit: fit ?? BoxFit.contain,
+          width: width ?? size ?? 20.adaptSize,
+          height: height ?? size ?? 20.adaptSize,
+          placeholderBuilder: _placeholderBuilder,
+        );
       case ImageType.empty:
         return Image.asset(
-          "assets/images/image_not_found.png",
-          width: width,
           color: color,
-          height: height,
+          width: width ?? size,
+          height: height ?? size,
           fit: fit ?? BoxFit.cover,
+          "assets/images/image_not_found.png",
         );
       case ImageType.png:
       default:
         return Image.asset(
           imagePath!,
-          width: width,
           color: color,
-          height: height,
+          width: width ?? size,
+          height: height ?? size,
           fit: fit ?? BoxFit.cover,
           errorBuilder: _errorBuilder,
         );

@@ -76,7 +76,7 @@ class ProductCard extends StatelessWidget {
                   ),
                   const Spacer(),
                   SizedBox(
-                    width: 64.h,
+                    width: 75.h,
                     child: Row(
                       children: [
                         CustomImageView(
@@ -106,7 +106,7 @@ class ProductCard extends StatelessWidget {
                   ),
                   const Spacer(),
                   SizedBox(
-                    width: 64.h,
+                    width: 75.h,
                     child: Row(
                       children: [
                         CustomImageView(
@@ -139,7 +139,7 @@ class ProductCard extends StatelessWidget {
                   ),
                   const Spacer(),
                   SizedBox(
-                    width: 64.h,
+                    width: 75.h,
                     child: Row(
                       children: [
                         CustomImageView(
