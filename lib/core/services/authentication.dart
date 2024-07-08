@@ -32,8 +32,6 @@ class AuthenticationService with ChangeNotifier {
   final BuildContext context;
   final supabase = Supabase.instance.client;
 
-  String? errMsg;
-
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   bool agree = false;
   bool rememberMe = false;
@@ -183,7 +181,7 @@ class AuthenticationService with ChangeNotifier {
     Props props = auth.props;
     if (!props.isProcessing) {
       if (formKey.currentState!.validate()) {
-        auth.onUpdateName(usernameController.text).then((response) {
+        auth.onUpdateEmail(emailController.text).then((response) {
           if (callback != null) callback(response);
         });
       }
@@ -194,7 +192,7 @@ class AuthenticationService with ChangeNotifier {
     Props props = auth.props;
     if (!props.isProcessing) {
       if (formKey.currentState!.validate()) {
-        auth.onUpdateName(usernameController.text).then((response) {
+        auth.onUpdatePhone(phoneController.text).then((response) {
           if (callback != null) callback(response);
         });
       }
@@ -205,27 +203,41 @@ class AuthenticationService with ChangeNotifier {
     Event event = Event.none,
     Map<String, dynamic> params = const {},
   }) {
-    session = supabase.auth.currentSession;
     auth.setNone();
+
+    tokenController.clear();
+    emailController.clear();
+    phoneController.clear();
+    usernameController.clear();
+    passwordController.clear();
+    passwordConfirmController.clear();
+
+    obscurePassword = true;
+    obscureConfirmPassword = true;
+
+    agree = false;
+    rememberMe = false;
+
+    session = supabase.auth.currentSession;
+
     if (session == null && event == Event.none) {
       sheet = Sheet.initial;
-
-      errMsg = null;
-      agree = false;
-      rememberMe = false;
-      obscurePassword = true;
-      obscureConfirmPassword = true;
-
-      tokenController.clear();
-      emailController.clear();
-      phoneController.clear();
-      usernameController.clear();
-      passwordController.clear();
-      passwordConfirmController.clear();
-
       showBottomSheet();
     } else if (event == Event.update) {
       sheet = Sheet.update;
+
+      if (params.containsKey('name')) {
+        usernameController.text = params['name'];
+      }
+
+      if (params.containsKey('email')) {
+        emailController.text = params['email'];
+      }
+
+      if (params.containsKey('phone')) {
+        phoneController.text = params['phone'];
+      }
+
       showBottomSheet(params: params);
     }
   }
@@ -1419,18 +1431,6 @@ class AuthenticationService with ChangeNotifier {
   }
 
   Widget updateProfile(StateSetter setState, Map<String, dynamic> params) {
-    if (params.containsKey('name')) {
-      usernameController.text = params['name'];
-    }
-
-    if (params.containsKey('email')) {
-      emailController.text = params['email'];
-    }
-
-    if (params.containsKey('phone')) {
-      phoneController.text = params['phone'];
-    }
-
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -1588,6 +1588,86 @@ class AuthenticationService with ChangeNotifier {
                   buttonTextStyle: CustomTextStyles.titleLargeWhite900,
                   onPressed: () {
                     onUpdateEmail(callback: (res) {
+                      setState(() {});
+                    });
+                  },
+                );
+              }
+            },
+          ),
+        ],
+        if (params.containsKey('phone')) ...[
+          sheetHeader(
+            title: "update_user_profile".tr,
+          ),
+          Text(
+            "phone_number".tr,
+            textAlign: TextAlign.left,
+            style: theme.textTheme.titleMedium,
+          ),
+          SizedBox(height: 2.v),
+          input(
+            hintText: params["phone"],
+            controller: phoneController,
+            keyboardType: TextInputType.phone,
+            validator: (key) {
+              return Validator.phone(key);
+            },
+          ),
+          SizedBox(height: 18.v),
+          Consumer<AuthenticationProvider>(
+            builder: (BuildContext context, provider, Widget? child) {
+              Props props = provider.props;
+              if (props.isProcessing) {
+                return CustomElevatedButton(
+                  text: "",
+                  height: 50.v,
+                  leftIcon: CustomProgressButton(
+                    lable: 'processing'.tr,
+                    textStyle: CustomTextStyles.titleLargeWhite900,
+                  ),
+                  buttonStyle: CustomButtonStyles.fillPrimaryTL29,
+                  buttonTextStyle: CustomTextStyles.titleLargeWhite900,
+                );
+              } else {
+                if (props.isError || props.isAuthException) {
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        props.error ?? '',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 12.fSize,
+                          fontFamily: 'Inter',
+                          fontWeight: FontWeight.w400,
+                          color: Theme.of(context).colorScheme.error,
+                        ),
+                      ),
+                      SizedBox(height: 6.v),
+                      CustomElevatedButton(
+                        height: 50.v,
+                        text: "update".tr,
+                        buttonStyle: CustomButtonStyles.fillPrimaryTL29,
+                        buttonTextStyle: CustomTextStyles.titleLargeWhite900,
+                        onPressed: () {
+                          onUpdatePhone(callback: (res) {
+                            setState(() {});
+                          });
+                        },
+                      )
+                    ],
+                  );
+                }
+
+                return CustomElevatedButton(
+                  height: 50.v,
+                  text: "update".tr,
+                  buttonStyle: CustomButtonStyles.fillPrimaryTL29,
+                  buttonTextStyle: CustomTextStyles.titleLargeWhite900,
+                  onPressed: () {
+                    onUpdatePhone(callback: (res) {
                       setState(() {});
                     });
                   },

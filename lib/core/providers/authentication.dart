@@ -11,7 +11,6 @@ class AuthenticationProvider with ChangeNotifier {
 
   late ConnectivityProvider connectivity;
   late CurrentUserProvider currentUser;
-  late DependenciesProvider dependencies;
 
   late String bucket;
 
@@ -424,6 +423,141 @@ class AuthenticationProvider with ChangeNotifier {
           "Id": currentUser.id,
           "Name": name,
           "ProviderDisplayName": name,
+        },
+      });
+
+      props.setNone();
+      notifyListeners();
+      return response;
+    } on NoInternetException catch (error) {
+      console.internet(error, trace);
+      props.setError(currentError: error.toString());
+      notifyListeners();
+    } on AuthException catch (error) {
+      console.authentication(error, trace);
+      props.setAuthException(currentError: error.message.toString());
+      notifyListeners();
+    } on CustomException catch (error) {
+      console.custom(error, trace);
+      props.setError(currentError: error.toString());
+      notifyListeners();
+    } catch (error) {
+      console.error(error, trace);
+      props.setError(currentError: "something_went_wrong".tr);
+      notifyListeners();
+    }
+  }
+
+  Future<dynamic> onUpdateProfile(String path) async {
+    try {
+      props.setProcessing();
+      notifyListeners();
+
+      if (!connectivity.isConnected) {
+        throw NoInternetException();
+      }
+
+      final response = await supabase.rpc('profile_update', params: {
+        'data': {
+          "Id": currentUser.id,
+          "ProfilePhotoUrl": path,
+        },
+      });
+
+      await supabase.auth.updateUser(
+        UserAttributes(
+          data: {
+            "picture": path,
+            "avatar_url": path,
+          },
+        ),
+      );
+
+      props.setNone();
+      notifyListeners();
+      return response;
+    } on NoInternetException catch (error) {
+      console.internet(error, trace);
+      props.setError(currentError: error.toString());
+      notifyListeners();
+    } on AuthException catch (error) {
+      console.authentication(error, trace);
+      props.setAuthException(currentError: error.message.toString());
+      notifyListeners();
+    } on CustomException catch (error) {
+      console.custom(error, trace);
+      props.setError(currentError: error.toString());
+      notifyListeners();
+    } catch (error) {
+      console.error(error, trace);
+      props.setError(currentError: "something_went_wrong".tr);
+      notifyListeners();
+    }
+  }
+
+  Future<dynamic> onUpdateEmail(String email) async {
+    try {
+      props.setProcessing();
+      notifyListeners();
+
+      if (!connectivity.isConnected) {
+        throw NoInternetException();
+      }
+
+      await supabase.auth.updateUser(
+        UserAttributes(
+          email: email,
+        ),
+      );
+
+      final response = await supabase.rpc('profile_update', params: {
+        'data': {
+          "Id": currentUser.id,
+          "Email": email,
+        },
+      });
+
+      props.setNone();
+      notifyListeners();
+      return response;
+    } on NoInternetException catch (error) {
+      console.internet(error, trace);
+      props.setError(currentError: error.toString());
+      notifyListeners();
+    } on AuthException catch (error) {
+      console.authentication(error, trace);
+      props.setAuthException(currentError: error.message.toString());
+      notifyListeners();
+    } on CustomException catch (error) {
+      console.custom(error, trace);
+      props.setError(currentError: error.toString());
+      notifyListeners();
+    } catch (error) {
+      console.error(error, trace);
+      props.setError(currentError: "something_went_wrong".tr);
+      notifyListeners();
+    }
+  }
+
+  Future<dynamic> onUpdatePhone(String phone) async {
+    try {
+      props.setProcessing();
+      notifyListeners();
+
+      if (!connectivity.isConnected) {
+        throw NoInternetException();
+      }
+
+      await supabase.auth.updateUser(
+        UserAttributes(
+          phone: phone,
+        ),
+      );
+
+      final response = await supabase.rpc('profile_update', params: {
+        'data': {
+          "Id": currentUser.id,
+          "MobileNumber": phone,
         },
       });
 

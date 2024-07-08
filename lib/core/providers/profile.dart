@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import '/core/app_export.dart';
 
@@ -77,6 +79,39 @@ class ProfileProvider with ChangeNotifier {
       console.error(error, trace);
       props.setError(currentError: "something_went_wrong".tr);
       notifyListeners();
+    }
+  }
+
+  Future<dynamic> onUpdateProfile(File file) async {
+    try {
+      if (!connectivity.isConnected) {
+        throw NoInternetException();
+      }
+
+      if (!auth.isAuthorized) {
+        throw UnauthorizedException();
+      }
+
+      String filename = '${fn.objectId()}.png';
+
+      String path = await supabase.storage
+          .from('profile/${currentUser.uuid}')
+          .upload(filename, file);
+
+      var response = await auth.onUpdateProfile("${Environment.bucket}/$path");
+      return response;
+    } on NoInternetException catch (error) {
+      console.internet(error, trace);
+      rethrow;
+    } on AuthException catch (error) {
+      console.authentication(error, trace);
+      rethrow;
+    } on CustomException catch (error) {
+      console.custom(error, trace);
+      rethrow;
+    } catch (error) {
+      console.error(error, trace);
+      rethrow;
     }
   }
 

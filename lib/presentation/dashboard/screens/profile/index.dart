@@ -174,9 +174,14 @@ class ProfileScreenState extends State<ProfileScreen> {
                                 if (!props.isProcessing) {
                                   Pickers.image().then((file) async {
                                     if (file != null) {
-                                      // await provider.uploadProfile(
-                                      //   file,
-                                      // );
+                                      provider
+                                          .onUpdateProfile(file)
+                                          .then((res) {
+                                        context
+                                            .read<DependenciesProvider>()
+                                            .onReady()
+                                            .then((res) {});
+                                      });
                                     }
                                   });
                                 }
