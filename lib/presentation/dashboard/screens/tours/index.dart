@@ -132,7 +132,9 @@ class ToursScreenState extends State<ToursScreen> {
                         buttonWidth: 100.h,
                         message: props.error,
                         onPressed: () {
-                          context.read<AuthenticationService>().onSignin();
+                          context
+                              .read<AuthenticationService>()
+                              .openBottomSheet();
                         },
                       ),
                     ),

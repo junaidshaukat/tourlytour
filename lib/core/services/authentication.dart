@@ -8,10 +8,11 @@ enum Sheet {
   signInWithEmail,
   signup,
   otpVerification,
-  resetPassword
+  resetPassword,
+  update
 }
 
-enum Event { none, signup, recovery }
+enum Event { none, signup, recovery, update }
 
 class AuthenticationService with ChangeNotifier {
   bool isSheetOpen = false;
@@ -167,11 +168,46 @@ class AuthenticationService with ChangeNotifier {
     }
   }
 
-  void onSignin() {
-    session = supabase.auth.currentSession;
-    if (session == null) {
-      auth.setNone();
+  void onUpdateName({Function(dynamic)? callback}) {
+    Props props = auth.props;
+    if (!props.isProcessing) {
+      if (formKey.currentState!.validate()) {
+        auth.onUpdateName(usernameController.text).then((response) {
+          if (callback != null) callback(response);
+        });
+      }
+    }
+  }
 
+  void onUpdateEmail({Function(dynamic)? callback}) {
+    Props props = auth.props;
+    if (!props.isProcessing) {
+      if (formKey.currentState!.validate()) {
+        auth.onUpdateName(usernameController.text).then((response) {
+          if (callback != null) callback(response);
+        });
+      }
+    }
+  }
+
+  void onUpdatePhone({Function(dynamic)? callback}) {
+    Props props = auth.props;
+    if (!props.isProcessing) {
+      if (formKey.currentState!.validate()) {
+        auth.onUpdateName(usernameController.text).then((response) {
+          if (callback != null) callback(response);
+        });
+      }
+    }
+  }
+
+  void openBottomSheet({
+    Event event = Event.none,
+    Map<String, dynamic> params = const {},
+  }) {
+    session = supabase.auth.currentSession;
+    auth.setNone();
+    if (session == null && event == Event.none) {
       sheet = Sheet.initial;
 
       errMsg = null;
@@ -188,6 +224,9 @@ class AuthenticationService with ChangeNotifier {
       passwordConfirmController.clear();
 
       showBottomSheet();
+    } else if (event == Event.update) {
+      sheet = Sheet.update;
+      showBottomSheet(params: params);
     }
   }
 
@@ -220,7 +259,7 @@ class AuthenticationService with ChangeNotifier {
     );
   }
 
-  void showBottomSheet() {
+  void showBottomSheet({Map<String, dynamic> params = const {}}) {
     controller = scaffoldKey.currentState!.showBottomSheet(
       enableDrag: true,
       backgroundColor: appTheme.amber100,
@@ -244,7 +283,7 @@ class AuthenticationService with ChangeNotifier {
                         padding: EdgeInsets.symmetric(
                           horizontal: 24.h,
                         ),
-                        child: body(setState, provider.props),
+                        child: body(setState, provider.props, params: params),
                       ),
                     ),
                   ),
@@ -257,7 +296,8 @@ class AuthenticationService with ChangeNotifier {
     );
   }
 
-  dynamic body(setState, Props props) {
+  dynamic body(setState, Props props,
+      {Map<String, dynamic> params = const {}}) {
     if (props.isSignedOut) {
       Future.delayed(const Duration(milliseconds: 300), () async {
         await dependencies.onReady();
@@ -266,6 +306,13 @@ class AuthenticationService with ChangeNotifier {
     }
 
     if (props.isSignedIn) {
+      Future.delayed(const Duration(milliseconds: 300), () async {
+        await dependencies.onReady();
+        controller.close();
+      });
+    }
+
+    if (props.isUserUpdated) {
       Future.delayed(const Duration(milliseconds: 300), () async {
         await dependencies.onReady();
         controller.close();
@@ -285,6 +332,8 @@ class AuthenticationService with ChangeNotifier {
         return resetPasswordSheet(setState);
       case Sheet.otpVerification:
         return otpVerificationSheet(setState);
+      case Sheet.update:
+        return updateProfile(setState, params);
       default:
         return const SizedBox();
     }
@@ -1364,6 +1413,189 @@ class AuthenticationService with ChangeNotifier {
             }
           },
         ),
+        SizedBox(height: 12.v),
+      ],
+    );
+  }
+
+  Widget updateProfile(StateSetter setState, Map<String, dynamic> params) {
+    if (params.containsKey('name')) {
+      usernameController.text = params['name'];
+    }
+
+    if (params.containsKey('email')) {
+      emailController.text = params['email'];
+    }
+
+    if (params.containsKey('phone')) {
+      phoneController.text = params['phone'];
+    }
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(height: 12.v),
+        if (params.containsKey('name')) ...[
+          sheetHeader(
+            title: "update_user_profile".tr,
+          ),
+          Text(
+            "name".tr,
+            textAlign: TextAlign.left,
+            style: theme.textTheme.titleMedium,
+          ),
+          SizedBox(height: 2.v),
+          input(
+            hintText: params["name"],
+            controller: usernameController,
+            keyboardType: TextInputType.text,
+            validator: (key) {
+              return Validator.username(key);
+            },
+          ),
+          SizedBox(height: 18.v),
+          Consumer<AuthenticationProvider>(
+            builder: (BuildContext context, provider, Widget? child) {
+              Props props = provider.props;
+              if (props.isProcessing) {
+                return CustomElevatedButton(
+                  text: "",
+                  height: 50.v,
+                  leftIcon: CustomProgressButton(
+                    lable: 'processing'.tr,
+                    textStyle: CustomTextStyles.titleLargeWhite900,
+                  ),
+                  buttonStyle: CustomButtonStyles.fillPrimaryTL29,
+                  buttonTextStyle: CustomTextStyles.titleLargeWhite900,
+                );
+              } else {
+                if (props.isError || props.isAuthException) {
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        props.error ?? '',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 12.fSize,
+                          fontFamily: 'Inter',
+                          fontWeight: FontWeight.w400,
+                          color: Theme.of(context).colorScheme.error,
+                        ),
+                      ),
+                      SizedBox(height: 6.v),
+                      CustomElevatedButton(
+                        height: 50.v,
+                        text: "update".tr,
+                        buttonStyle: CustomButtonStyles.fillPrimaryTL29,
+                        buttonTextStyle: CustomTextStyles.titleLargeWhite900,
+                        onPressed: () {
+                          onUpdateName(callback: (res) {
+                            setState(() {});
+                          });
+                        },
+                      )
+                    ],
+                  );
+                }
+
+                return CustomElevatedButton(
+                  height: 50.v,
+                  text: "update".tr,
+                  buttonStyle: CustomButtonStyles.fillPrimaryTL29,
+                  buttonTextStyle: CustomTextStyles.titleLargeWhite900,
+                  onPressed: () {
+                    onUpdateName(callback: (res) {
+                      setState(() {});
+                    });
+                  },
+                );
+              }
+            },
+          ),
+        ],
+        if (params.containsKey('email')) ...[
+          sheetHeader(
+            title: "update_user_profile".tr,
+          ),
+          Text(
+            "email".tr,
+            textAlign: TextAlign.left,
+            style: theme.textTheme.titleMedium,
+          ),
+          SizedBox(height: 2.v),
+          input(
+            hintText: params["email"],
+            controller: emailController,
+            keyboardType: TextInputType.emailAddress,
+            validator: (key) {
+              return Validator.email(key);
+            },
+          ),
+          SizedBox(height: 18.v),
+          Consumer<AuthenticationProvider>(
+            builder: (BuildContext context, provider, Widget? child) {
+              Props props = provider.props;
+              if (props.isProcessing) {
+                return CustomElevatedButton(
+                  text: "",
+                  height: 50.v,
+                  leftIcon: CustomProgressButton(
+                    lable: 'processing'.tr,
+                    textStyle: CustomTextStyles.titleLargeWhite900,
+                  ),
+                  buttonStyle: CustomButtonStyles.fillPrimaryTL29,
+                  buttonTextStyle: CustomTextStyles.titleLargeWhite900,
+                );
+              } else {
+                if (props.isError || props.isAuthException) {
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        props.error ?? '',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 12.fSize,
+                          fontFamily: 'Inter',
+                          fontWeight: FontWeight.w400,
+                          color: Theme.of(context).colorScheme.error,
+                        ),
+                      ),
+                      SizedBox(height: 6.v),
+                      CustomElevatedButton(
+                        height: 50.v,
+                        text: "update".tr,
+                        buttonStyle: CustomButtonStyles.fillPrimaryTL29,
+                        buttonTextStyle: CustomTextStyles.titleLargeWhite900,
+                        onPressed: () {
+                          onUpdateEmail(callback: (res) {
+                            setState(() {});
+                          });
+                        },
+                      )
+                    ],
+                  );
+                }
+
+                return CustomElevatedButton(
+                  height: 50.v,
+                  text: "update".tr,
+                  buttonStyle: CustomButtonStyles.fillPrimaryTL29,
+                  buttonTextStyle: CustomTextStyles.titleLargeWhite900,
+                  onPressed: () {
+                    onUpdateEmail(callback: (res) {
+                      setState(() {});
+                    });
+                  },
+                );
+              }
+            },
+          ),
+        ],
         SizedBox(height: 12.v),
       ],
     );

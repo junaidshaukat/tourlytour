@@ -18,9 +18,7 @@ class AppRoutes {
   static const String onboarding = '/onboarding';
   static const String tourDetails = '/tour_details';
   static const String confirmation = '/confirmation';
-  static const String profileUpdate = '/profile_update';
   static const String resetPassword = '/reset_password';
-  static const String profileVerify = '/profile_verify';
   static const String termsCondition = '/terms_condition';
   static const String forgetPassword = '/forget_password';
   static const String productDetails = '/product_details';
@@ -44,8 +42,6 @@ class AppRoutes {
       onboarding: (context) => const OnboardingScreen(),
       tourDetails: (context) => const TourDetailsScreen(),
       confirmation: (context) => const ConfirmationScreen(),
-      profileUpdate: (context) => const ProfileUpdateScreen(),
-      profileVerify: (context) => const ProfileVerifyScreen(),
       resetPassword: (context) => const ResetPasswordScreen(),
       productDetails: (context) => const ProductDetailsScreen(),
       forgetPassword: (context) => const ForgetPasswordScreen(),

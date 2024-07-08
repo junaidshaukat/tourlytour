@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import '/core/app_export.dart';
 
-export 'update.dart';
-export 'verify.dart';
-
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
@@ -13,11 +10,14 @@ class ProfileScreen extends StatefulWidget {
 
 class ProfileScreenState extends State<ProfileScreen> {
   bool preloader = true;
+  late AuthenticationProvider auth;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      auth = context.read<AuthenticationProvider>();
+
       setState(() {
         preloader = false;
       });
@@ -112,7 +112,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                       buttonWidth: 100.h,
                       message: props.error,
                       onPressed: () {
-                        context.read<AuthenticationService>().onSignin();
+                        context.read<AuthenticationService>().openBottomSheet();
                       },
                     ),
                   ),
@@ -195,19 +195,34 @@ class ProfileScreenState extends State<ProfileScreen> {
                     input(
                       label: "name".tr,
                       hintText: user?.name ?? '',
-                      onPressed: () {},
+                      onPressed: () {
+                        context.read<AuthenticationService>().openBottomSheet(
+                          event: Event.update,
+                          params: {'name': user?.name},
+                        );
+                      },
                     ),
                     SizedBox(height: 18.v),
                     input(
                       label: "email".tr,
                       hintText: user?.email ?? '',
-                      onPressed: () {},
+                      onPressed: () {
+                        context.read<AuthenticationService>().openBottomSheet(
+                          event: Event.update,
+                          params: {'email': user?.email},
+                        );
+                      },
                     ),
                     SizedBox(height: 18.v),
                     input(
                       label: "phone_number".tr,
                       hintText: user?.mobileNumber ?? '',
-                      onPressed: () {},
+                      onPressed: () {
+                        context.read<AuthenticationService>().openBottomSheet(
+                          event: Event.update,
+                          params: {'phone': user?.mobileNumber},
+                        );
+                      },
                     ),
                   ],
                 );

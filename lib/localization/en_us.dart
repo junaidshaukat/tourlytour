@@ -186,6 +186,7 @@ final Map<String, String> enUs = {
   "auth_session_missing": "Auth session missing",
   "401_unauthorized": "401 Unauthorized",
   'signin': 'Sign In',
+  "update_user_profile": "Update User Profile",
   "guest_mode": "Guest Mode",
   "sign_in_with_email": "Sign In With Email",
   "welcome_back": "Welcome Back!",

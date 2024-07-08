@@ -78,7 +78,7 @@ class FavouriteScreenState extends State<FavouriteScreen> {
                       buttonWidth: 100.h,
                       message: props.error,
                       onPressed: () {
-                        context.read<AuthenticationService>().onSignin();
+                        context.read<AuthenticationService>().openBottomSheet();
                       },
                     ),
                   ),

@@ -297,7 +297,7 @@ class ProductDetailsScreenState extends State<ProductDetailsScreen>
                       arguments: product,
                     );
                   } else {
-                    context.read<AuthenticationService>().onSignin();
+                    context.read<AuthenticationService>().openBottomSheet();
                   }
                 },
                 alignment: Alignment.topLeft,

@@ -159,6 +159,17 @@ class Props {
     data = currentData ?? initialData;
   }
 
+  bool get isUserUpdated => state == 12 ? true : false;
+  void setUserUpdated({
+    int currentState = 12,
+    String? currentError,
+    Object? currentData,
+  }) {
+    state = currentState;
+    error = currentError;
+    data = currentData ?? initialData;
+  }
+
   void clear(Object? object) {
     state = -1;
     error = null;
