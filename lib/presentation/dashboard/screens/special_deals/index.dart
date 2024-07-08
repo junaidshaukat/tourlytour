@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import '/core/app_export.dart';
 
-class CurrencyScreen extends StatefulWidget {
-  const CurrencyScreen({super.key});
+class SpecialDealScreen extends StatefulWidget {
+  const SpecialDealScreen({super.key});
 
   @override
-  CurrencyScreenState createState() => CurrencyScreenState();
+  SpecialDealScreenState createState() => SpecialDealScreenState();
 }
 
-class CurrencyScreenState extends State<CurrencyScreen> {
+class SpecialDealScreenState extends State<SpecialDealScreen> {
   bool preloader = true;
   late WebViewController controller;
 

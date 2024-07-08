@@ -175,7 +175,13 @@ class CustomDrawer extends StatelessWidget {
         tab(
           title: 'special_deals'.tr,
           icon: 'special_deals'.icon.svg,
-          onPressed: () {},
+          onPressed: () {
+            NavigatorService.goBack();
+            NavigatorService.push(
+              context,
+              const SpecialDealScreen(),
+            );
+          },
         ),
         tab(
           title: 'discover'.tr,
@@ -202,12 +208,24 @@ class CustomDrawer extends StatelessWidget {
         tab(
           title: 'eng_us'.tr,
           icon: 'eng_us'.icon.svg,
-          onPressed: () {},
+          onPressed: () {
+            NavigatorService.goBack();
+            NavigatorService.push(
+              context,
+              const LanguageScreen(),
+            );
+          },
         ),
         tab(
           title: 'usd'.tr,
           icon: 'usd'.icon.svg,
-          onPressed: () {},
+          onPressed: () {
+            NavigatorService.goBack();
+            NavigatorService.push(
+              context,
+              const CurrencyScreen(),
+            );
+          },
         ),
         tab(
           title: 'blog'.tr,
@@ -234,12 +252,24 @@ class CustomDrawer extends StatelessWidget {
         tab(
           title: 'contact_us'.tr,
           icon: 'contact_us'.icon.svg,
-          onPressed: () {},
+          onPressed: () {
+            NavigatorService.goBack();
+            NavigatorService.push(
+              context,
+              const ContactUsScreen(),
+            );
+          },
         ),
         tab(
           title: 'terms_condition'.tr,
           icon: 'terms_condition'.icon.svg,
-          onPressed: () {},
+          onPressed: () {
+            NavigatorService.goBack();
+            NavigatorService.push(
+              context,
+              const TermsConditionScreen(),
+            );
+          },
         ),
         tab(
           divider: false,
