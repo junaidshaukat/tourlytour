@@ -91,6 +91,7 @@ class SignUpScreenState extends State<SignUpScreen> {
     return Preloader(
       preloader: preloader,
       child: Scaffold(
+        key: scaffoldKey,
         appBar: CustomAppBar(
           centerTitle: false,
           title: Padding(

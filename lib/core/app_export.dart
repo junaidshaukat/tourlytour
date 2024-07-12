@@ -26,8 +26,8 @@ export 'package:flutter_localizations/flutter_localizations.dart';
 export 'package:smooth_page_indicator/smooth_page_indicator.dart';
 export 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
-export 'models/export.dart';
-export 'providers/export.dart';
+export 'olds_models/export.dart';
+export 'olds_providers/export.dart';
 export 'services/export.dart';
 export 'utils/export.dart';
 

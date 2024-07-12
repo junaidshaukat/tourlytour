@@ -54,6 +54,7 @@ class CurrencyScreenState extends State<CurrencyScreen> {
     return Preloader(
       preloader: preloader,
       child: Scaffold(
+        key: scaffoldKey,
         body: Stack(
           children: [
             WebViewWidget(

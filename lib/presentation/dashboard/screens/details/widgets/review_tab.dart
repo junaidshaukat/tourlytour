@@ -1,17 +1,13 @@
 import 'package:flutter/material.dart';
 import '/core/app_export.dart';
 
-class ReviewTab extends StatefulWidget {
-  final Products product;
+class ReviewTab extends StatelessWidget {
+  final Statistics statistics;
+  final List<ProductReviews> reviews;
 
-  const ReviewTab({super.key, required this.product});
+  const ReviewTab({super.key, required this.reviews, required this.statistics});
 
-  @override
-  ReviewTabState createState() => ReviewTabState();
-}
-
-class ReviewTabState extends State<ReviewTab> {
-  Widget progress({String? title, String? value}) {
+  Widget progress({String? title, required num value}) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -27,7 +23,7 @@ class ReviewTabState extends State<ReviewTab> {
               SizedBox(height: 3.v),
               Container(
                 height: 7.v,
-                width: 140.h,
+                width: 130.h,
                 decoration: BoxDecoration(
                   color: appTheme.amber100,
                   borderRadius: BorderRadius.circular(
@@ -39,7 +35,7 @@ class ReviewTabState extends State<ReviewTab> {
                     3.h,
                   ),
                   child: LinearProgressIndicator(
-                    value: (num.parse(value!) * 0.1),
+                    value: (value * 0.1),
                     backgroundColor: appTheme.amber100,
                     valueColor: AlwaysStoppedAnimation<Color>(
                       theme.colorScheme.primary,
@@ -50,16 +46,19 @@ class ReviewTabState extends State<ReviewTab> {
             ],
           ),
         ),
-        Padding(
-          padding: EdgeInsets.only(
-            left: 7.h,
-            top: 13.v,
+        SizedBox(
+          width: 25.h,
+          child: Padding(
+            padding: EdgeInsets.only(
+              left: 7.h,
+              top: 13.v,
+            ),
+            child: Text(
+              "$value",
+              style: CustomTextStyles.bodySmallBlack900Regular,
+            ),
           ),
-          child: Text(
-            value,
-            style: CustomTextStyles.bodySmallBlack900Regular,
-          ),
-        )
+        ),
       ],
     );
   }
@@ -173,81 +172,54 @@ class ReviewTabState extends State<ReviewTab> {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: SizeUtils.width,
-      child: SingleChildScrollView(
-        child: Consumer<ProductReviewsProvider>(
-            builder: (context, provider, child) {
-          Props props = provider.props;
-          if (props.isNone || props.isLoading) {
-            return SizedBox(
-              height: 230.v,
-              child: const Loading(),
-            );
-          } else if (props.isError) {
-            return Padding(
-              padding: EdgeInsets.all(8.adaptSize),
-              child: TryAgain(
-                imagePath: "refresh".icon.svg,
-                onRefresh: () async {
-                  await provider.onRefresh(widget.product.id);
-                },
-              ),
-            );
-          } else {
-            List data = props.data as List;
-            if (data.isEmpty) {
-              return Padding(
-                padding: EdgeInsets.symmetric(vertical: 60.v),
-                child: const NoRecordsFound(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                ),
-              );
-            }
+    if (reviews.isEmpty) {
+      return Padding(
+        padding: EdgeInsets.symmetric(vertical: 60.v),
+        child: const NoRecordsFound(
+          mainAxisAlignment: MainAxisAlignment.start,
+        ),
+      );
+    }
 
-            return Column(
-              children: [
-                SizedBox(height: 6.v),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    progress(
-                      title: 'seamless_experience'.tr,
-                      value: provider.average(data, 'seamless_experience'),
-                    ),
-                    progress(
-                      title: 'hospitality'.tr,
-                      value: provider.average(data, 'hospitality'),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 6.v),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    progress(
-                      title: 'value_for_money'.tr,
-                      value: provider.average(data, 'value_for_money'),
-                    ),
-                    progress(
-                      title: 'impressiveness'.tr,
-                      value: provider.average(data, 'impressiveness'),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 12.v),
-                Wrap(
-                  direction: Axis.horizontal,
-                  children: List.generate(data.length, (index) {
-                    ProductReviews reviews = data[index];
-                    return reviewCard(index: index, reviews: reviews);
-                  }),
-                ),
-              ],
-            );
-          }
-        }),
-      ),
+    return Column(
+      children: [
+        SizedBox(height: 6.v),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            progress(
+              title: 'seamless_experience'.tr,
+              value: statistics.seamlessExperience,
+            ),
+            progress(
+              title: 'hospitality'.tr,
+              value: statistics.hospitality,
+            ),
+          ],
+        ),
+        SizedBox(height: 6.v),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            progress(
+              title: 'value_for_money'.tr,
+              value: statistics.valueForMoney,
+            ),
+            progress(
+              title: 'impressiveness'.tr,
+              value: statistics.impressiveness,
+            ),
+          ],
+        ),
+        SizedBox(height: 12.v),
+        Wrap(
+          direction: Axis.horizontal,
+          children: List.generate(reviews.length, (index) {
+            ProductReviews review = reviews[index];
+            return reviewCard(index: index, reviews: review);
+          }),
+        ),
+      ],
     );
   }
 }

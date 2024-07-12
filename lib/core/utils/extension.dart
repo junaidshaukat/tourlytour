@@ -133,8 +133,9 @@ extension UserX on User {
 }
 
 extension AuthSession on Session {
-  Map<String, dynamic> getParams() {
+  Map<String, dynamic> getParams(String event) {
     return {
+      "event": event,
       "uuid": user.uuid,
       "name": user.name,
       'email': user.emails,

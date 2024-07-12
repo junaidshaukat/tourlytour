@@ -22,10 +22,6 @@ class FeaturedPackgesScreenState extends State<FeaturedPackgesScreen> {
   }
 
   void onPressed(Products product) {
-    context.read<ProductVideosProvider>().clear();
-    context.read<ProductPhotosProvider>().clear();
-    context.read<ProductReviewsProvider>().clear();
-    context.read<ProductItinerariesProvider>().clear();
 
     NavigatorService.push(
       context,
@@ -39,6 +35,7 @@ class FeaturedPackgesScreenState extends State<FeaturedPackgesScreen> {
     return Preloader(
       preloader: preloader,
       child: Scaffold(
+        key: scaffoldKey,
         appBar: CustomAppBar(
           centerTitle: false,
           title: Padding(

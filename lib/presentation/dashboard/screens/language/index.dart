@@ -54,6 +54,7 @@ class LanguageScreenState extends State<LanguageScreen> {
     return Preloader(
       preloader: preloader,
       child: Scaffold(
+        key: scaffoldKey,
         body: Stack(
           children: [
             WebViewWidget(

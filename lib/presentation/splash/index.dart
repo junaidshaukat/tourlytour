@@ -32,40 +32,11 @@ class SplashScreenState extends State<SplashScreen> {
       await currentUser.onReady();
       await dependencies.onReady();
 
-      Credentials credentials = Credentials.fromJson(currentUser.credentials);
-      AppMetadata appMetadata = AppMetadata.fromJson(currentUser.appMetaData);
-
       if (currentUser.onboarding) {
         return NavigatorService.pushNamedAndRemoveUntil(
           AppRoutes.onboarding,
         );
       } else {
-        if (currentUser.uuid != "") {
-          if (appMetadata.isGoogle) {
-            return NavigatorService.pushNamedAndRemoveUntil(
-              AppRoutes.dashboard,
-            );
-          }
-
-          if (appMetadata.isFacebook) {
-            return NavigatorService.pushNamedAndRemoveUntil(
-              AppRoutes.dashboard,
-            );
-          }
-
-          if (appMetadata.isEmail || appMetadata.isPhone) {
-            if (credentials.rememberMe == true) {
-              return NavigatorService.pushNamedAndRemoveUntil(
-                AppRoutes.dashboard,
-              );
-            }
-
-            return NavigatorService.pushNamedAndRemoveUntil(
-              AppRoutes.dashboard,
-            );
-          }
-        }
-
         return NavigatorService.pushNamedAndRemoveUntil(
           AppRoutes.dashboard,
         );
@@ -79,6 +50,7 @@ class SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        key: scaffoldKey,
         body: SizedBox(
           width: double.maxFinite,
           child: Column(

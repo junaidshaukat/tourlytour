@@ -87,6 +87,7 @@ class OtpVerificationScreenState extends State<OtpVerificationScreen> {
     return Preloader(
       preloader: preloader,
       child: Scaffold(
+        key: scaffoldKey,
         appBar: CustomAppBar(
           centerTitle: false,
           title: Padding(

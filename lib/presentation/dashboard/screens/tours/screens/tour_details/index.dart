@@ -18,14 +18,13 @@ class TourDetailsScreenState extends State<TourDetailsScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       tours = context.read<ToursProvider>();
       review = context.read<ReviewService>();
-
-      await tours.getTourDetails(id);
-
-      setState(() {
-        preloader = false;
+      tours.onDetails(id).then((res) {
+        setState(() {
+          preloader = false;
+        });
       });
     });
   }
@@ -36,14 +35,14 @@ class TourDetailsScreenState extends State<TourDetailsScreen> {
     id = ModalRoute.of(context)!.settings.arguments as num?;
   }
 
-  void onPressed(TourHistory tour, String action) {
-    review.fetch(
-      context,
-      id: tour.orders.id,
-      seconds: 0,
-      action: action,
-      arguments: tour.reviews,
-    );
+  void onPressed(TourDetails tour, String action) {
+    // review.fetch(
+    //   context,
+    //   id: tour.orders.id,
+    //   seconds: 0,
+    //   action: action,
+    //   arguments: tour.reviews,
+    // );
   }
 
   @override
@@ -87,7 +86,7 @@ class TourDetailsScreenState extends State<TourDetailsScreen> {
         ),
         body: Consumer<ToursProvider>(
           builder: (context, provider, child) {
-            Props props = provider.propsSingleTour;
+            Props props = provider.propsDetails;
             if (props.isProcessing) {
               return SizedBox(
                 height: 135.v,
@@ -117,7 +116,7 @@ class TourDetailsScreenState extends State<TourDetailsScreen> {
                 );
               }
 
-              TourHistory tour = data as TourHistory;
+              TourDetails tour = data as TourDetails;
 
               return SingleChildScrollView(
                 padding: EdgeInsets.symmetric(horizontal: 8.h, vertical: 8.v),
@@ -146,7 +145,7 @@ class TourDetailsScreenState extends State<TourDetailsScreen> {
                             ),
                           ),
                           Text(
-                            tour.orders.orderNumber ?? '',
+                            tour.orders?.orderNumber ?? '',
                             style: CustomTextStyles.bodyLargeJaldiGray90001,
                           ),
                           const Divider(),
@@ -166,7 +165,7 @@ class TourDetailsScreenState extends State<TourDetailsScreen> {
                               SizedBox(width: 16.h),
                               Expanded(
                                 child: Text(
-                                  "${tour.orders.date?.format('EEE, dd MMM yyyy')}",
+                                  "${tour.orders?.date?.format('EEE, dd MMM yyyy')}",
                                   style: CustomTextStyles
                                       .bodyLargeJaldiGray90001
                                       .copyWith(
@@ -192,7 +191,7 @@ class TourDetailsScreenState extends State<TourDetailsScreen> {
                               SizedBox(width: 16.h),
                               Expanded(
                                 child: Text(
-                                  "${tour.orders.date?.format('EEE, dd MMM yyyy')}",
+                                  "${tour.orders?.date?.format('EEE, dd MMM yyyy')}",
                                   style: CustomTextStyles
                                       .bodyLargeJaldiGray90001
                                       .copyWith(
@@ -336,7 +335,7 @@ class TourDetailsScreenState extends State<TourDetailsScreen> {
                             TextSpan(
                               children: [
                                 TextSpan(
-                                  text: '${tour.products.locations ?? 0}',
+                                  text: '${tour.products?.locations ?? 0}',
                                   style: CustomTextStyles
                                       .titleSmallOnErrorContainerSemiBold
                                       .copyWith(
@@ -369,7 +368,7 @@ class TourDetailsScreenState extends State<TourDetailsScreen> {
                                 ),
                                 TextSpan(
                                   text:
-                                      "${tour.orders.date?.format('EEE, dd MMM yyyy')}",
+                                      "${tour.orders?.date?.format('EEE, dd MMM yyyy')}",
                                   style: CustomTextStyles.bodyMediumBlack900
                                       .copyWith(
                                     fontSize: 12.fSize,
@@ -788,7 +787,7 @@ class TourDetailsScreenState extends State<TourDetailsScreen> {
                               SizedBox(width: 16.h),
                               Expanded(
                                 child: Text(
-                                  "${tour.contacts.whatsapp}",
+                                  "${tour.contacts?.whatsapp}",
                                   style: CustomTextStyles
                                       .bodyLargeJaldiGray90001
                                       .copyWith(
@@ -815,7 +814,7 @@ class TourDetailsScreenState extends State<TourDetailsScreen> {
                               SizedBox(width: 16.h),
                               Expanded(
                                 child: Text(
-                                  "${tour.contacts.instagram}",
+                                  "${tour.contacts?.instagram}",
                                   style: CustomTextStyles
                                       .bodyLargeJaldiGray90001
                                       .copyWith(
@@ -842,7 +841,7 @@ class TourDetailsScreenState extends State<TourDetailsScreen> {
                               SizedBox(width: 16.h),
                               Expanded(
                                 child: Text(
-                                  "${tour.contacts.twitter}",
+                                  "${tour.contacts?.twitter}",
                                   style: CustomTextStyles
                                       .bodyLargeJaldiGray90001
                                       .copyWith(
@@ -869,7 +868,7 @@ class TourDetailsScreenState extends State<TourDetailsScreen> {
                               SizedBox(width: 16.h),
                               Expanded(
                                 child: Text(
-                                  "${tour.contacts.wechat}",
+                                  "${tour.contacts?.wechat}",
                                   style: CustomTextStyles
                                       .bodyLargeJaldiGray90001
                                       .copyWith(
@@ -896,7 +895,7 @@ class TourDetailsScreenState extends State<TourDetailsScreen> {
                               SizedBox(width: 16.h),
                               Expanded(
                                 child: Text(
-                                  "${tour.contacts.viber}",
+                                  "${tour.contacts?.viber}",
                                   style: CustomTextStyles
                                       .bodyLargeJaldiGray90001
                                       .copyWith(
@@ -923,7 +922,7 @@ class TourDetailsScreenState extends State<TourDetailsScreen> {
                               SizedBox(width: 16.h),
                               Expanded(
                                 child: Text(
-                                  "${tour.contacts.threads}",
+                                  "${tour.contacts?.threads}",
                                   style: CustomTextStyles
                                       .bodyLargeJaldiGray90001
                                       .copyWith(
@@ -950,7 +949,7 @@ class TourDetailsScreenState extends State<TourDetailsScreen> {
                               SizedBox(width: 16.h),
                               Expanded(
                                 child: Text(
-                                  "${tour.contacts.line}",
+                                  "${tour.contacts?.line}",
                                   style: CustomTextStyles
                                       .bodyLargeJaldiGray90001
                                       .copyWith(
@@ -964,7 +963,7 @@ class TourDetailsScreenState extends State<TourDetailsScreen> {
                       ),
                     ),
                     SizedBox(height: 16.v),
-                    if (tour.reviews.id != null)
+                    if (tour.reviews?.id != null)
                       Container(
                         width: double.maxFinite,
                         padding: EdgeInsets.symmetric(
@@ -974,8 +973,7 @@ class TourDetailsScreenState extends State<TourDetailsScreen> {
                             color: appTheme.gray500,
                             width: 1.0,
                           ),
-                          borderRadius:
-                              BorderRadius.circular(10.0), // Border radius
+                          borderRadius: BorderRadius.circular(10.0),
                         ),
                         child: Column(
                           children: [
@@ -1010,7 +1008,7 @@ class TourDetailsScreenState extends State<TourDetailsScreen> {
                             SizedBox(
                               width: double.maxFinite,
                               child: Text(
-                                '${tour.reviews.description}',
+                                '${tour.reviews?.description}',
                                 textAlign: TextAlign.left,
                               ),
                             ),
@@ -1019,13 +1017,13 @@ class TourDetailsScreenState extends State<TourDetailsScreen> {
                               height: 100.v,
                               child: ListView.separated(
                                 scrollDirection: Axis.horizontal,
-                                itemCount: tour.reviews.photos.length,
+                                itemCount: tour.reviews!.photos.length,
                                 itemBuilder: (BuildContext context, int index) {
                                   return CustomImageView(
                                     width: 100.h,
                                     height: 100.v,
                                     fit: BoxFit.cover,
-                                    imagePath: tour.reviews.photos[index].url,
+                                    imagePath: tour.reviews?.photos[index].url,
                                     radius: BorderRadius.circular(12.adaptSize),
                                   );
                                 },
@@ -1041,7 +1039,7 @@ class TourDetailsScreenState extends State<TourDetailsScreen> {
                             LabelReview(
                               readOnly: true,
                               label: 'rating'.tr,
-                              initial: tour.reviews.rate ?? 1,
+                              initial: tour.reviews?.rate ?? 1,
                             ),
                             SizedBox(height: 2.v),
                             const HorizontalDivider(),
@@ -1049,7 +1047,7 @@ class TourDetailsScreenState extends State<TourDetailsScreen> {
                             LabelReview(
                               readOnly: true,
                               label: 'hospitality'.tr,
-                              initial: tour.reviews.hospitality ?? 1,
+                              initial: tour.reviews?.hospitality ?? 1,
                             ),
                             SizedBox(height: 2.v),
                             const HorizontalDivider(),
@@ -1057,7 +1055,7 @@ class TourDetailsScreenState extends State<TourDetailsScreen> {
                             LabelReview(
                               readOnly: true,
                               label: 'impressiveness'.tr,
-                              initial: tour.reviews.impressiveness ?? 1,
+                              initial: tour.reviews?.impressiveness ?? 1,
                             ),
                             SizedBox(height: 2.v),
                             const HorizontalDivider(),
@@ -1065,7 +1063,7 @@ class TourDetailsScreenState extends State<TourDetailsScreen> {
                             LabelReview(
                               readOnly: true,
                               label: 'value_for_money'.tr,
-                              initial: tour.reviews.valueForMoney ?? 1,
+                              initial: tour.reviews?.valueForMoney ?? 1,
                             ),
                             SizedBox(height: 2.v),
                             const HorizontalDivider(),
@@ -1073,7 +1071,7 @@ class TourDetailsScreenState extends State<TourDetailsScreen> {
                             LabelReview(
                               readOnly: true,
                               label: 'seamless_experience'.tr,
-                              initial: tour.reviews.seamlessExperience ?? 1,
+                              initial: tour.reviews?.seamlessExperience ?? 1,
                             ),
                             SizedBox(height: 2.v),
                             const HorizontalDivider(),
@@ -1081,8 +1079,8 @@ class TourDetailsScreenState extends State<TourDetailsScreen> {
                           ],
                         ),
                       ),
-                    if (tour.reviews.id == null &&
-                        tour.orders.status == "COMPLETED")
+                    if (tour.reviews?.id == null &&
+                        tour.orders?.status == "COMPLETED")
                       CustomElevatedButton(
                         text: "share_your_opinion".tr,
                         onPressed: () {

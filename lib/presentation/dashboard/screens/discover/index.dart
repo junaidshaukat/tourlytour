@@ -11,22 +11,22 @@ class DiscoverPackgesScreen extends StatefulWidget {
 class DiscoverPackgesScreenState extends State<DiscoverPackgesScreen> {
   bool preloader = true;
 
+  late ProductsProvider products;
+
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      setState(() {
-        preloader = false;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      products = context.read<ProductsProvider>();
+      products.onDiscover().then((res) {
+        setState(() {
+          preloader = false;
+        });
       });
     });
   }
 
   void onPressed(Products product) {
-    context.read<ProductVideosProvider>().clear();
-    context.read<ProductPhotosProvider>().clear();
-    context.read<ProductReviewsProvider>().clear();
-    context.read<ProductItinerariesProvider>().clear();
-
     NavigatorService.push(
       context,
       const ProductDetailsScreen(),
@@ -39,6 +39,7 @@ class DiscoverPackgesScreenState extends State<DiscoverPackgesScreen> {
     return Preloader(
       preloader: preloader,
       child: Scaffold(
+        key: scaffoldKey,
         appBar: CustomAppBar(
           centerTitle: false,
           title: Padding(
@@ -69,9 +70,9 @@ class DiscoverPackgesScreenState extends State<DiscoverPackgesScreen> {
             ),
           ],
         ),
-        body: Consumer<DiscoverProvider>(
+        body: Consumer<ProductsProvider>(
           builder: (context, provider, child) {
-            Props props = provider.props;
+            Props props = provider.propsDiscover;
             if (props.isNone || props.isLoading) {
               return SizedBox(
                 height: 135.v,

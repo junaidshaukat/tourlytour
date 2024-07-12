@@ -170,9 +170,9 @@ class ProfileScreenState extends State<ProfileScreen> {
                               icon: CustomImageView(
                                 imagePath: "edit".icon.svg,
                               ),
-                              onPressed: () async {
+                              onPressed: () {
                                 if (!props.isProcessing) {
-                                  Pickers.image().then((file) async {
+                                  Pickers.image().then((file) {
                                     if (file != null) {
                                       provider
                                           .onUpdateProfile(file)
@@ -180,7 +180,9 @@ class ProfileScreenState extends State<ProfileScreen> {
                                         context
                                             .read<DependenciesProvider>()
                                             .onReady()
-                                            .then((res) {});
+                                            .then((res) async {
+                                          await provider.onReady();
+                                        });
                                       });
                                     }
                                   });

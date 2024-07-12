@@ -30,29 +30,24 @@ void main() async {
     runApp(
       MultiProvider(
         providers: [
-          ChangeNotifierProvider(create: (c) => ThemeProvider(c)),
           ChangeNotifierProvider(create: (c) => ConnectivityProvider(c)),
+          ChangeNotifierProvider(create: (c) => SupabaseService(c)),
+
+          ///
+          ChangeNotifierProvider(create: (c) => ThemeProvider(c)),
           ChangeNotifierProvider(create: (c) => CurrentUserProvider(c)),
           ChangeNotifierProvider(create: (c) => AuthenticationProvider(c)),
 
           ///
           ChangeNotifierProvider(create: (c) => ToursProvider(c)),
           ChangeNotifierProvider(create: (c) => StripeProvider(c)),
-          ChangeNotifierProvider(create: (c) => SearchProvider(c)),
           ChangeNotifierProvider(create: (c) => OrdersProvider(c)),
           ChangeNotifierProvider(create: (c) => BookingProvider(c)),
           ChangeNotifierProvider(create: (c) => ProfileProvider(c)),
           ChangeNotifierProvider(create: (c) => ProductsProvider(c)),
-          ChangeNotifierProvider(create: (c) => DiscoverProvider(c)),
           ChangeNotifierProvider(create: (c) => FavouritesProvider(c)),
-          ChangeNotifierProvider(create: (c) => OrderGuestsProvider(c)),
-          ChangeNotifierProvider(create: (c) => ProductPriceProvider(c)),
           ChangeNotifierProvider(create: (c) => DependenciesProvider(c)),
-          ChangeNotifierProvider(create: (c) => ProductVideosProvider(c)),
-          ChangeNotifierProvider(create: (c) => ProductPhotosProvider(c)),
           ChangeNotifierProvider(create: (c) => ProductReviewsProvider(c)),
-          ChangeNotifierProvider(create: (c) => ProductsDetailsProvider(c)),
-          ChangeNotifierProvider(create: (c) => ProductItinerariesProvider(c)),
 
           ///
           ChangeNotifierProvider(create: (c) => ReviewService(c)),

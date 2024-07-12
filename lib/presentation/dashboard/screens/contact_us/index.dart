@@ -54,6 +54,7 @@ class ContactUsScreenState extends State<ContactUsScreen> {
     return Preloader(
       preloader: preloader,
       child: Scaffold(
+        key: scaffoldKey,
         body: Stack(
           children: [
             WebViewWidget(

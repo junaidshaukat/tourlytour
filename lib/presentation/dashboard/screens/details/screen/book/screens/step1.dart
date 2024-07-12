@@ -229,7 +229,7 @@ class PackageSelectionScreenState extends State<PackageSelectionScreen> {
     return Preloader(
       preloader: preloader,
       child: Scaffold(
-        backgroundColor: appTheme.whiteA700,
+        key: scaffoldKey,
         appBar: CustomAppBar(
           centerTitle: false,
           title: Padding(

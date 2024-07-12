@@ -54,6 +54,7 @@ class TermsConditionScreenState extends State<TermsConditionScreen> {
     return Preloader(
       preloader: preloader,
       child: Scaffold(
+        key: scaffoldKey,
         body: Stack(
           children: [
             WebViewWidget(

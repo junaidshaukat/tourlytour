@@ -13,27 +13,26 @@ class ToursScreen extends StatefulWidget {
 class ToursScreenState extends State<ToursScreen> {
   bool preloader = true;
   late ToursProvider tours;
+  late AuthenticationService auths;
 
   @override
   void initState() {
     super.initState();
-    tours = context.read<ToursProvider>();
+    auths = context.read<AuthenticationService>();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await tours.onReady();
-      setState(() {
-        preloader = false;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      tours = context.read<ToursProvider>();
+      tours.onReady().then((res) {
+        setState(() {
+          preloader = false;
+        });
       });
     });
   }
 
-  void onTap(num? id) {
-    NavigatorService.push(
-      context,
-      const TourDetailsScreen(),
-      arguments: id,
-    );
-  }
+  void onChanged(String key) {}
+
+  void onPressed() {}
 
   @override
   Widget build(BuildContext context) {
@@ -79,36 +78,26 @@ class ToursScreenState extends State<ToursScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Expanded(
-                    child: Consumer<ToursProvider>(
-                      builder: (context, provider, child) {
-                        return CustomTextFormField(
-                          hintText: "search_tour".tr,
-                          hintStyle: CustomTextStyles.bodySmallBlue200,
-                          textInputAction: TextInputAction.done,
-                          contentPadding: EdgeInsets.symmetric(
-                            horizontal: 13.h,
-                            vertical: 15.v,
-                          ),
-                          onChanged: provider.onChanged,
-                        );
-                      },
+                    child: CustomTextFormField(
+                      onChanged: onChanged,
+                      hintText: "search_tour".tr,
+                      textInputAction: TextInputAction.done,
+                      hintStyle: CustomTextStyles.bodySmallBlue200,
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: 13.h,
+                        vertical: 15.v,
+                      ),
                     ),
                   ),
                   Padding(
                     padding: EdgeInsets.only(left: 8.h),
-                    child: Consumer<ToursProvider>(
-                      builder: (context, provider, child) {
-                        return CustomIconButton(
-                          height: 46.adaptSize,
-                          width: 46.adaptSize,
-                          padding: EdgeInsets.all(12.h),
-                          decoration: IconButtonStyleHelper.fillBlueGray,
-                          onTap: provider.onTap,
-                          child: CustomImageView(
-                            imagePath: "search".icon.svg,
-                          ),
-                        );
-                      },
+                    child: CustomIconButton(
+                      onTap: onPressed,
+                      width: 46.adaptSize,
+                      height: 46.adaptSize,
+                      padding: EdgeInsets.all(12.h),
+                      decoration: IconButtonStyleHelper.fillBlueGray,
+                      child: CustomImageView(imagePath: "search".icon.svg),
                     ),
                   )
                 ],
@@ -132,9 +121,7 @@ class ToursScreenState extends State<ToursScreen> {
                         buttonWidth: 100.h,
                         message: props.error,
                         onPressed: () {
-                          context
-                              .read<AuthenticationService>()
-                              .openBottomSheet();
+                          auths.openBottomSheet();
                         },
                       ),
                     ),
@@ -166,7 +153,7 @@ class ToursScreenState extends State<ToursScreen> {
                     children: List.generate(
                       data.length,
                       (index) {
-                        TourHistory tour = data[index];
+                        Tour tour = data[index];
 
                         return Container(
                           width: SizeUtils.width,
@@ -176,7 +163,11 @@ class ToursScreenState extends State<ToursScreen> {
                           ),
                           child: InkWell(
                             onTap: () {
-                              onTap(tour.orders.id);
+                              NavigatorService.push(
+                                context,
+                                const TourDetailsScreen(),
+                                arguments: tour.orders.id,
+                              );
                             },
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.start,
@@ -266,7 +257,11 @@ class ToursScreenState extends State<ToursScreen> {
                                       ),
                                       GestureDetector(
                                         onTap: () {
-                                          onTap(tour.orders.id);
+                                          NavigatorService.push(
+                                            context,
+                                            const TourDetailsScreen(),
+                                            arguments: tour.orders.id,
+                                          );
                                         },
                                         child: Text(
                                           'view_details'.tr,

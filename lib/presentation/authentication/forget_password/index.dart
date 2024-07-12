@@ -79,6 +79,7 @@ class ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
     return Preloader(
       preloader: preloader,
       child: Scaffold(
+        key: scaffoldKey,
         appBar: CustomAppBar(
           centerTitle: false,
           title: Padding(

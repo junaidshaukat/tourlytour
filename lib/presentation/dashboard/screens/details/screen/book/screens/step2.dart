@@ -12,7 +12,6 @@ class OtherInformationScreenState extends State<OtherInformationScreen> {
   bool preloader = true;
 
   late BookingRequest request;
-  late ProductPriceProvider productPriceProvider;
 
   String phoneCode = "+1";
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
@@ -33,14 +32,9 @@ class OtherInformationScreenState extends State<OtherInformationScreen> {
   @override
   void initState() {
     super.initState();
-    stripe = context.read<StripeProvider>();
-    productPriceProvider = context.read<ProductPriceProvider>();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      productPrice = await productPriceProvider.getPrice({
-        'productId': request.productId,
-        'quantity': request.totalNumberOfGuest
-      });
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      stripe = context.read<StripeProvider>();
 
       for (var i = 0; i < request.totalNumberOfGuest; i++) {
         controllers[i] = {
@@ -282,7 +276,7 @@ class OtherInformationScreenState extends State<OtherInformationScreen> {
     return Preloader(
       preloader: preloader,
       child: Scaffold(
-        backgroundColor: appTheme.whiteA700,
+        key: scaffoldKey,
         appBar: CustomAppBar(
           centerTitle: false,
           title: Padding(

@@ -2,57 +2,34 @@ import 'package:flutter/material.dart';
 import '/core/app_export.dart';
 
 class VideoTab extends StatelessWidget {
-  final Products product;
-  const VideoTab({super.key, required this.product});
+  final List<ProductVideos> videos;
+  const VideoTab({super.key, required this.videos});
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ProductVideosProvider>(
-      builder: (context, provider, child) {
-        Props props = provider.props;
-        if (props.isNone || props.isLoading) {
-          return SizedBox(
-            height: 230.v,
-            child: const Loading(),
-          );
-        } else if (props.isError) {
-          return Padding(
-            padding: EdgeInsets.all(8.adaptSize),
-            child: TryAgain(
-              imagePath: "refresh".icon.svg,
-              onRefresh: () async {
-                await provider.onRefresh(product.id);
-              },
-            ),
-          );
-        } else {
-          List data = props.data as List;
-          if (data.isEmpty) {
-            return Padding(
-              padding: EdgeInsets.symmetric(vertical: 60.v),
-              child: const NoRecordsFound(
-                mainAxisAlignment: MainAxisAlignment.start,
-              ),
-            );
-          }
+    if (videos.isEmpty) {
+      return Padding(
+        padding: EdgeInsets.symmetric(vertical: 60.v),
+        child: const NoRecordsFound(
+          mainAxisAlignment: MainAxisAlignment.start,
+        ),
+      );
+    }
 
-          return ListView.separated(
-            itemCount: data.length,
-            padding: EdgeInsets.zero,
-            scrollDirection: Axis.vertical,
-            itemBuilder: (context, index) {
-              ProductVideos videos = data[index];
-              return VideoPlayerScreen(
-                src: videos.url,
-              );
-            },
-            separatorBuilder: (context, index) {
-              return SizedBox(
-                height: 10.h,
-              );
-            },
-          );
-        }
+    return ListView.separated(
+      itemCount: videos.length,
+      padding: EdgeInsets.zero,
+      scrollDirection: Axis.vertical,
+      itemBuilder: (context, index) {
+        ProductVideos video = videos[index];
+        return VideoPlayerScreen(
+          src: video.url,
+        );
+      },
+      separatorBuilder: (context, index) {
+        return SizedBox(
+          height: 10.h,
+        );
       },
     );
   }

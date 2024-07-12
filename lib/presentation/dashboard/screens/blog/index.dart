@@ -54,6 +54,7 @@ class BlogsScreenState extends State<BlogsScreen> {
     return Preloader(
       preloader: preloader,
       child: Scaffold(
+        key: scaffoldKey,
         body: Stack(
           children: [
             WebViewWidget(

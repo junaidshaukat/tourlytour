@@ -80,16 +80,12 @@ class DashboardScreenState extends State<DashboardScreen> {
                   Products product = data[index];
                   return HorizontalProductCard(
                     product: product,
-                    onPressed: () async {
-                      context.read<ProductVideosProvider>().clear();
-                      context.read<ProductPhotosProvider>().clear();
-                      context.read<ProductReviewsProvider>().clear();
-                      context.read<ProductItinerariesProvider>().clear();
-
-                      NavigatorService.push(
+                    onPressed: () {
+                      context.read<ProductsProvider>().setProductId(product.id);
+                      return NavigatorService.push(
                         context,
                         const ProductDetailsScreen(),
-                        arguments: product,
+                        arguments: product.id,
                       );
                     },
                   );
@@ -162,7 +158,6 @@ class DashboardScreenState extends State<DashboardScreen> {
       preloader: preloader,
       child: Scaffold(
         key: scaffoldKey,
-        backgroundColor: appTheme.whiteA700,
         appBar: Appbar(
           onTap: () {
             NavigatorService.push(context, const ProfileScreen());

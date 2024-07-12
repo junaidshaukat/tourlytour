@@ -41,6 +41,7 @@ class ConfirmationScreenState extends State<ConfirmationScreen> {
     return Preloader(
       preloader: preloader,
       child: Scaffold(
+        key: scaffoldKey,
         appBar: CustomAppBar(
           backgroundColor: appTheme.whiteA700,
           centerTitle: false,

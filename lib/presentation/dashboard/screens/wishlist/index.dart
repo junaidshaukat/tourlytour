@@ -26,7 +26,7 @@ class FavouriteScreenState extends State<FavouriteScreen> {
     return Preloader(
       preloader: preloader,
       child: Scaffold(
-        // backgroundColor: appTheme.blue50,
+        key: scaffoldKey,
         appBar: CustomAppBar(
           centerTitle: true,
           title: AppbarTitle(

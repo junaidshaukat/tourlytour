@@ -1,49 +1,39 @@
 class ProductPrice {
-  num? id;
-  num? productId;
-  num? quantity;
-  num? price;
-  String? stripePriceKey;
+  final num id;
+  final num productId;
+  final num quantity;
+  final num price;
+  final String stripePriceKey;
 
   ProductPrice({
-    this.id,
-    this.productId,
-    this.quantity,
-    this.price,
-    this.stripePriceKey,
+    required this.id,
+    required this.productId,
+    required this.quantity,
+    required this.price,
+    required this.stripePriceKey,
   });
 
   factory ProductPrice.fromJson(Map<String, dynamic> json) {
     return ProductPrice(
-      id: json['Id'] as num?,
-      productId: json['ProductId'] as num?,
-      quantity: json['Quantity'] as num?,
-      price: json['Price'] as num?,
-      stripePriceKey: json['StripePriceKey'] as String?,
+      id: json['Id'],
+      productId: json['ProductId'],
+      quantity: json['Quantity'],
+      price: json['Price'],
+      stripePriceKey: json['StripePriceKey'],
     );
   }
 
-  Map<String, dynamic> toJson({List skip = const []}) {
-    final Map<String, dynamic> data = {};
+  Map<String, dynamic> toJson({List<String> skip = const []}) {
+    final Map<String, dynamic> data = {
+      'Id': id,
+      'ProductId': productId,
+      'Quantity': quantity,
+      'Price': price,
+      'StripePriceKey': stripePriceKey,
+    };
 
-    if (!skip.contains('id')) {
-      data['Id'] = id;
-    }
-
-    if (!skip.contains('productId')) {
-      data['ProductId'] = productId;
-    }
-
-    if (!skip.contains('quantity')) {
-      data['Quantity'] = quantity;
-    }
-
-    if (!skip.contains('price')) {
-      data['Price'] = price;
-    }
-
-    if (!skip.contains('stripePriceKey')) {
-      data['StripePriceKey'] = stripePriceKey;
+    for (var key in skip) {
+      data.remove(key);
     }
 
     return data;

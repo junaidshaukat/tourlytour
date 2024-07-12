@@ -18,4 +18,6 @@ class Environment {
   static const String merchantIdentifier = "merchant.identifier";
 
   static const String bucket = '$url/storage/v1/object/public';
+
+  static const String redirectTo = 'io.supabase.tourlytour://login-callback/';
 }
